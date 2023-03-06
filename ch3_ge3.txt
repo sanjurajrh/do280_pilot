@@ -1,0 +1,391 @@
+[student@workstation ~]$ lab start network-svccerts 
+SUCCESS Waiting for cluster
+SUCCESS Remove network-svccerts project
+SUCCESS Deploying lab manifests for the network-svccerts exercise
+SUCCESS Copy exercise files
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.exampel.com:6443 
+^C
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project network-svccerts
+Now using project "network-svccerts" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc annotate service server service.beta.openshift.io/serving-cert-secret-name=server-secret 
+service/server annotated
+[student@workstation ~]$ oc describe servuce server
+error: the server doesn't have a resource type "servuce"
+[student@workstation ~]$ oc describe service server
+Name:              server
+Namespace:         network-svccerts
+Labels:            app=server
+                   app.kubernetes.io/component=server
+                   app.kubernetes.io/instance=server
+Annotations:       service.alpha.openshift.io/serving-cert-signed-by: openshift-service-serving-signer@1677259004
+                   service.beta.openshift.io/serving-cert-secret-name: server-secret
+                   service.beta.openshift.io/serving-cert-signed-by: openshift-service-serving-signer@1677259004
+Selector:          deployment=server
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                172.30.134.246
+IPs:               172.30.134.246
+Port:              8443-tcp  443/TCP
+TargetPort:        8443/TCP
+Endpoints:         
+Session Affinity:  None
+Events:            <none>
+[student@workstation ~]$ oc describe secret server-secret
+Name:         server-secret
+Namespace:    network-svccerts
+Labels:       <none>
+Annotations:  service.alpha.openshift.io/expiry: 2025-03-05T18:46:05Z
+              service.beta.openshift.io/expiry: 2025-03-05T18:46:05Z
+              service.beta.openshift.io/originating-service-name: server
+              service.beta.openshift.io/originating-service-uid: f552a3be-cf60-440b-adeb-8669b1a34ae7
+
+Type:  kubernetes.io/tls
+
+Data
+====
+tls.crt:  2615 bytes
+tls.key:  1675 bytes
+[student@workstation ~]$ cat DO280/labs/network-svccerts/server-secret.yaml 
+spec:
+  template:
+    spec:
+      containers:
+        - name: server
+          volumeMounts:
+            - name: CHANGE_ME
+              mountPath: /etc/pki/nginx/
+      volumes:
+        - name: CHANGE_ME
+          secret:
+            defaultMode: 420
+            secretName: CHANGE_ME
+            items:
+              - key: CHANGE_ME
+                path: server.crt
+              - key: CHANGE_ME
+                path: private/server.key
+[student@workstation ~]$ vim DO280/labs/network-svccerts/server-secret.yaml
+[student@workstation ~]$ cat DO280/labs/network-svccerts/server-secret.yaml
+spec:
+  template:
+    spec:
+      containers:
+        - name: server
+          volumeMounts:
+            - name: server-secret
+              mountPath: /etc/pki/nginx/
+      volumes:
+        - name: server-secret
+          secret:
+            defaultMode: 420
+            secretName: server-secret
+            items:
+              - key: tls.crt
+                path: server.crt
+              - key: tls.key
+                path: private/server.key
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc patch deployment server --patch-file DO280/labs/network-svccerts/server-secret.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "server" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "server" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "server" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "server" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/server patched
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc exec no-ca-bundle -- openssl s_client -connect server.network-svccerts.svc:443
+depth=1 CN = openshift-service-serving-signer@1677259004
+verify error:num=19:self signed certificate in certificate chain
+DONE
+CONNECTED(00000004)
+---
+Certificate chain
+ 0 s:CN = server.network-svccerts.svc
+   i:CN = openshift-service-serving-signer@1677259004
+ 1 s:CN = openshift-service-serving-signer@1677259004
+   i:CN = openshift-service-serving-signer@1677259004
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIID4DCCAsigAwIBAgIILKx7CE5eTxcwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UE
+Awwrb3BlbnNoaWZ0LXNlcnZpY2Utc2VydmluZy1zaWduZXJAMTY3NzI1OTAwNDAe
+Fw0yMzAzMDYxODQ2MDRaFw0yNTAzMDUxODQ2MDVaMCYxJDAiBgNVBAMTG3NlcnZl
+ci5uZXR3b3JrLXN2Y2NlcnRzLnN2YzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAMkJpTtvWwxn7c4GXu5/ujZy4qa6gc14BoTSkncYTnfQrCd+RsCi8ND3
+SYx7K8Xo5pJejWDjifWudNZJVs94v1gl6XK+dR++OZVA5IF9+7Yv5GsSaQRfpgi7
+z4eU+6MFgf8wG1AgtRyu9i0th9OkI00zk/F5u4yrT99Vi9ZfoGTuu1HYxxMuLhNb
+z9Dnisej3OfiRQfx5f/CEJS6wSRhml7CQ5bwhLBdoM7gZk5ycSCxhr/YLPCb9xug
+SBcXObKTbAz2zs12n9sxOyi06njarTdf4lmsvBk1DCfKZbU04MUpsSwlOt+PF5Hx
+opv09PQKZw/lP+YjrVX2yt77HEo4h90CAwEAAaOCAQAwgf0wDgYDVR0PAQH/BAQD
+AgWgMBMGA1UdJQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYE
+FAR7FKX/x6xryGM+r/EAVKbHY4nrMB8GA1UdIwQYMBaAFEM1TZWq/AUzc1TLDcgm
+zH8rXpI5MFEGA1UdEQRKMEiCG3NlcnZlci5uZXR3b3JrLXN2Y2NlcnRzLnN2Y4Ip
+c2VydmVyLm5ldHdvcmstc3ZjY2VydHMuc3ZjLmNsdXN0ZXIubG9jYWwwNQYLKwYB
+BAGSCBFkAgEEJhMkZjU1MmEzYmUtY2Y2MC00NDBiLWFkZWItODY2OWIxYTM0YWU3
+MA0GCSqGSIb3DQEBCwUAA4IBAQAthC52jeVaIeLtvRSesfZy6If0L9GO3+wV0GVD
+u0XTmzuOfqhxH8xm3WX8ERsCRNsyVjxtGy8xOVi2k+zu4OtEV094Amv9sK5HMkTZ
+QDu9au3nptoHYWs3hB9Tu2IKgUtW+tZtpWWw4EiT4uwDCa96McZ1LXapcZLFWL5e
+CY20Glpy7zW1L5v6ylaRcTXszlOU94tLpUdmhI8eeapPhc2LasqDN7le01WjxT3q
+RK0R2OlRW1fbvcZfUXoJbv3KmWU/xUJTeGBaHgD0puy9X26brAYk5g4xeknfI3yH
+0kBTnnAM+Nf2Q+9O/Al+L2668Ov3dCm5DgBZylblA1EjIKuo
+-----END CERTIFICATE-----
+subject=CN = server.network-svccerts.svc
+
+issuer=CN = openshift-service-serving-signer@1677259004
+
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 2410 bytes and written 415 bytes
+Verification error: self signed certificate in certificate chain
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 19 (self signed certificate in certificate chain)
+---
+[student@workstation ~]$ oc create configmap ca-bundle
+configmap/ca-bundle created
+[student@workstation ~]$ oc annotate configmap ca-bundle service.beta.openshift.io/inject-cabundle=true 
+configmap/ca-bundle annotated
+[student@workstation ~]$ oc get configmap ca-bundle -o yaml
+apiVersion: v1
+data:
+  service-ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDUTCCAjmgAwIBAgIILbGpFNQUZvowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UE
+    Awwrb3BlbnNoaWZ0LXNlcnZpY2Utc2VydmluZy1zaWduZXJAMTY3NzI1OTAwNDAe
+    Fw0yMzAyMjQxNzE2NDNaFw0yNTA0MjQxNzE2NDRaMDYxNDAyBgNVBAMMK29wZW5z
+    aGlmdC1zZXJ2aWNlLXNlcnZpbmctc2lnbmVyQDE2NzcyNTkwMDQwggEiMA0GCSqG
+    SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDXQysyuczVUWSSG3cmPQwwajyEFR8AGJz6
+    0Ie3xOlP3hIiWJSvnqBm+brCDk/1EtrMNFfN/ndTCseYG5dlUs+SD9kDCKK2Fp6g
+    MBZadCXtu64VqSkoXvpK9rv2IW2bgyWpfqCSQKinp49v+XOyTbWRPwNf5/RCybch
+    xNLHSDaJ45DakKNa5nF+VxbGb1YjfXylppZBp5GcjNWezWAVzsfc7alFUvGJxWZR
+    YSVTlK2ln3JTN23WWJn2+Bu/oVEVRY/h0Mr7J62W5H97g+IuYcqheSaBufsJRoSS
+    oA8WZ7DDCmiD6CxYs9mnvD7L4zHitko3vvqe8QqNYM8NS91bD1Y5AgMBAAGjYzBh
+    MA4GA1UdDwEB/wQEAwICpDAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRDNU2V
+    qvwFM3NUyw3IJsx/K16SOTAfBgNVHSMEGDAWgBRDNU2VqvwFM3NUyw3IJsx/K16S
+    OTANBgkqhkiG9w0BAQsFAAOCAQEAeuJwPdz9Ohzx1BBbGQcsywKSHZaoiwtz9dkw
+    vT5CLAwFRGUoJglZPCe3Ko3xryOi96xUABtfiqiOHaF2ca2ZA4Z2PaIrL+uACRiT
+    yBtKFpX5ZDLZAD8Mds1DXndqtlxAqnffDuvvVrFyAKfG5Vw86SNYNzwRv3pNP85/
+    pXcRX9FnlkQdsUU84BETpnKK2R+jODAtheQ3Q6x7J+AiDUECDKKV0H4DVWNxB4DE
+    wCMXTerFWgWorRPgcTfZUutQyqPxG2uklvRWeAfV8vr/SwA5j6TUmdPxC7oXlaqd
+    Byr6usaN4dTtfoDDiZBNKOiuCFJzVkkNl1++EcTZlU8H4+pvag==
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  annotations:
+    service.beta.openshift.io/inject-cabundle: "true"
+  creationTimestamp: "2023-03-06T18:49:25Z"
+  name: ca-bundle
+  namespace: network-svccerts
+  resourceVersion: "385936"
+  uid: 635f7394-9944-467a-b8f9-8d7bbeebe63f
+[student@workstation ~]$ ls
+Desktop  DO280  do280_pilot  Documents  Downloads  Music  Pictures  Public  Templates  Videos
+[student@workstation ~]$ cat DO280/labs/network-svccerts/client.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+spec:
+  containers:
+    - name: client
+      image: registry.ocp4.example.com:8443/redhattraining/hello-world-nginx
+      resources: {}
+      volumeMounts:
+        - mountPath: /etc/pki/ca-trust/extracted/pem
+          name: CHANGE_ME
+  volumes:
+    - configMap:
+        defaultMode: 420
+        name: CHANGE_ME
+        items:
+          - key: CHANGE_ME
+            path: tls-ca-bundle.pem
+      name: CHANGE_ME
+[student@workstation ~]$ vim DO280/labs/network-svccerts/client.yaml
+[student@workstation ~]$ cat DO280/labs/network-svccerts/client.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+spec:
+  containers:
+    - name: client
+      image: registry.ocp4.example.com:8443/redhattraining/hello-world-nginx
+      resources: {}
+      volumeMounts:
+        - mountPath: /etc/pki/ca-trust/extracted/pem
+          name: trusted-ca
+  volumes:
+    - configMap:
+        defaultMode: 420
+        name: ca-bundle
+        items:
+          - key: service-ca.crt
+            path: tls-ca-bundle.pem
+      name: trusted-ca
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc apply -f DO280/labs/network-svccerts/client.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "client" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "client" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "client" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "client" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+pod/client created
+[student@workstation ~]$ oc exec client -- curl -s https://server.network-svccerts.svc:443
+<html>
+  <body>
+    <h1>Hello, world from nginx!</h1>
+  </body>
+</html>
+[student@workstation ~]$ oc exec client -- openssl s_client -connect server.network-svccerts.svc:443
+CONNECTED(00000004)
+---
+Certificate chain
+ 0 s:CN = server.network-svccerts.svc
+   i:CN = openshift-service-serving-signer@1677259004
+ 1 s:CN = openshift-service-serving-signer@1677259004
+   i:CN = openshift-service-serving-signer@1677259004
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIID4DCCAsigAwIBAgIILKx7CE5eTxcwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UE
+Awwrb3BlbnNoaWZ0LXNlcnZpY2Utc2VydmluZy1zaWduZXJAMTY3NzI1OTAwNDAe
+Fw0yMzAzMDYxODQ2MDRaFw0yNTAzMDUxODQ2MDVaMCYxJDAiBgNVBAMTG3NlcnZl
+ci5uZXR3b3JrLXN2Y2NlcnRzLnN2YzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+AQoCggEBAMkJpTtvWwxn7c4GXu5/ujZy4qa6gc14BoTSkncYTnfQrCd+RsCi8ND3
+SYx7K8Xo5pJejWDjifWudNZJVs94v1gl6XK+dR++OZVA5IF9+7Yv5GsSaQRfpgi7
+z4eU+6MFgf8wG1AgtRyu9i0th9OkI00zk/F5u4yrT99Vi9ZfoGTuu1HYxxMuLhNb
+z9Dnisej3OfiRQfx5f/CEJS6wSRhml7CQ5bwhLBdoM7gZk5ycSCxhr/YLPCb9xug
+SBcXObKTbAz2zs12n9sxOyi06njarTdf4lmsvBk1DCfKZbU04MUpsSwlOt+PF5Hx
+opv09PQKZw/lP+YjrVX2yt77HEo4h90CAwEAAaOCAQAwgf0wDgYDVR0PAQH/BAQD
+AgWgMBMGA1UdJQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYE
+FAR7FKX/x6xryGM+r/EAVKbHY4nrMB8GA1UdIwQYMBaAFEM1TZWq/AUzc1TLDcgm
+zH8rXpI5MFEGA1UdEQRKMEiCG3NlcnZlci5uZXR3b3JrLXN2Y2NlcnRzLnN2Y4Ip
+c2VydmVyLm5ldHdvcmstc3ZjY2VydHMuc3ZjLmNsdXN0ZXIubG9jYWwwNQYLKwYB
+BAGSCBFkAgEEJhMkZjU1MmEzYmUtY2Y2MC00NDBiLWFkZWItODY2OWIxYTM0YWU3
+MA0GCSqGSIb3DQEBCwUAA4IBAQAthC52jeVaIeLtvRSesfZy6If0L9GO3+wV0GVD
+u0XTmzuOfqhxH8xm3WX8ERsCRNsyVjxtGy8xOVi2k+zu4OtEV094Amv9sK5HMkTZ
+QDu9au3nptoHYWs3hB9Tu2IKgUtW+tZtpWWw4EiT4uwDCa96McZ1LXapcZLFWL5e
+CY20Glpy7zW1L5v6ylaRcTXszlOU94tLpUdmhI8eeapPhc2LasqDN7le01WjxT3q
+RK0R2OlRW1fbvcZfUXoJbv3KmWU/xUJTeGBaHgD0puy9X26brAYk5g4xeknfI3yH
+0kBTnnAM+Nf2Q+9O/Al+L2668Ov3dCm5DgBZylblA1EjIKuo
+-----END CERTIFICATE-----
+subject=CN = server.network-svccerts.svc
+
+issuer=CN = openshift-service-serving-signer@1677259004
+
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 2410 bytes and written 415 bytes
+Verification: OK
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 0 (ok)
+---
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: AEE01CE7426E7BB7546E3F82382028808CE466FB5033F3F919EE018ACAC9E0B9
+    Session-ID-ctx: 
+    Resumption PSK: 90CFE0895FD4D4CC80C5634186ED739F2993FC0E8185D73AC2D33D8F175FB0FBFCF193AF82CA0B14E3DFB3BD9199B6CC
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 600 (seconds)
+    TLS session ticket:
+    0000 - e1 2e b8 0c 93 fa 36 ab-92 86 88 af 0c 46 46 da   ......6......FF.
+    0010 - 0d 37 98 6d c5 08 1c 90-3b 23 d1 02 46 65 0b 64   .7.m....;#..Fe.d
+    0020 - a7 3a 44 18 10 11 9a cd-8d d7 1b 22 2e 76 08 0f   .:D........".v..
+    0030 - d9 a9 7a f3 47 27 ac a0-c4 44 01 cd 3f 46 ea da   ..z.G'...D..?F..
+    0040 - e0 2c 02 4a 62 49 e8 96-a4 40 44 c6 97 0d a6 8a   .,.JbI...@D.....
+    0050 - 8a 25 38 bd 60 48 bf 09-34 6e 8f 63 f9 ac fb 35   .%8.`H..4n.c...5
+    0060 - cf de 3f 68 29 2e ed d3-df 42 b1 de 48 65 75 54   ..?h)....B..HeuT
+    0070 - 5a 67 e8 01 b3 4a e4 9c-b2 f9 35 b9 85 26 cf 14   Zg...J....5..&..
+    0080 - 99 85 bc 9e 1f 33 79 20-b7 f3 0c 89 0d c3 0f 21   .....3y .......!
+    0090 - 35 ae 10 2b 6d 08 1d d8-46 5f 43 7d fa e4 67 4b   5..+m...F_C}..gK
+    00a0 - 6b 32 94 67 e6 ee 3a 4e-0f 9e b6 16 f0 0c 15 94   k2.g..:N........
+    00b0 - 51 9a f9 87 ab ee 9e d9-d9 50 db a7 b1 bc 91 3c   Q........P.....<
+    00c0 - 57 f2 70 a7 3e 74 2a a8-58 b6 59 e5 0c 4b 24 e6   W.p.>t*.X.Y..K$.
+    00d0 - bd 90 48 21 68 9a e6 17-d2 95 57 c9 c4 ac 42 64   ..H!h.....W...Bd
+
+    Start Time: 1678128767
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 998921D60F5279E049B618A30EA3A31C5AE67C24EEE2E282365EE4FB1DEF94B2
+    Session-ID-ctx: 
+    Resumption PSK: 36871720320F4407006D3DEC52B5BE3B54B92DB7084ABA7F606E96973B5DC7F7B59315E0A0C6A24FA71CBADC213FE958
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 600 (seconds)
+    TLS session ticket:
+    0000 - e1 2e b8 0c 93 fa 36 ab-92 86 88 af 0c 46 46 da   ......6......FF.
+    0010 - a0 5b 9f d0 05 de e2 8f-c7 59 fb 03 a7 7d b4 56   .[.......Y...}.V
+    0020 - dc fc 2f d9 3a 2f ba c3-b2 cd 24 1a 50 dd 33 79   ../.:/....$.P.3y
+    0030 - ad 30 59 eb 66 e3 67 a4-94 80 c1 53 a1 9d ab 5d   .0Y.f.g....S...]
+    0040 - 40 d1 5a 58 fd 9e 11 c9-b2 0f 4c bd bd 32 d1 a2   @.ZX......L..2..
+    0050 - 7d b5 44 4b 8c 52 87 85-23 f9 4a 7c 7f 1c bb be   }.DK.R..#.J|....
+    0060 - 94 9c 40 d9 b1 1d 29 6b-ec 41 c8 6b 79 ef 3c 71   ..@...)k.A.ky.<q
+    0070 - ec cb e2 a9 66 18 31 23-1f 78 06 1e 5c e6 9b 06   ....f.1#.x..\...
+    0080 - 63 49 24 cf 14 fc e3 ea-24 84 bf 3f 2d 05 1d f1   cI$.....$..?-...
+    0090 - 61 66 9d 5a c0 48 7e 4b-fb 2e 5e 56 47 c7 f5 36   af.Z.H~K..^VG..6
+    00a0 - 09 f5 96 31 54 13 51 82-b5 6b 44 04 f3 68 f5 11   ...1T.Q..kD..h..
+    00b0 - 66 b9 af 43 2f 7c 72 17-14 e2 63 d1 b9 e5 73 a7   f..C/|r...c...s.
+    00c0 - c7 d8 10 6f 59 27 e6 4f-8f 18 7d a5 c6 87 b6 48   ...oY'.O..}....H
+    00d0 - 30 1c e1 1d da 3e 87 06-01 db 23 1c 09 e2 2d da   0....>....#...-.
+
+    Start Time: 1678128767
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+depth=1 CN = openshift-service-serving-signer@1677259004
+verify return:1
+depth=0 CN = server.network-svccerts.svc
+verify return:1
+DONE
+[student@workstation ~]$ lab finish network-svccerts 
+SUCCESS Deleting network-svccerts project
+        - Project network-svccerts deleted
+[student@workstation ~]$ 
+

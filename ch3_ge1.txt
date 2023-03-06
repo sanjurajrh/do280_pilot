@@ -1,0 +1,987 @@
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab start network-ingress 4
+Usage: lab start [OPTIONS] SCRIPT
+Try 'lab start --help' for help.
+
+Error: Got unexpected extra argument (4)
+[student@workstation ~]$ lab start network-ingress 
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+SUCCESS Remove network-ingress project
+SUCCESS Generate certificate
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u developer -p developer https://api.ocp4.example.com:6443
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ oc new-project network-ingress
+Now using project "network-ingress" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ ls DO280/labs/network-ingress/
+certs  tcpdump-command.txt  todo-app-v1.yaml  todo-app-v2.yaml
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ls DO280/labs/network-ingress/certs/
+openssl-commands.txt  passphrase.txt  training-CA.key  training-CA.pem  training.ext
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cat DO280/labs/network-ingress/todo-app-v1.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-http
+  labels:
+    app: todo-http
+    name: todo-http
+  namespace: network-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-http
+      name: todo-http
+  template:
+    metadata:
+      labels:
+        app: todo-http
+        name: todo-http
+    spec:
+      containers:
+      - resources:
+          limits:
+            cpu: '0.5'
+        image: registry.ocp4.example.com:8443/redhattraining/todo-angular:v1.1
+        name: todo-http
+        ports:
+        - containerPort: 8080
+          name: todo-http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: todo-http
+    name: todo-http
+  name: todo-http
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    name: todo-http
+[student@workstation ~]$ oc create -f DO280/labs/network-ingress/todo-app-v1.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "todo-http" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "todo-http" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "todo-http" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "todo-http" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/todo-http created
+service/todo-http created
+[student@workstation ~]$ oc status 
+In project network-ingress on server https://api.ocp4.example.com:6443
+
+svc/todo-http - 172.30.161.46:80 -> 8080
+  deployment/todo-http deploys registry.ocp4.example.com:8443/redhattraining/todo-angular:v1.1
+    deployment #1 running for 3 seconds - 0/1 pods
+
+
+1 info identified, use 'oc status --suggest' to see details.
+[student@workstation ~]$ oc get pods 
+NAME                        READY   STATUS              RESTARTS   AGE
+todo-http-6d6d79db6-blr8k   0/1     ContainerCreating   0          12s
+[student@workstation ~]$ oc get pods 
+NAME                        READY   STATUS    RESTARTS   AGE
+todo-http-6d6d79db6-blr8k   1/1     Running   0          15s
+[student@workstation ~]$ oc get all
+[student@workstation ~]$ oc get all
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/todo-http-6d6d79db6-blr8k   1/1     Running   0          20s
+
+NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/todo-http   ClusterIP   172.30.161.46   <none>        80/TCP    20s
+
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/todo-http   1/1     1            1           20s
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/todo-http-6d6d79db6   1         1         1       20s
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get route 
+No resources found in network-ingress namespace.
+[student@workstation ~]$ oc expose svc todo-http --hostname todo-http.apps.ocp4.example.com
+route.route.openshift.io/todo-http exposed
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get route 
+NAME        HOST/PORT                         PATH   SERVICES    PORT   TERMINATION   WILDCARD
+todo-http   todo-http.apps.ocp4.example.com          todo-http   8080                 None
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox http://todo-http.apps.ocp4.example.com & 
+[1] 27850
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=4.37219) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+
+
+[student@workstation ~]$ ip addr | grep 172.25.250.9
+    inet 172.25.250.9/24 brd 172.25.250.255 scope global noprefixroute eth0
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ sudo tcpdump -i eth0 -A -n port 80 | grep "angular"
+dropped privs to tcpdump
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+
+
+    <link rel="stylesheet" href="assets/css/libs/angular-motion/angular-motion.css">
+    <link rel="stylesheet" href="assets/css/libs/angular-xeditable/xeditable.css">
+    <script type="text/javascript" src="assets/js/libs/angular/angular.min.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular/angular-route.min.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular/angular-animate.min.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular-ui-router/angular-ui-router.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular-strap/angular-strap.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular-strap/angular-strap.tpl.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular-xeditable/xeditable.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular/angular-sanitize.js"></script>
+12:49:41.597480 IP 172.25.250.9.47082 > 192.168.50.254.http: Flags [P.], seq 878:1307, ack 99128, win 1164, options [nop,nop,TS val 3465556763 ecr 615715596], length 429: HTTP: GET /assets/js/libs/angular/angular.min.js HTTP/1.1
+..3.$...GET /assets/js/libs/angular/angular.min.js HTTP/1.1
+12:49:41.597970 IP 172.25.250.9.47084 > 192.168.50.254.http: Flags [P.], seq 434:869, ack 29276, win 704, options [nop,nop,TS val 3465556764 ecr 615715599], length 435: HTTP: GET /assets/js/libs/angular/angular-route.min.js HTTP/1.1
+..3.$...GET /assets/js/libs/angular/angular-route.min.js HTTP/1.1
+ (c) 2010-2014 Google, Inc. http://angularjs.org
+(function(T,V,s){'use strict';function t(b){return function(){var a=arguments[0],c,a="["+(b?b+":":"")+a+"] http://errors.angularjs.org/1.2.18/"+(b?b+"/":"")+a;for(c=1;c<arguments.length;c++)a=a+(1==c?"?":"&")+"p"+(c-1)+"="+encodeURIComponent("function"==typeof arguments[c]?arguments[c].toString().replace(/ \{[\s\S]*$/,""):"undefined"==typeof arguments[c]?"undefined":"string"!=typeof arguments[c]?JSON.stringify(arguments[c]):arguments[c]);return Error(a)}}function db(b){if(null==b||Ea(b))return!1;
+b)return w(a);var c=[a];do{a=a.nextSibling;if(!a)break;c.push(a)}while(a!==b);return w(c)}function Yc(b){var a=t("$injector"),c=t("ng");b=b.angular||(b.angular={});b.$$minErr=b.$$minErr||t;return b.module||(b.module=function(){var b={};return function(e,g,f){if("hasOwnProperty"===e)throw c("badname","module");g&&b.hasOwnProperty(e)&&(b[e]=null);return b[e]||(b[e]=function(){function b(a,d,e){return function(){c[e||"push"]([a,d,arguments]);return n}}if(!g)throw a("nomod",e);var c=[],d=[],l=b("$injector",
+["$browser","$window","$document",function(b,a,c){return we(b,ve,b.defer,a.angular.callbacks,c[0])}]}function we(b,a,c,d,e){function g(a,b,c){var g=e.createElement("script"),f=null;g.type="text/javascript";g.src=a;g.async=!0;f=function(a){Wa(g,"load",f);Wa(g,"error",f);e.body.removeChild(g);g=null;var k=-1,v="unknown";a&&("load"!==a.type||d[b].called||(a={type:"error"}),v=a.type,k="error"===a.type?404:200);c&&c(k,v)};pb(g,"load",f);pb(g,"error",f);8>=S&&(g.onreadystatechange=function(){C(g.readyState)&&
+var F=g(m.replace("JSON_CALLBACK","angular.callbacks."+M),M,function(a,b){x(l,a,d[M].data,"",b);d[M]=y})}else{var z=a(e);z.open(e,m,!0);q(n,function(a,b){B(a)&&z.setRequestHeader(b,a)});z.onreadystatechange=function(){if(z&&4==z.readyState){var a=null,b=null;u!==f&&(a=z.getAllResponseHeaders(),b="response"in z?z.response:z.responseText);x(l,u||z.status,b,a,z.statusText||"")}};r&&(z.withCredentials=!0);if(v)try{z.responseType=v}catch(s){if("json"!==v)throw s;}z.send(h||null)}if(0<p)var P=c(I,p);else p&&
+l&&!a.isDefaultPrevented())&&(a.preventDefault(),l!=d.url()&&(k.$$parse(l),c.$apply(),T.angular["ff-684208-preventDefault"]=!0))}});k.absUrl()!=l&&d.url(k.absUrl(),!0);d.onUrlChange(function(a){k.absUrl()!=a&&(c.$evalAsync(function(){var b=k.absUrl();k.$$parse(a);c.$broadcast("$locationChangeStart",a,b).defaultPrevented?(k.$$parse(b),d.url(b)):f(b)}),c.$$phase||c.$digest())});var p=0;c.$watch(function(){var a=d.url(),b=k.$$replace;p&&a==k.absUrl()||(p++,c.$evalAsync(function(){c.$broadcast("$locationChangeStart",
+w,Ba,ya=[].slice,Le=[].push,wa=Object.prototype.toString,Qa=t("ng"),Sa=T.angular||(T.angular={}),Ua,La,ja=["0","0","0"];S=Z((/msie (\d+)/.exec(L(navigator.userAgent))||[])[1]);isNaN(S)&&(S=Z((/trident\/.*; rv:(\d+)/.exec(L(navigator.userAgent))||[])[1]));y.$inject=[];Fa.$inject=[];var O=function(){return Q(Array.isArray)?Array.isArray:function(b){return"[object Array]"===wa.call(b)}}(),aa=function(){return String.prototype.trim?function(b){return C(b)?b.trim():b}:function(b){return C(b)?b.replace(/^\s\s*/,
+ (c) 2010-2014 Google, Inc. http://angularjs.org
+function(){this.$get=function(){return{}}});n.directive("ngView",x);n.directive("ngView",z);x.$inject=["$route","$anchorScroll","$animate"];z.$inject=["$compile","$controller","$route"]})(window,window.angular);
+//# sourceMappingURL=angular-route.min.js.map
+a);a!==c&&l.removeOption(c);l.addOption(a)}):l.addOption(e.value);d.on("$destroy",function(){l.removeOption(e.value)})}}}}],gd=$({restrict:"E",terminal:!0});T.angular.bootstrap?console.log("WARNING: Tried to load angular more than once."):((Ba=T.jQuery)&&Ba.fn.on?(w=Ba,J(Ba.fn,{scope:Ka.scope,isolateScope:Ka.isolateScope,controller:Ka.controller,injector:Ka.injector,inheritedData:Ka.inheritedData}),Fb("remove",!0,!0,!1),Fb("empty",!1,!1,!1),Fb("html",!1,!1,!0)):w=R,Sa.element=w,Zc(Sa),w(V).ready(function(){Wc(V,
+dc)}))})(window,document);!window.angular.$$csp()&&window.angular.element(document).find("head").prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}.ng-animate-block-transitions{transition:0s all!important;-webkit-transition:0s all!important;}.ng-hide-add-active,.ng-hide-remove{display:block!important;}</style>');
+//# sourceMappingURL=angular.min.js.map
+12:49:41.609573 IP 172.25.250.9.47084 > 192.168.50.254.http: Flags [P.], seq 869:1306, ack 33365, win 768, options [nop,nop,TS val 3465556775 ecr 615715619], length 437: HTTP: GET /assets/js/libs/angular/angular-animate.min.js HTTP/1.1
+..3'$..#GET /assets/js/libs/angular/angular-animate.min.js HTTP/1.1
+12:49:41.609745 IP 172.25.250.9.47092 > 192.168.50.254.http: Flags [P.], seq 1:446, ack 1, win 229, options [nop,nop,TS val 3465556775 ecr 615715611], length 445: HTTP: GET /assets/js/libs/angular-ui-router/angular-ui-router.js HTTP/1.1
+..3'$...GET /assets/js/libs/angular-ui-router/angular-ui-router.js HTTP/1.1
+12:49:41.609817 IP 172.25.250.9.47090 > 192.168.50.254.http: Flags [P.], seq 1:438, ack 1, win 229, options [nop,nop,TS val 3465556776 ecr 615715611], length 437: HTTP: GET /assets/js/libs/angular-strap/angular-strap.js HTTP/1.1
+..3($...GET /assets/js/libs/angular-strap/angular-strap.js HTTP/1.1
+12:49:41.609910 IP 172.25.250.9.47088 > 192.168.50.254.http: Flags [P.], seq 1:442, ack 1, win 229, options [nop,nop,TS val 3465556776 ecr 615715611], length 441: HTTP: GET /assets/js/libs/angular-strap/angular-strap.tpl.js HTTP/1.1
+..3($...GET /assets/js/libs/angular-strap/angular-strap.tpl.js HTTP/1.1
+12:49:41.609969 IP 172.25.250.9.47086 > 192.168.50.254.http: Flags [P.], seq 1:438, ack 1, win 229, options [nop,nop,TS val 3465556776 ecr 615715611], length 437: HTTP: GET /assets/js/libs/angular-xeditable/xeditable.js HTTP/1.1
+..3($...GET /assets/js/libs/angular-xeditable/xeditable.js HTTP/1.1
+12:49:41.610089 IP 172.25.250.9.47082 > 192.168.50.254.http: Flags [P.], seq 1307:1741, ack 205093, win 1568, options [nop,nop,TS val 3465556776 ecr 615715622], length 434: HTTP: GET /assets/js/libs/angular/angular-sanitize.js HTTP/1.1
+..3($..&GET /assets/js/libs/angular/angular-sanitize.js HTTP/1.1
+ (c) 2010-2014 Google, Inc. http://angularjs.org
+window.angular);
+//# sourceMappingURL=angular-animate.min.js.map
+ * angular-strap
+ * @link http://mgcrea.github.io/angular-strap
+angular.module('mgcrea.ngStrap.alert').run([
+angular.module('mgcrea.ngStrap.aside').run([
+angular.module('mgcrea.ngStrap.datepicker').run([
+angular.module('mgcrea.ngStrap.dropdown').run([
+angular.module('mgcrea.ngStrap.modal').run([
+angular.module('mgcrea.ngStrap.popover').run([
+angular.module('mgcrea.ngStrap.select').run([
+angular.module('mgcrea.ngStrap.tab').run([
+angular.module('mgcrea.ngStrap.timepicker').run([
+angular.module('mgcrea.ngStrap.tooltip').run([
+angular.module('mgcrea.ngStrap.typeahead').run([
+ * @link http://angular-ui.github.com/
+(function (window, angular, undefined) {
+/*global angular:false*/
+var isDefined = angular.isDefined,
+    isFunction = angular.isFunction,
+    isString = angular.isString,
+    isObject = angular.isObject,
+    isArray = angular.isArray,
+    forEach = angular.forEach,
+    extend = angular.extend,
+    copy = angular.copy;
+  angular.forEach(object, function(val, key) {
+ * in your angular app (use {@link ui.router} module instead).
+angular.module('ui.router.util', ['ng']);
+ * in your angular app (use {@link ui.router} module instead).
+angular.module('ui.router.router', ['ui.router.util']);
+ * in your angular app (use {@link ui.router} module instead).
+angular.module('ui.router.state', ['ui.router.router', 'ui.router.util']);
+ * as a dependency within your angular app. The other modules are for organization purposes. 
+ * *You'll need to include **only** this module as the dependency within your angular app.*
+ *   <script src="js/angular.js"></script>
+ *   <script src="js/angular-ui-router.min.js"></script>
+ *     var myApp = angular.mo
+angular.module('ui.router', ['ui.router.state']);
+angular.module('ui.router.compat', ['ui.router']);
+ * (c) 2010-2014 Google, Inc. http://angularjs.org
+(function(window, angular, undefined) {'use strict';
+var $sanitizeMinErr = angular.$$minErr('$sanitize');
+   <example module="ngSanitize" deps="angular-sanitize.js">
+  var writer = htmlSanitizeWriter(buf, angular.noop);
+    optionalEndTagElements = angular.extend({},
+var blockElements = angular.extend({}, optionalEndTagBlockElements, makeMap("address,article," +
+var inlineElements = angular.extend({}, optionalEndTagInlineElements, makeMap("a,abbr,acronym,b," +
+var validElements = angular.extend({},
+var validAttrs = angular.extend({}, uriAttrs, makeMap(
+    tagName = angular.lowercase(tagName);
+    tagName = angular.lowercase(tagName);
+  var out = angular.bind(buf, buf.push);
+      tag = angular.lowercase(tag);
+        angular.forEach(attrs, function(value, key){
+          var lkey=angular.lowercase(key);
+        tag = angular.lowercase(tag);
+angular.module('ngSanitize', []).provider('$sanitize', $SanitizeProvider);
+ * angular-strap
+ * @link http://mgcrea.github.io/angular-strap
+angular.module('mgcrea.ngStrap', [
+angular.module('mgcrea.ngStrap.affix', [
+      var bodyEl = angular.element($window.document.body);
+      var windowEl = angular.element($window);
+        var options = angular.extend({}, defaults, config);
+            parent = angular.element(options.offsetParent);
+            target: affixTarget ? affixTarget.$element : angular.element($window)
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+angular.module('mgcrea.ngStrap.alert', ['mgcrea.ngStrap.modal']).provider('$alert', function () {
+        var options = angular.extend({}, defaults, config);
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+        angular.forEach([
+          if (angular.isObject(newValue)) {
+            angular.extend(scope, newValue);
+angular.module('mgcrea.ngStrap.button', []).provider('$button', function () {
+      angular.forEach(children, function (child) {
+        var childEl = angular.element(child);
+        var trueValue = angular.isDefined(attr.trueValue) ? attr.trueValue : true;
+        var falseValue = angular.isDefined(attr.falseValue) ? attr.falseValue : false;
+          var isActive = angular.equals(controller.$modelValue, trueValue);
+angular.module('ui.router.util').service('$resolve', $Resolve);
+angular.module('ui.router.util').service('$templateFactory', $TemplateFactory);
+angular.module('ui.router.util').provider('$urlMatcherFacto
+   * var app = angular.module('app', ['ui.router.router']);
+   * var app = angular.module('app', ['ui.router.router']);
+   * var app = angular.module('app', ['ui.router.router']);
+         * angular.module('app', ['ui.router']);
+angular.module('ui.router.router').provider('$urlRouter', $UrlRouterProvider);
+   <example module="ngSanitize" deps="angular-sanitize.js">
+             'http://angularjs.org/,\n'+
+           $scope.snippetWithTarget = 'http://angularjs.org/';
+             toBe('Pretty text with some links: http://angularjs.org/, us@somewhere.org, ' +
+             toBe('Pretty text with some links: http://angularjs.org/, mailto:us@somewhere.org, ' +
+            toBe('http://angularjs.org/');
+angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
+      if (angular.isDefined(target)) {
+})(window, window.angular);
+      angular.forEach(children, function (child) {
+        angular.element(child).attr('bs-radio', '');
+        angular.element(child).attr('ng-model', attr.ngModel);
+          var isActive = angular.equals(controller.$modelValue, value);
+angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal']).provider('$aside', function () {
+        var options = angular.extend({}, defaults, config);
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+        angular.forEach([
+          if (angular.isObject(newValue)) {
+            angular.extend(scope, newValue);
+angular.module('mgcrea.ngStrap.datepicker', [
+      var bodyEl = angular.element($window.document.body);
+        var $datepicker = $tooltip(element, angular.extend({}, defaults, config));
+          if (angular.isDate(date) && !isNaN(date.getTime())) {
+          if (!angular.isDate(controller.$dateValue))
+            angular.extend(viewDate, {
+            angular.forEach(scope.rows[i], updateSelected);
+          angular.extend(viewDate, {
+$..+..3*          var targetEl = angular.element(evt.target);
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+        angular.forEach([
+          angular.isDefined(attr[key]) && attr.$observ
+            } else if (angular.isString(newValue) && newValue.match(/^".+"$/)) {
+          if (angular.isUndefined(modelValue) || modelValue === null) {
+          } else if (angular.isDate(modelValue)) {
+                  angular.extend(viewDate, {
+                  angular.extend(viewDate, {
+                  angular.extend(viewDate, {
+                  angular.extend(viewDate, {
+                  angular.extend(viewDate, {
+angular.module('mgcrea.ngStrap.helpers.date
+   *   angular.forEach(view, function (config, name) {
+     * var app angular.module('app', ['ui.router']);
+     * var app = angular.module('app', ['ui.router']);
+     * var app = angular.module('app', ['ui.router']);
+      return isDefined(params) && params !== null ? angular.equals($stateParams, params) : true;
+      angular.forEach(params, function(value, key) {
+          var options = angular.extend({}, defaults, config);
+            if (angular.isDate(date))
+            if (angular.isDate(value))
+            angular.forEach(map, function (v) {
+angular.module('mgcrea.ngStrap.helpers.debounce', []).constant('debounce', function (func, wait, immediate) {
+angular.module('mgcrea.ngStrap.helpers.dimensions', []).factory('dimensions', [
+    var jqLite = angular.element;
+angular.module('mgcrea.ngStrap.helpers.parseOptions', []).provider('$parseOptions', function () {
+        var options = angular.extend({}, defaults, config);
+angular.version.minor < 3 && angular.version.d
+$..+..3,ot < 14 && angular.module('ng').factory('$$rAF', [
+angular.module('mgcrea.ngStrap.dropdown', ['mgcrea.ngStrap.tooltip']).provider('$dropdown', function () {
+      var bodyEl = angular.element($window.document.body);
+        var options = angular.extend({}, defaults, config);
+          var items = angular.element($dropdown.$element[0].querySelectorAll('li:not(.divider) a'));
+          angular.forEach(items, function (el, i) {
+          else if (angular.isUndefined(index))
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions']).provider('$modal', function () {
+      var forEach = angular.forEach;
+      var bodyElement = angular.element($window.document.body);
+        var options = $modal.$options = angular.extend({}, defaults, config);
+            var templateEl = angular.element(template);
+        var backdropElement = angular.element('<div class="' + options.prefixClass + '-backdrop"/>');
+          if (angular.isObject(template))
+        return angular.element((element || document).querySelectorAll(query));
+          if (angular.isObject(res)) {
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+        angular.forEach([
+          if (angular.isObject(newValue)) {
+            angular.extend(scope, newValue);
+angular.module('mgcrea.ngStrap.navbar', []).provider('$navbar', function () {
+        var options = angular.copy(defaults);
+        angular.forEach(Object.keys(defaults), function (key) {
+          if (angular.isDefined(attr[key]))
+          angular.forEach(liElements, function (li) {
+            var liElement = angular.element(li);
+angular.module('mgcrea.ngStrap.scrollspy', [
+      var windowEl = angular.element($window);
+      var docEl = angular.element($document.prop('documentElement'));
+      var bodyEl = angular.element($window.document.body);
+        var options = angular.extend({}, defaults, config);
+            if (angular.isUndefined(sortedElements[i].offsetTop) || sortedElements[i].offsetTop === null)
+          angular.forEach(trackedElements, function (trackedElement) {
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+        angular.forEach(children, function (child) {
+          var childEl = angular.element(child);
+angular.module('mgcrea.ngStrap.popover', ['mgcrea.ngStrap.tooltip']).provider('$popover', function () {
+        var options = angular.extend({}, defaults, config);
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+        angular.forEach([
+            angular.isDefined(oldValue) && requestAnimationFrame(function () {
+          if (angular.isObject(newValue)) {
+            angular.extend(scope, newValue);
+          angular.isDefined(oldValue) && requestAnimationFrame(function () {
+angular.module('mgcrea.ngStrap.select', [
+      var bodyEl = angular.element($window.document.body);
+            var injectLocals = angular.extend({}, injectables, locals);
+angular.module('ui.router.state')
+angular.module('ui.router.state').provider('$view', $ViewProvider);
+   * Reverts back to using the core [`$anchorScroll`](http://docs.angularjs.org/api/ng.$anchorScroll) service for
+angular.module('ui.router.state').provider('$uiViewScroll', $ViewScrollProvider);
+ * *Note: To revert back to old [`$anchorScroll`](http://docs.angularjs.org/api/ng.$anchorScroll)
+              if (angular.isDefined(autoScrollExp) && !autoScrollExp || scope.$eval(autoScrollExp)) {
+angular.module('ui.router.state').directive('uiView', $ViewDirective);
+angular.module('ui.router.state').directive('uiView', $ViewDirectiveFill);
+      angular.forEach(allowedOptions, function(option) {
+angular.module('ui.router.state')
+angular.module('ui.router.state')
+   * object has the same interface the angular core route definition object has.
+   * var app = angular.module('app', ['ui.router.compat']);
+   * control over all the stuff you would actually get from angular's core `$route`
+angular.module('ui.router.compat')
+})(window, window.angular);
+        var options = angular.extend({}, defaults, config);
+            if (options.multiple && angular.isArray(controller.$modelValue)) {
+            var targetEl = angular.element(evt.target);
+          else if (angular.isUndefined(scope.$activeIndex))
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+          element = angular.element('<button type="button" class="btn btn-default"></button>');
+          if (options.multiple && angular.isArray(controller.$modelValue)) {
+              return angular.isDefined(index) ? select.$scope.$matches[index].label : false;
+            }).filter(angular.isDefined);
+            selected = angular.isDefined(index) ? select.$scope.$matches[index].label : false;
+angular.module('mgcrea.ngStrap.tab', []).run([
+        angular.forEach(['animation'], function (key) {
+          if (angular.isDefined(attr[key]))
+angular.module('mgcrea.ngStrap.timepicker', [
+      var bodyEl = angular.element($window.document.body);
+        var $timepicker = $tooltip(element, angular.extend({}, defaults, config));
+          if (angular.isDate(date) && !isNaN(date.getTime())) {
+            angular.extend(viewDate, {
+          if (!angular.isDate(date))
+            angular.extend(viewDate, { hour: targetDate.getHours() });
+            angular.extend(viewDate, { minute: targetDate.getMinutes() });
+            var targetEl = angular.element(evt.target);
+          } else if (angular.isUndefined(element[0].selectionStart)) {
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+        angular.forEach([
+          angular.isDefined(attr[key]) && attr.$observe(key, function (newValue) {
+            } else if (angular.isString(newValue) && newValue.match(/^".+"$/)) {
+          if (angular.isUndefined(modelValue) || modelValue === null) {
+          } else if (angular.isDate(modelValue)) {
+angular.module('mgcrea.ngStrap.tooltip', ['mgcrea.ngStrap.helpers.dimensions']).provider('$tooltip', function () {
+        var options = $tooltip.$options = angular.extend({}, defaults, config);
+        if (options.delay && angular.isString(options.delay)) {
+            var templateEl = angular.element(template);
+          if (angular.isObject(template))
+          if (options.delay && angular.isNumber(options.delay)) {
+          angular.forEach(triggers, function (trigger) {
+            options.target = angular.isElement(options.target) ? options.target : findElement(options.target)[0];
+        return angular.element((element || document).querySelectorAll(query));
+          if (angular.isObject(res)) {
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+        angular.forEach(['title'], function (key) {
+            angular.isDefined(oldValue) && $$rAF(function () {
+          if (angular.isObject(newValue)) {
+            angular.extend(scope, newValue);
+          angular.isDefined(oldValue) && $$rAF(function () {
+angular.module('mgcrea.ngStrap.typeahead', [
+      var bodyEl = angular.element($window.document.body);
+        var options = angular.extend({}, defaults, config);
+          return scope.$matches.length && angular.isString(controller.$viewValue) && controller.$viewValue.length >= options.minLength;
+          else if (angular.isUndefined(scope.$activeIndex))
+        angular.forEach([
+          if (angular.isDefined(attr[key]))
+          var selected = angular.isDefined(index) ? typeahead.$scope.$matches[index].label : controller.$viewValue;
+          selected = angular.isObject(selected) ? selected.label : selected;
+angular.module('todoItemsApp', ['ngRoute', 'ngSanitize', 'mgcrea.ngStrap', 'ui.router', 'xeditable'])
+        // from angular-ui-router example
+        // http://vitalets.github.io/angular-xeditable/#getstarted
+angular-xeditable - 0.1.8
+Edit-in-place for angular.js
+angular.module('xeditable', [])
+http://angular-ui.github.io/bootstrap/#/datepicker
+angular.module('xeditable').directive('editableBsdate', ['editableDirectiveFactory',
+http://angular-ui.github.io/bootstrap/#/timepicker
+angular.module('xeditable').directive('editableBstime', ['editableDirectiveFactory',
+        // see: https://github.com/angular-ui/bootstrap/issues/1141
+        var div = angular.element('<div class="well well-small" style="display:inline-block;"></div>');
+angular.module('xeditable').directive('editableCheckbox', ['editableDirectiveFactory',
+          this.inputEl.after(angular.element('<span></span>').text(this.attrs.eTitle));
+angular.module('xeditable').directive('editableChecklist', [
+  angular.forEach(types, function(type) {
+    angular.module('xeditable').directive(directiveName, ['editableDirectiveFactory',
+  angular.module('xeditable').directive('editableRange', ['editableDirectiveFactory',
+angular.module('xeditable').directive('editableRadiolist', [
+angular.module('xeditable').directive('editableSelect', ['editableDirectiveFactory',
+angular.module('xeditable').directive('editableTextarea', ['editableDirectiveFactory',
+angular.module('xeditable').factory('editableController', 
+      self.inputEl = angular.element(self.inputTpl);
+      self.controlsEl = angular.element(theme.controlsTpl);
+        self.buttonsEl = angular.element(theme.buttonsTpl);
+        self.submitEl = angular.element(theme.submitTpl);
+        self.cancelEl = angular.element(theme.cancelTpl);
+      self.errorEl = angular.element(theme.errorTpl);
+      self.editorEl = angular.element(self.single ? theme.formTpl : theme.noformTpl);
+      if(angular.isFunction(theme.postrender)) {
+        angular.copy(valueGetter($scope.$parent)) : 
+      if(!angular.isObject(msg)) {
+      if (angular.isObject(result) && noPromise !== true) {
+          angular.bind(this, function(r) {
+          angular.bind(this, function(r) {
+      } else if (noPromise && angular.isObject(result) && result.status &&
+        (result.status !== 200) && result.data && angular.isString(result.data)) {
+      } else if (angular.isString(result)) {
+      valueGetter.assign($scope.$parent, angular.copy(self.scope.$data));
+      var isEmpty = val === null || val === undefined || val === "" || (angular.isArray(val) && val.length === 0); 
+    self.autosubmit = angular.noop;
+    self.onshow = angular.noop;
+    self.onhide = angular.noop;
+    self.oncancel = angular.noop;
+    self.onbeforesave = angular.noop;
+    self.onaftersave = angular.noop;
+angular.module('xeditable').factory('editableDirectiveFactory',
+        angular.forEach(overwrites, function(v, k) {
+        angular.extend(eCtrl,
+angular.module('xeditable').factory('editableFormController', 
+        angular.forEach(toCancel, function(v){ v.$cancel(); });
+        angular.forEach(toSubmit, function(v){ v.$submit(); });
+      //'on' is not supported in angular 1.0.8
+      editable.elem.bind('$destroy', angular.bind(this, this.$removeEditable, editable));
+      angular.forEach(this.$editables, function(editable) {
+        onWait: angular.bind(this, this.$setWaiting), 
+        onTrue: angular.bind(this, this
+        onFalse: angular.bind(this, this.$activate), 
+        onString: angular.bind(this, this.$activate)
+      setTimeout(angular.bind(this, function() {
+        if (angular.isString(name)) {
+      angular.forEach(this.$editables, function(editable) {
+      angular.forEach(this.$editables, function(editable) {
+      angular.forEach(this.$editables, function(editable) {
+      angular.forEach(this.$editables, function(editable) {
+      angular.forEach(this.$editables, function(editable) {
+        onWait: angular.bind(this, this.$setWaiting), 
+        onTrue: angular.bind(this, checkSelf, true), 
+        onFalse: angular.
+        onString: angular.bind(this, this.$activate)
+          onWait: angular.bind(this, this.$setWaiting), 
+          onTrue: childrenTrue ? angular.bind(this, this.$save) : angular.bind(this, this.$hide), 
+          onFalse: angular.bind(this, this.$hide), 
+          onString: angular.bind(this, this.$activate)
+      angular.forEach(this.$editables, function(editable) {
+      angular.forEach(this.$editables, function(editable) {
+        onWait: angular.bind(this, this.$setWaiting), 
+        onTrue: angular.bind(this, this.$hide), 
+        onFalse: angular.bind(this, this.$hide), 
+        onString: angular.bind(this, this.$activate)
+    $onshow: angular.noop,
+    $oncancel: angular.noop,
+    $onhide: angular.noop,
+    $onbeforesave: angular.noop,
+    $onaftersave: angular.noop
+    return angular.extend({
+angular.module('xeditable').directive('editableForm',
+                angular.extend(form, eForm);
+                angular.extend(eForm, form);
+              angular.extend(form, eForm);
+              angular.forEach(buf[name], function(editable) {
+              eForm.$onshow = angular.bind(eForm, $parse(attrs.onshow), scope);
+              eForm.$onhide = angular.bind(eForm, $parse(attrs.onhide), scope);
+              eForm.$oncancel = angular.bind(eForm, $parse(attrs.oncancel), scope);
+angular.module('xeditable').factory('editablePromiseCollection', ['$q', function($q) { 
+        } else if (!noPromise && angular.isObject(result)) {
+        } else if (angular.isString(result)){
+        var onTrue = callbacks.onTrue || angular.noop;
+        var onFalse = callbacks.onFalse || angular.noop;
+        var onString = callbacks.onString || angular.noop;
+        var onWait = callbacks.onWait || angular.noop;
+              angular.forEach(results, function(result) {
+angular.module('xeditable').factory('editableUtils', [function() {
+    // copy from https://github.com/angular/angular.js/blob/master/src/Angular.js
+ * see: https://github.com/angular/angular.js/blob/master/src/ng/directive/select.js#L131
+angular.module('xeditable').factory('editableNgOptionsParser', [
+angular.module('xeditable').factory('editableThemes', function() {
+angular.module('todoItemsApp')
+angular.module('todoItemsApp')
+    // see http://stackoverflow.com/questions/14833326/how-to-set-focus-in-angularjs
+angular.module('todoItemsApp')
+angular.module('todoItemsApp')
+angular.module('todoItemsApp')
+angular.module('todoItemsApp')
+^C205 packets captured
+205 packets received by filter
+0 packets dropped by kernel
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cd DO280/labs/network-ingress/
+[student@workstation network-ingress]$ ls
+certs  tcpdump-command.txt  todo-app-v1.yaml  todo-app-v2.yaml
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ oc create route edge todo-https --service todo-http --hostname todo-https.apps.ocp4.example.com
+route.route.openshift.io/todo-https created
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ oc get route 
+NAME         HOST/PORT                          PATH   SERVICES    PORT    TERMINATION   WILDCARD
+todo-http    todo-http.apps.ocp4.example.com           todo-http   8080                  None
+todo-https   todo-https.apps.ocp4.example.com          todo-http   <all>   edge          None
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ firefox https://todo-https.apps.ocp4.example.com & 
+[1] 28428
+[student@workstation network-ingress]$ curl -I -v https://todo-https.apps.ocp4.example.com 
+* Rebuilt URL to: https://todo-https.apps.ocp4.example.com/
+*   Trying 192.168.50.254...
+* TCP_NODELAY set
+* Connected to todo-https.apps.ocp4.example.com (192.168.50.254) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*   CAfile: /etc/pki/tls/certs/ca-bundle.crt
+  CApath: none
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, [no content] (0):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: O=EXAMPLE.COM; CN=api.ocp4.example.com
+*  start date: May 10 11:18:41 2021 GMT
+*  expire date: May 10 11:18:41 2026 GMT
+*  subjectAltName: host "todo-https.apps.ocp4.example.com" matched cert's "*.apps.ocp4.example.com"
+*  issuer: O=EXAMPLE.COM; CN=Red Hat Training Certificate Authority
+*  SSL certificate verify ok.
+* TLSv1.3 (OUT), TLS app data, [no content] (0):
+> HEAD / HTTP/1.1
+> Host: todo-https.apps.ocp4.example.com
+> User-Agent: curl/7.61.1
+> Accept: */*
+> 
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS app data, [no content] (0):
+< HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+< server: nginx/1.14.1
+server: nginx/1.14.1
+< date: Mon, 06 Mar 2023 17:53:21 GMT
+date: Mon, 06 Mar 2023 17:53:21 GMT
+< content-type: text/html
+content-type: text/html
+< set-cookie: 947acc174fec7aa4880f048abd1ce952=e6c2c0373030cd07f3fae345462d021e; path=/; HttpOnly; Secure; SameSite=None
+set-cookie: 947acc174fec7aa4880f048abd1ce952=e6c2c0373030cd07f3fae345462d021e; path=/; HttpOnly; Secure; SameSite=None
+< cache-control: private
+cache-control: private
+
+< 
+* Connection #0 to host todo-https.apps.ocp4.example.com left intact
+[1]+  Done                    firefox https://todo-https.apps.ocp4.example.com
+[student@workstation network-ingress]$ oc get svc todo-http -o jsonpath="{.spec.clusterIP}{'\n'}"
+172.30.161.46
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ oc debug -t deployment/todo-http --image registry.ocp4.example.com:8443/ubi8/ubi:8.4 
+Starting pod/todo-http-debug ...
+Pod IP: 10.8.0.167
+If you don't see a command prompt, try pressing enter.
+sh-4.4$ curl -v 172.30.161.46
+* Rebuilt URL to: 172.30.161.46/
+*   Trying 172.30.161.46...
+* TCP_NODELAY set
+* Connected to 172.30.161.46 (172.30.161.46) port 80 (#0)
+> GET / HTTP/1.1
+> Host: 172.30.161.46
+> User-Agent: curl/7.61.1
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Server: nginx/1.14.1
+< Date: Mon, 06 Mar 2023 17:55:21 GMT
+< Content-Type: text/html
+< Transfer-Encoding: chunked
+< Connection: keep-alive
+< 
+<!DOCTYPE html>
+<html lang="en" ng-app="todoItemsApp" ng-controller="appCtl">
+<head>
+    <meta charset="utf-8">
+    <title>ToDo app</title>
+
+    <link rel="stylesheet" href="assets/css/libs/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/libs/angular-motion/angular-motion.css">
+    <link rel="stylesheet" href="assets/css/libs/angular-xeditable/xeditable.css">
+
+    <link rel="stylesheet" href="assets/css/app.css">
+
+    <script type="text/javascript" src="assets/js/libs/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="assets/js/libs/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular/angular.min.js"></script>
+
+    <script type="text/javascript" src="assets/js/libs/angular/angular-route.min.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular/angular-animate.min.js"></script>
+
+    <script type="text/javascript" src="assets/js/libs/angular-ui-router/angular-ui-router.js"></script>
+
+    <script type="text/javascript" src="assets/js/libs/angular-strap/angular-strap.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular-strap/angular-strap.tpl.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular-xeditable/xeditable.js"></script>
+
+    <script type="text/javascript" src="assets/js/libs/angular/angular-sanitize.js"></script>
+    <script type="text/javascript" src="assets/js/app/utils/md5.js"></script>
+
+    <script type="text/javascript" src="assets/js/app/module.js"></script>
+    <script type="text/javascript" src="assets/js/app/states/states.js"></script>
+
+    <script type="text/javascript" src="assets/js/app/domain/todoitems.js"></script>
+    <script type="text/javascript" src="assets/js/app/ui/filters.js"></script>
+
+    <script type="text/javascript" src="assets/js/app/ui/focus.js"></script>
+    <script type="text/javascript" src="assets/js/app/ui/gravatar.js"></script>
+    <script type="text/javascript" src="assets/js/app/ui/editable.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-toggle">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">ToDo App</a>
+    </div>
+    <div class="collapse navbar-collapse" id="nav-toggle">
+        <ul class="nav navbar-nav">
+            <li ui-sref-active="active"><a ui-sref="list">Browse</a></li>
+            <li ui-sref-active="active"><a ui-sref="create">Create</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.description" ng-keyup="startSearch()">
+        </form>
+    </div>
+
+</nav>
+<div class="container">
+    <div ui-view></div>
+</div>
+
+</body>
+* Connection #0 to host 172.30.161.46 left intact
+</html>sh-4.4$ exit
+exit
+
+Removing debug pod ...
+[student@workstation network-ingress]$ oc delete route todo-https
+route.route.openshift.io "todo-https" deleted
+[student@workstation network-ingress]$ cd certs
+[student@workstation certs]$ ls
+openssl-commands.txt  passphrase.txt  training-CA.key  training-CA.pem  training.ext
+[student@workstation certs]$ 
+[student@workstation certs]$ 
+[student@workstation certs]$ ls -l 
+total 20
+-rw-rw-r--. 1 student student  566 Mar  5 20:40 openssl-commands.txt
+-rw-rw-r--. 1 student student   11 Mar  5 20:40 passphrase.txt
+-rw-------. 1 student student 2523 Mar  6 12:44 training-CA.key
+-rw-rw-r--. 1 student student 1679 Mar  6 12:44 training-CA.pem
+-rw-rw-r--. 1 student student  240 Mar  5 20:40 training.ext
+[student@workstation certs]$ openssl genrsa -out training.key 4096
+Generating RSA private key, 4096 bit long modulus (2 primes)
+..........................................................................++++
+.............................................................................................................................................................................................................................................................................................................++++
+e is 65537 (0x010001)
+[student@workstation certs]$ openssl req -new -key training.key -out training.csr -subj "/C=US/ST=North Carolina/L=Raleigh/O=Red Hat/CN=todo-https.apps.ocp4.example.com"
+[student@workstation certs]$ openssl x509 -req -in training.csr -passin file:passphrase.txt -CA training-CA.pem -CAkey training-CA.key -CAcreateserial -out training.crt -days 1825 -sha256 -extfile training.ext 
+Signature ok
+subject=C = US, ST = North Carolina, L = Raleigh, O = Red Hat, CN = todo-https.apps.ocp4.example.com
+Getting CA Private Key
+[student@workstation certs]$ 
+[student@workstation certs]$ 
+[student@workstation certs]$ ls -ltr 
+total 36
+-rw-rw-r--. 1 student student  240 Mar  5 20:40 training.ext
+-rw-rw-r--. 1 student student   11 Mar  5 20:40 passphrase.txt
+-rw-rw-r--. 1 student student  566 Mar  5 20:40 openssl-commands.txt
+-rw-------. 1 student student 2523 Mar  6 12:44 training-CA.key
+-rw-rw-r--. 1 student student 1679 Mar  6 12:44 training-CA.pem
+-rw-------. 1 student student 3243 Mar  6 12:56 training.key
+-rw-rw-r--. 1 student student 1716 Mar  6 12:57 training.csr
+-rw-rw-r--. 1 student student   41 Mar  6 12:58 training-CA.srl
+-rw-rw-r--. 1 student student 1919 Mar  6 12:58 training.crt
+[student@workstation certs]$ cd ..
+[student@workstation network-ingress]$ oc create secret tls todo-certs --cert certs/training.crt --key certs/training.key 
+secret/todo-certs created
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ cat todo-app-v2.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-https
+  labels:
+    app: todo-https
+    name: todo-https
+  namespace: network-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-https
+      name: todo-https
+  template:
+    metadata:
+      labels:
+        app: todo-https
+        name: todo-https
+    spec:
+      containers:
+      - resources:
+          limits:
+            cpu: '0.5'
+        image: registry.ocp4.example.com:8443/redhattraining/todo-angular:v1.2
+        name: todo-https
+        ports:
+        - containerPort: 8080
+          name: todo-http
+        - containerPort: 8443
+          name: todo-https
+        volumeMounts:
+        - name: tls-certs
+          readOnly: true
+          mountPath: /usr/local/etc/ssl/certs
+      resources:
+        limits:
+          memory: 64Mi
+      volumes:
+      - name: tls-certs
+        secret:
+          secretName: todo-certs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: todo-https
+    name: todo-https
+  name: todo-https
+spec:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    name: todo-https
+[student@workstation network-ingress]$ oc create -f todo-app-v2.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "todo-https" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "todo-https" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "todo-https" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "todo-https" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/todo-https created
+service/todo-https created
+[student@workstation network-ingress]$ oc get pods 
+NAME                          READY   STATUS              RESTARTS   AGE
+todo-http-6d6d79db6-blr8k     1/1     Running             0          13m
+todo-https-79f4d84899-vb2fk   0/1     ContainerCreating   0          4s
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ oc get pods 
+NAME                          READY   STATUS    RESTARTS   AGE
+todo-http-6d6d79db6-blr8k     1/1     Running   0          13m
+todo-https-79f4d84899-vb2fk   1/1     Running   0          6s
+[student@workstation network-ingress]$ oc describe pod/todo-https-79f4d84899-vb2fk | grep -A2 Mounts
+    Mounts:
+      /usr/local/etc/ssl/certs from tls-certs (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rfjcb (ro)
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ oc create route passthrough todo-https --service todo-https --port 8443 --hostname todo-https.apps.ocp4.example.com
+route.route.openshift.io/todo-https created
+[student@workstation network-ingress]$ oc get route 
+NAME         HOST/PORT                          PATH   SERVICES     PORT   TERMINATION   WILDCARD
+todo-http    todo-http.apps.ocp4.example.com           todo-http    8080                 None
+todo-https   todo-https.apps.ocp4.example.com          todo-https   8443   passthrough   None
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ curl -vv -I --cacert certs/training-CA.pem https://todo-https.apps.ocp4.example.com
+* Rebuilt URL to: https://todo-https.apps.ocp4.example.com/
+*   Trying 192.168.50.254...
+* TCP_NODELAY set
+* Connected to todo-https.apps.ocp4.example.com (192.168.50.254) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*   CAfile: certs/training-CA.pem
+  CApath: none
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: C=US; ST=North Carolina; L=Raleigh; O=Red Hat; CN=todo-https.apps.ocp4.example.com
+*  start date: Mar  6 17:58:46 2023 GMT
+*  expire date: Mar  4 17:58:46 2028 GMT
+*  subjectAltName: host "todo-https.apps.ocp4.example.com" matched cert's "*.apps.ocp4.example.com"
+*  issuer: C=US; ST=North Carolina; L=Raleigh; O=Red Hat; CN=ocp4.example.com
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x55ffc24136b0)
+> HEAD / HTTP/2
+> Host: todo-https.apps.ocp4.example.com
+> User-Agent: curl/7.61.1
+> Accept: */*
+> 
+* Connection state changed (MAX_CONCURRENT_STREAMS == 128)!
+< HTTP/2 200 
+HTTP/2 200 
+< server: nginx/1.14.1
+server: nginx/1.14.1
+< date: Mon, 06 Mar 2023 18:01:54 GMT
+date: Mon, 06 Mar 2023 18:01:54 GMT
+< content-type: text/html
+content-type: text/html
+< content-length: 3017
+content-length: 3017
+< last-modified: Thu, 28 Nov 2019 19:53:20 GMT
+last-modified: Thu, 28 Nov 2019 19:53:20 GMT
+< etag: "5de025b0-bc9"
+etag: "5de025b0-bc9"
+< strict-transport-security: max-age=63072000; includeSubdomains
+strict-transport-security: max-age=63072000; includeSubdomains
+< x-frame-options: DENY
+x-frame-options: DENY
+< x-content-type-options: nosniff
+x-content-type-options: nosniff
+< accept-ranges: bytes
+accept-ranges: bytes
+
+< 
+* Connection #0 to host todo-https.apps.ocp4.example.com left intact
+[student@workstation network-ingress]$ oc get svc todo-https -o jsonpath="{.spec.clusterIP}{'\n'}"
+172.30.177.31
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ 
+[student@workstation network-ingress]$ oc debug -t deployment/todo-https --image registry.ocp4.example.com:8443/ubi8/ubi:8.4 
+Starting pod/todo-https-debug ...
+Pod IP: 10.8.0.170
+If you don't see a command prompt, try pressing enter.
+sh-4.4$ curl -I http://172.30.177.31
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.14.1
+Date: Mon, 06 Mar 2023 18:03:36 GMT
+Content-Type: text/html
+Connection: keep-alive
+Location: https://172.30.177.31:8443/
+
+sh-4.4$ curl -s -k https://172.30.177.31:8443 | head -n5
+<!DOCTYPE html>
+<html lang="en" ng-app="todoItemsApp" ng-controller="appCtl">
+<head>
+    <meta charset="utf-8">
+    <title>ToDo app</title>
+sh-4.4$ exit
+exit
+
+Removing debug pod ...
+[student@workstation network-ingress]$ cd
+[student@workstation ~]$ oc delete project network-ingress
+project.project.openshift.io "network-ingress" deleted
+[student@workstation ~]$ 
+
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish network-ingress
+SUCCESS Remove network-ingress project
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+

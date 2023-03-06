@@ -1,0 +1,478 @@
+[student@workstation ~]$ lab start network-policy
+
+Starting lab.
+
+SUCCESS Copy exercise files
+SUCCESS Waiting for cluster
+SUCCESS Remove network-policy project
+SUCCESS Remove different-namespace project
+
+[student@workstation ~]$ oc login -u developer -p developer https://api.ocp4.example.com:6443 
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ oc new-project network-policy 
+Now using project "network-policy" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc new-app --name hello --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0 
+--> Found container image fc88c49 (3 years old) from registry.ocp4.example.com:8443 for "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0"
+
+    Red Hat Universal Base Image 8 
+    ------------------------------ 
+    The Universal Base Image is designed and engineered to be the base layer for all of your containerized applications, middleware and utilities. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.
+
+    Tags: base rhel8
+
+    * An image stream tag will be created as "hello:v1.0" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "hello" created
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+    deployment.apps "hello" created
+    service "hello" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/hello' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc new-app --name test --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0
+--> Found container image fc88c49 (3 years old) from registry.ocp4.example.com:8443 for "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0"
+
+    Red Hat Universal Base Image 8 
+    ------------------------------ 
+    The Universal Base Image is designed and engineered to be the base layer for all of your containerized applications, middleware and utilities. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.
+
+    Tags: base rhel8
+
+    * An image stream tag will be created as "test:v1.0" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "test" created
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "test" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "test" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "test" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "test" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+    deployment.apps "test" created
+    service "test" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/test' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods 
+NAME                     READY   STATUS    RESTARTS   AGE
+hello-7d44d9b887-6zxrg   1/1     Running   0          17s
+test-7986c46b6f-xcxmr    1/1     Running   0          4s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get all
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/hello-7d44d9b887-6zxrg   1/1     Running   0          21s
+pod/test-7986c46b6f-xcxmr    1/1     Running   0          8s
+
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/hello   ClusterIP   172.30.243.136   <none>        8080/TCP   22s
+service/test    ClusterIP   172.30.106.51    <none>        8080/TCP   9s
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/hello   1/1     1            1           22s
+deployment.apps/test    1/1     1            1           9s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/hello-595b5c8cc6   0         0         0       22s
+replicaset.apps/hello-7d44d9b887   1         1         1       21s
+replicaset.apps/test-7986c46b6f    1         1         1       8s
+replicaset.apps/test-79f8bb66c4    0         0         0       9s
+
+NAME                                   IMAGE REPOSITORY                                                        TAGS   UPDATED
+imagestream.image.openshift.io/hello   image-registry.openshift-image-registry.svc:5000/network-policy/hello   v1.0   21 seconds ago
+imagestream.image.openshift.io/test    image-registry.openshift-image-registry.svc:5000/network-policy/test    v1.0   8 seconds ago
+[student@workstation ~]$ oc get svc 
+NAME    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+hello   ClusterIP   172.30.243.136   <none>        8080/TCP   28s
+test    ClusterIP   172.30.106.51    <none>        8080/TCP   15s
+[student@workstation ~]$ oc expose svc/hello 
+route.route.openshift.io/hello exposed
+[student@workstation ~]$ oc get route 
+NAME    HOST/PORT                                    PATH   SERVICES   PORT       TERMINATION   WILDCARD
+hello   hello-network-policy.apps.ocp4.example.com          hello      8080-tcp                 None
+[student@workstation ~]$ 
+[student@workstation ~]$ ls DO280/labs/network-policy/
+allow-from-openshift-ingress.yaml  allow-specific.yaml  deny-all.yaml  display-project-info.sh
+[student@workstation ~]$ cat DO280/labs/network-policy/display-project-info.sh 
+#!/usr/bin/bash
+
+if oc get project -o jsonpath='{.items[*].metadata.name}' | grep -q network-policy
+then
+  echo "==================================================================="
+  echo "PROJECT: network-policy"
+  echo
+  oc get pods -o custom-columns="POD NAME:.metadata.name,IP ADDRESS:.status.podIP" -n network-policy
+  echo
+  oc get svc -o custom-columns="SERVICE NAME:.metadata.name,CLUSTER-IP:.spec.clusterIP" -n network-policy
+  echo
+  oc get route -o custom-columns="ROUTE NAME:.metadata.name,HOSTNAME:.spec.host,PORT:.spec.port.targetPort" -n network-policy
+  echo
+  echo "==================================================================="
+fi
+
+if oc get project -o jsonpath='{.items[*].metadata.name}' | grep -q different-namespace
+then
+  echo "PROJECT: different-namespace"
+  echo
+  oc get pods -o custom-columns="POD NAME:.metadata.name" -n different-namespace
+  echo
+  echo "==================================================================="
+fi
+[student@workstation ~]$ DO280/labs/network-policy/display-project-info.sh
+===================================================================
+PROJECT: network-policy
+
+POD NAME                 IP ADDRESS
+hello-7d44d9b887-6zxrg   10.8.0.171
+test-7986c46b6f-xcxmr    10.8.0.172
+
+SERVICE NAME   CLUSTER-IP
+hello          172.30.243.136
+test           172.30.106.51
+
+ROUTE NAME   HOSTNAME                                     PORT
+hello        hello-network-policy.apps.ocp4.example.com   8080-tcp
+
+===================================================================
+[student@workstation ~]$ oc rsh test-7986c46b6f-xcxmr curl 10.8.0.171:8080 | grep Hello 
+    <h1>Hello, world from nginx!</h1>
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc rsh test-7986c46b6f-xcxmr curl 172.30.243.136:8080| grep Hello 
+    <h1>Hello, world from nginx!</h1>
+[student@workstation ~]$ curl -s hello-network-policy.apps.ocp4.example.com | grep Hello 
+    <h1>Hello, world from nginx!</h1>
+[student@workstation ~]$ 
+[student@workstation ~]$ oc new-project different-namespace
+Now using project "different-namespace" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc new-app --name sample-app --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0 
+--> Found container image fc88c49 (3 years old) from registry.ocp4.example.com:8443 for "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0"
+
+    Red Hat Universal Base Image 8 
+    ------------------------------ 
+    The Universal Base Image is designed and engineered to be the base layer for all of your containerized applications, middleware and utilities. This base image is freely redistributable, but Red Hat only supports Red Hat technologies through subscriptions for Red Hat products. This image is maintained by Red Hat and updated regularly.
+
+    Tags: base rhel8
+
+    * An image stream tag will be created as "sample-app:v1.0" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "sample-app" created
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "sample-app" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "sample-app" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "sample-app" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "sample-app" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+    deployment.apps "sample-app" created
+    service "sample-app" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/sample-app' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ DO280/labs/network-policy/display-project-info.sh
+===================================================================
+PROJECT: network-policy
+
+POD NAME                 IP ADDRESS
+hello-7d44d9b887-6zxrg   10.8.0.171
+test-7986c46b6f-xcxmr    10.8.0.172
+
+SERVICE NAME   CLUSTER-IP
+hello          172.30.243.136
+test           172.30.106.51
+
+ROUTE NAME   HOSTNAME                                     PORT
+hello        hello-network-policy.apps.ocp4.example.com   8080-tcp
+
+===================================================================
+PROJECT: different-namespace
+
+POD NAME
+sample-app-6bb5944b6f-7zmqz
+
+===================================================================
+[student@workstation ~]$ oc rsh test-7986c46b6f-xcxmr curl 10.8.0.171:8080 | grep Hello 
+Error from server (NotFound): pods "test-7986c46b6f-xcxmr" not found
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc rsh sample-app-6bb5944b6f-7zmqz curl 10.8.0.171:8080 | grep Hello 
+    <h1>Hello, world from nginx!</h1>
+[student@workstation ~]$ oc rsh sample-app-6bb5944b6f-7zmqz curl 10.8.0.172:8080 | grep Hello 
+    <h1>Hello, world from nginx!</h1>
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project network-policy 
+Now using project "network-policy" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ cd DO280/labs/network-policy/
+[student@workstation network-policy]$ ls
+allow-from-openshift-ingress.yaml  allow-specific.yaml  deny-all.yaml  display-project-info.sh
+[student@workstation network-policy]$ cat deny-all.yaml 
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-all
+spec:
+[student@workstation network-policy]$ vim deny-all.yaml
+[student@workstation network-policy]$ cat deny-all.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-all
+spec:
+  podSelector: {}
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ oc create -f deny-all.yaml
+networkpolicy.networking.k8s.io/deny-all created
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ oc rsh test-7986c46b6f-xcxmr curl 10.8.0.171:8080 | grep Hello
+command terminated with exit code 130
+[student@workstation network-policy]$ oc project different-namespace 
+Now using project "different-namespace" on server "https://api.ocp4.example.com:6443".
+[student@workstation network-policy]$ oc rsh sample-app-6bb5944b6f-7zmqz curl 10.8.0.172:8080 | grep Hello
+command terminated with exit code 130
+[student@workstation network-policy]$ ls
+allow-from-openshift-ingress.yaml  allow-specific.yaml  deny-all.yaml  display-project-info.sh
+[student@workstation network-policy]$ cat allow-specific.yaml 
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-specific
+spec:
+  podSelector:
+    matchLabels:
+      deployment: CHANGE_ME
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: CHANGE_ME
+        podSelector:
+          matchLabels:
+            deployment: CHANGE_ME
+      ports:
+      - port: CHANGE_ME
+        protocol: CHANGE_ME
+[student@workstation network-policy]$ vim allow-specific.yaml
+[student@workstation network-policy]$ cat allow-specific.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-specific
+spec:
+  podSelector:
+    matchLabels:
+      deployment: hello
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: different-namespace
+        podSelector:
+          matchLabels:
+            deployment: sample-app
+      ports:
+      - port: 8080
+        protocol: TCP
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ oc create -f allow-specific.yaml -n network-policy
+networkpolicy.networking.k8s.io/allow-specific created
+[student@workstation network-policy]$ oc get networkpolicies -n network-policy
+NAME             POD-SELECTOR       AGE
+allow-specific   deployment=hello   11s
+deny-all         <none>             2m38s
+[student@workstation network-policy]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 73 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "different-namespace".
+[student@workstation network-policy]$ # oclabel namespace different-namespace network=different-
+[student@workstation network-policy]$ oc delete -f allow-specific.yaml -n network-policy
+networkpolicy.networking.k8s.io "allow-specific" deleted
+[student@workstation network-policy]$ oc get networkpolicies -n network-policy
+NAME       POD-SELECTOR   AGE
+deny-all   <none>         3m51s
+[student@workstation network-policy]$ vim allow-specific.yaml 
+[student@workstation network-policy]$ cat allow-specific.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-specific
+spec:
+  podSelector:
+    matchLabels:
+      deployment: hello
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            network: different-namespace
+        podSelector:
+          matchLabels:
+            deployment: sample-app
+      ports:
+      - port: 8080
+        protocol: TCP
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ cat allow-specific.yaml | grep network 
+apiVersion: networking.k8s.io/v1
+            network: different-namespace
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ oc create -f allow-specific.yaml -n network-policy 
+networkpolicy.networking.k8s.io/allow-specific created
+[student@workstation network-policy]$ oc get networkpolicies -n network-policy
+NAME             POD-SELECTOR       AGE
+allow-specific   deployment=hello   5s
+deny-all         <none>             4m49s
+[student@workstation network-policy]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 73 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "different-namespace".
+[student@workstation network-policy]$ oc label namespace different-namespace network=different-namespace
+namespace/different-namespace labeled
+[student@workstation network-policy]$ oc describe namespace different-namespace 
+Name:         different-namespace
+Labels:       kubernetes.io/metadata.name=different-namespace
+              network=different-namespace
+              pod-security.kubernetes.io/audit=restricted
+              pod-security.kubernetes.io/audit-version=v1.24
+              pod-security.kubernetes.io/warn=restricted
+              pod-security.kubernetes.io/warn-version=v1.24
+Annotations:  openshift.io/description: 
+              openshift.io/display-name: 
+              openshift.io/requester: developer
+              openshift.io/sa.scc.mcs: s0:c27,c9
+              openshift.io/sa.scc.supplemental-groups: 1000720000/10000
+              openshift.io/sa.scc.uid-range: 1000720000/10000
+Status:       Active
+
+No resource quota.
+
+No LimitRange resource.
+[student@workstation network-policy]$ oc login -u developer -p developer 
+Login successful.
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * different-namespace
+    network-policy
+    webconsole-apps
+
+Using project "different-namespace".
+[student@workstation network-policy]$ oc project different-namespace 
+Already on project "different-namespace" on server "https://api.ocp4.example.com:6443".
+[student@workstation network-policy]$ oc rsh sample-app-6bb5944b6f-7zmqz curl curl 10.8.0.171:8080 | grep Hello
+[student@workstation network-policy]$ oc rsh sample-app-6bb5944b6f-7zmqz curl curl 10.8.0.171:8080 | grep Hello
+    <h1>Hello, world from nginx!</h1>
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ oc rsh sample-app-6bb5944b6f-7zmqz curl curl 10.8.0.171:8181 | grep Hello
+command terminated with exit code 130
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ oc rsh sample-app-6bb5944b6f-7zmqz curl curl 10.8.0.172:8080 | grep Hello
+command terminated with exit code 130
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ curl -s hello-network-policy.apps.ocp4.example.com
+<html>
+  <body>
+    <h1>Hello, world from nginx!</h1>
+  </body>
+</html>
+[student@workstation network-policy]$ cat allow-from-openshift-ingress.yaml 
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-from-openshift-ingress
+spec:
+  podSelector: CHANGE_ME
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          CHANGE_ME
+[student@workstation network-policy]$ vim allow-from-openshift-ingress.yaml
+[student@workstation network-policy]$ cat allow-from-openshift-ingress.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-from-openshift-ingress
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+                network.openshift.io/policy-group: ingress
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ oc create -n network-policy -f allow-from-openshift-ingress.yaml
+networkpolicy.networking.k8s.io/allow-from-openshift-ingress created
+[student@workstation network-policy]$ oc get networkpolicies -n network-policy
+NAME                           POD-SELECTOR       AGE
+allow-from-openshift-ingress   <none>             13s
+allow-specific                 deployment=hello   16m
+deny-all                       <none>             21m
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ 
+[student@workstation network-policy]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 73 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "different-namespace".
+[student@workstation network-policy]$ oc label namespace default network.openshift.io/policy-group=ingress
+namespace/default labeled
+[student@workstation network-policy]$ curl -s hello-network-policy.apps.ocp4.example.com
+<html>
+  <body>
+    <h1>Hello, world from nginx!</h1>
+  </body>
+</html>
+[student@workstation network-policy]$ cd
+[student@workstation ~]$ # lab finish network-policy 
+[student@workstation ~]$ 
+[student@workstation ~]$ # On step 11.1 curl -s hello-network-policy.apps.ocp4.example.com, should not have allowed access and permits only once we add the default namesapce with the ingress matchlabels. 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish network-policy
+
+Finishing lab.
+
+SUCCESS Remove network-policy project
+SUCCESS Remove different-namespace project
+SUCCESS Remove label from default project
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+

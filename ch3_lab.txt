@@ -1,0 +1,701 @@
+[student@workstation ~]$ lab start network-review 
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+SUCCESS Generate product certificate
+SUCCESS Creating network-review project
+SUCCESS Deploying lab manifests for the network-review exercise
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project network-review 
+Now using project "network-review" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ cd DO280/labs/network-review/
+[student@workstation network-review]$ ls
+certs      product-deployment.yaml     service-ca-configmap.yaml  stock-ingresspolicy.yaml
+lab-start  product-ingresspolicy.yaml  stock-deployment.yaml      stock-service.yaml
+[student@workstation network-review]$ 
+[student@workstation network-review]$ cat stock-service.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock
+  namespace: network-review
+spec:
+  selector:
+    app: stock
+  ports:
+    - port: 80
+      targetPort: 8085
+      name: http
+
+[student@workstation network-review]$ vim stock-service.yaml
+[student@workstation network-review]$ cat stock-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock
+  namespace: network-review
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: stock-service-cert
+spec:
+  selector:
+    app: stock
+  ports:
+    - port: 80
+      targetPort: 8085
+      name: http
+
+[student@workstation network-review]$ oc apply -f stock-service.yaml
+service/stock configured
+[student@workstation network-review]$ oc get secret stock-service-cert --output="jsonpath={.data.tls].crt}" | base64 -d | openssl x509 -in - -text 
+error: error parsing jsonpath {.data.tls].crt}, unrecognized character in action: U+005D ']'
+unable to load certificate
+139929520899904:error:0909006C:PEM routines:get_name:no start line:crypto/pem/pem_lib.c:745:Expecting: TRUSTED CERTIFICATE
+[student@workstation network-review]$ oc get secret stock-service-cert --output="jsonpath={.data.tls\.crt}" | base64 -d | openssl x509 -in - -text 
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 2688347024408342552 (0x254eed600ed67018)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN = openshift-service-serving-signer@1677259004
+        Validity
+            Not Before: Mar  6 19:07:26 2023 GMT
+            Not After : Mar  5 19:07:27 2025 GMT
+        Subject: CN = stock.network-review.svc
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:af:ce:80:99:59:2e:e2:1e:93:b3:a4:f9:a4:e4:
+                    da:1d:c0:86:a2:f3:16:df:39:ab:3d:a8:e8:b9:07:
+                    23:7c:44:49:6d:c0:e7:ed:35:ea:f2:82:1b:19:2e:
+                    9d:ea:6e:24:a3:4b:26:38:35:6e:ca:f2:75:58:16:
+                    1b:b1:1d:4f:b1:25:85:eb:fb:cf:22:17:56:22:74:
+                    01:fd:b5:11:b0:ab:c1:35:e3:d2:b4:b4:d8:34:5b:
+                    0c:88:e9:80:4a:fb:0b:44:b4:31:fd:ba:2a:27:31:
+                    65:05:ea:e3:fb:f7:7f:4f:3b:a2:10:36:fc:39:83:
+                    8b:48:e8:c8:5a:91:f7:42:2d:7d:17:7e:76:e2:06:
+                    80:e2:08:b6:cf:f6:b1:16:85:e9:33:19:cb:34:f1:
+                    54:1c:20:cc:62:93:c3:6d:40:2f:12:64:f1:f3:72:
+                    2b:f7:47:f8:06:92:42:4a:86:57:21:c4:e4:79:90:
+                    6e:73:1d:a9:16:92:d1:05:b7:c0:7e:7a:59:67:ad:
+                    bf:f6:4f:d8:e0:19:98:57:4e:46:9f:bf:f7:2e:af:
+                    b2:73:ee:e9:f5:55:9f:26:1f:dd:d3:3b:55:db:24:
+                    cd:d3:10:26:8c:a7:02:1a:05:79:de:b9:4a:0d:4c:
+                    5c:31:4c:09:a6:c2:f8:b9:0d:df:43:60:11:91:66:
+                    70:99
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                CE:11:DD:0F:0D:4C:36:79:F9:03:D3:AC:60:0B:E8:35:38:FA:D0:9F
+            X509v3 Authority Key Identifier: 
+                keyid:43:35:4D:95:AA:FC:05:33:73:54:CB:0D:C8:26:CC:7F:2B:5E:92:39
+
+            X509v3 Subject Alternative Name: 
+                DNS:stock.network-review.svc, DNS:stock.network-review.svc.cluster.local
+            1.3.6.1.4.1.2312.17.100.2.1: 
+                .$71af14b8-5e5a-44b5-a29e-ebea25d3d9f6
+    Signature Algorithm: sha256WithRSAEncryption
+         c4:3e:9c:c3:34:48:dd:11:ca:30:c1:1a:4c:0a:b6:15:87:22:
+         c9:98:d4:9a:9c:3e:95:7f:ae:75:b9:6c:bd:b7:4a:7f:79:2c:
+         09:32:78:9a:99:d3:48:ab:ed:0f:79:16:0a:5c:7c:d6:09:16:
+         c3:5c:f9:1c:7a:e7:cf:f9:04:bd:56:fb:ac:83:6a:00:c0:ce:
+         a5:2c:f9:2c:ce:71:05:55:16:21:7a:ea:78:cb:6a:22:52:75:
+         7e:e4:12:f0:75:91:45:07:57:a7:26:ea:a9:89:9d:44:b6:7a:
+         b7:1a:b2:fc:cb:f9:b9:ec:ad:8e:6a:69:63:42:0a:eb:ae:67:
+         7a:81:af:7b:4b:71:35:7c:dd:ff:61:08:a7:3b:4e:32:63:b5:
+         2f:10:ed:9f:43:6a:0b:8e:fc:1c:e0:66:ad:64:0d:34:cf:67:
+         25:7f:bb:72:01:8a:f9:8d:a5:c3:83:a6:ba:a7:ee:93:45:e0:
+         97:95:fd:db:0b:91:a8:c9:fb:2a:99:75:01:5e:74:0a:2d:8e:
+         fa:59:45:e6:ef:a0:a5:36:14:92:5e:4f:86:96:c9:24:37:72:
+         04:97:04:53:01:fe:f9:98:63:85:b1:db:0f:44:b9:d9:5b:9e:
+         4b:9e:0a:3e:73:ba:51:a3:03:e2:0b:20:92:00:b4:40:9a:bb:
+         6b:c6:df:63
+-----BEGIN CERTIFICATE-----
+MIID1jCCAr6gAwIBAgIIJU7tYA7WcBgwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UE
+Awwrb3BlbnNoaWZ0LXNlcnZpY2Utc2VydmluZy1zaWduZXJAMTY3NzI1OTAwNDAe
+Fw0yMzAzMDYxOTA3MjZaFw0yNTAzMDUxOTA3MjdaMCMxITAfBgNVBAMTGHN0b2Nr
+Lm5ldHdvcmstcmV2aWV3LnN2YzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAK/OgJlZLuIek7Ok+aTk2h3AhqLzFt85qz2o6LkHI3xESW3A5+016vKCGxku
+nepuJKNLJjg1bsrydVgWG7EdT7Elhev7zyIXViJ0Af21EbCrwTXj0rS02DRbDIjp
+gEr7C0S0Mf26KicxZQXq4/v3f087ohA2/DmDi0joyFqR90ItfRd+duIGgOIIts/2
+sRaF6TMZyzTxVBwgzGKTw21ALxJk8fNyK/dH+AaSQkqGVyHE5HmQbnMdqRaS0QW3
+wH56WWetv/ZP2OAZmFdORp+/9y6vsnPu6fVVnyYf3dM7VdskzdMQJoynAhoFed65
+Sg1MXDFMCabC+LkN30NgEZFmcJkCAwEAAaOB+jCB9zAOBgNVHQ8BAf8EBAMCBaAw
+EwYDVR0lBAwwCgYIKwYBBQUHAwEwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUzhHd
+Dw1MNnn5A9OsYAvoNTj60J8wHwYDVR0jBBgwFoAUQzVNlar8BTNzVMsNyCbMfyte
+kjkwSwYDVR0RBEQwQoIYc3RvY2submV0d29yay1yZXZpZXcuc3ZjgiZzdG9jay5u
+ZXR3b3JrLXJldmlldy5zdmMuY2x1c3Rlci5sb2NhbDA1BgsrBgEEAZIIEWQCAQQm
+EyQ3MWFmMTRiOC01ZTVhLTQ0YjUtYTI5ZS1lYmVhMjVkM2Q5ZjYwDQYJKoZIhvcN
+AQELBQADggEBAMQ+nMM0SN0RyjDBGkwKthWHIsmY1JqcPpV/rnW5bL23Sn95LAky
+eJqZ00ir7Q95FgpcfNYJFsNc+Rx658/5BL1W+6yDagDAzqUs+SzOcQVVFiF66njL
+aiJSdX7kEvB1kUUHV6cm6qmJnUS2ercasvzL+bnsrY5qaWNCCuuuZ3qBr3tLcTV8
+3f9hCKc7TjJjtS8Q7Z9DaguO/BzgZq1kDTTPZyV/u3IBivmNpcODprqn7pNF4JeV
+/dsLkajJ+yqZdQFedAotjvpZRebvoKU2FJJeT4aWySQ3cgSXBFMB/vmYY4Wx2w9E
+udlbnkueCj5zulGjA+ILIJIAtECau2vG32M=
+-----END CERTIFICATE-----
+[student@workstation network-review]$ ls
+certs      product-deployment.yaml     service-ca-configmap.yaml  stock-ingresspolicy.yaml
+lab-start  product-ingresspolicy.yaml  stock-deployment.yaml      stock-service.yaml
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ cat stock-deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock
+  namespace: network-review
+spec:
+  selector:
+    matchLabels:
+      app: stock
+  template:
+    metadata:
+      labels:
+        app: stock
+    spec:
+      containers:
+        - name: stock
+          image: registry.ocp4.example.com:8443/redhattraining/do280-product-stock:1.0
+          imagePullPolicy: Always
+          resources: { }
+          ports:
+            - containerPort: 8085
+          readinessProbe:
+            httpGet:
+              port: 8085
+              path: /readyz
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              port: 8085
+              path: /livez
+              scheme: HTTP
+          env:
+            - name: TLS_ENABLED
+              value: "false"
+[student@workstation network-review]$ vim stock-deployment.yaml
+[student@workstation network-review]$ cat stock-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock
+  namespace: network-review
+spec:
+  selector:
+    matchLabels:
+      app: stock
+  template:
+    metadata:
+      labels:
+        app: stock
+    spec:
+      containers:
+        - name: stock
+          image: registry.ocp4.example.com:8443/redhattraining/do280-product-stock:1.0
+          imagePullPolicy: Always
+          resources: { }
+          ports:
+            - containerPort: 8085
+          readinessProbe:
+            httpGet:
+              port: 8085
+              path: /readyz
+              scheme: HTTPS
+          livenessProbe:
+            httpGet:
+              port: 8085
+              path: /livez
+              scheme: HTTPS
+          env:
+            - name: TLS_ENABLED
+              value: "true"
+          volumeMounts:
+          - name: stock-service-cert
+            mountPath: /etc/pki/stock/
+      volumes:
+        - name: stock-service-cert
+          secret:
+            defaultMode: 420
+            secretName: stock-service-cert
+[student@workstation network-review]$ oc apply -f stock-deployment.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "stock" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "stock" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "stock" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "stock" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/stock configured
+[student@workstation network-review]$ cat stock-service.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock
+  namespace: network-review
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: stock-service-cert
+spec:
+  selector:
+    app: stock
+  ports:
+    - port: 80
+      targetPort: 8085
+      name: http
+
+[student@workstation network-review]$ vim stock-service.yaml
+[student@workstation network-review]$ cat stock-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock
+  namespace: network-review
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: stock-service-cert
+spec:
+  selector:
+    app: stock
+  ports:
+    - port: 443
+      targetPort: 8085
+      name: https
+
+[student@workstation network-review]$ oc apply -f stock-service.yaml
+service/stock configured
+[student@workstation network-review]$ ls
+certs      product-deployment.yaml     service-ca-configmap.yaml  stock-ingresspolicy.yaml
+lab-start  product-ingresspolicy.yaml  stock-deployment.yaml      stock-service.yaml
+[student@workstation network-review]$ cat service-ca-configmap.yaml 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-ca
+  namespace: network-review
+  annotations:
+    CHANGE_ME
+data: {}[student@workstation network-review]$ vim service-ca-configmap.yaml
+[student@workstation network-review]$ cat service-ca-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-ca
+  namespace: network-review
+  annotations:
+          service.beta.openshift.io/inject-cabundle: "true"
+data: {}
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ vim service-ca-configmap.yaml
+[student@workstation network-review]$ cat service-ca-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-ca
+  namespace: network-review
+  annotations:
+    service.beta.openshift.io/inject-cabundle: "true"
+data: {}
+[student@workstation network-review]$ oc create -f service-ca-configmap.yaml
+configmap/service-ca created
+[student@workstation network-review]$ oc describe configmap service-ca 
+Name:         service-ca
+Namespace:    network-review
+Labels:       <none>
+Annotations:  service.beta.openshift.io/inject-cabundle: true
+
+Data
+====
+service-ca.crt:
+----
+-----BEGIN CERTIFICATE-----
+MIIDUTCCAjmgAwIBAgIILbGpFNQUZvowDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UE
+Awwrb3BlbnNoaWZ0LXNlcnZpY2Utc2VydmluZy1zaWduZXJAMTY3NzI1OTAwNDAe
+Fw0yMzAyMjQxNzE2NDNaFw0yNTA0MjQxNzE2NDRaMDYxNDAyBgNVBAMMK29wZW5z
+aGlmdC1zZXJ2aWNlLXNlcnZpbmctc2lnbmVyQDE2NzcyNTkwMDQwggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDXQysyuczVUWSSG3cmPQwwajyEFR8AGJz6
+0Ie3xOlP3hIiWJSvnqBm+brCDk/1EtrMNFfN/ndTCseYG5dlUs+SD9kDCKK2Fp6g
+MBZadCXtu64VqSkoXvpK9rv2IW2bgyWpfqCSQKinp49v+XOyTbWRPwNf5/RCybch
+xNLHSDaJ45DakKNa5nF+VxbGb1YjfXylppZBp5GcjNWezWAVzsfc7alFUvGJxWZR
+YSVTlK2ln3JTN23WWJn2+Bu/oVEVRY/h0Mr7J62W5H97g+IuYcqheSaBufsJRoSS
+oA8WZ7DDCmiD6CxYs9mnvD7L4zHitko3vvqe8QqNYM8NS91bD1Y5AgMBAAGjYzBh
+MA4GA1UdDwEB/wQEAwICpDAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRDNU2V
+qvwFM3NUyw3IJsx/K16SOTAfBgNVHSMEGDAWgBRDNU2VqvwFM3NUyw3IJsx/K16S
+OTANBgkqhkiG9w0BAQsFAAOCAQEAeuJwPdz9Ohzx1BBbGQcsywKSHZaoiwtz9dkw
+vT5CLAwFRGUoJglZPCe3Ko3xryOi96xUABtfiqiOHaF2ca2ZA4Z2PaIrL+uACRiT
+yBtKFpX5ZDLZAD8Mds1DXndqtlxAqnffDuvvVrFyAKfG5Vw86SNYNzwRv3pNP85/
+pXcRX9FnlkQdsUU84BETpnKK2R+jODAtheQ3Q6x7J+AiDUECDKKV0H4DVWNxB4DE
+wCMXTerFWgWorRPgcTfZUutQyqPxG2uklvRWeAfV8vr/SwA5j6TUmdPxC7oXlaqd
+Byr6usaN4dTtfoDDiZBNKOiuCFJzVkkNl1++EcTZlU8H4+pvag==
+-----END CERTIFICATE-----
+
+
+BinaryData
+====
+
+Events:  <none>
+[student@workstation network-review]$ ls
+certs      product-deployment.yaml     service-ca-configmap.yaml  stock-ingresspolicy.yaml
+lab-start  product-ingresspolicy.yaml  stock-deployment.yaml      stock-service.yaml
+[student@workstation network-review]$ cat product-deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  namespace: network-review
+spec:
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: registry.ocp4.example.com:8443/redhattraining/do280-product:1.0
+          imagePullPolicy: Always
+          resources: { }
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /readyz
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /livez
+              scheme: HTTP
+          env:
+            - name: TLS_ENABLED
+              value: "false"
+            - name: STOCK_URL
+              value: "http://stock.network-review.svc"
+
+[student@workstation network-review]$ vim product-deployment.yaml
+[student@workstation network-review]$ cat product-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  namespace: network-review
+spec:
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: registry.ocp4.example.com:8443/redhattraining/do280-product:1.0
+          imagePullPolicy: Always
+          resources: { }
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /readyz
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /livez
+              scheme: HTTP
+          env:
+            - name: TLS_ENABLED
+              value: "false"
+            - name: STOCK_URL
+              value: "https://stock.network-review.svc"
+          volumeMounts:
+            - name: trusted-ca
+              mountPath: /etc/pki/ca-trust/extracted/pem
+      volumes:
+        - name: trusted-ca
+          configMap:
+            defaultMode: 420
+            name: service-ca
+            items:
+              - key: service-ca.crt
+                path: tls-ca-bundle.pem
+
+[student@workstation network-review]$ oc apply -f product-deployment.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "product" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "product" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "product" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "product" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/product configured
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ oc exec deployment/product -- curl -s https://stock.network-review.svc/product/1
+10[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ oc create secret tls passthrough-cert --cert certs/product.pem --key certs/product.key
+secret/passthrough-cert created
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ cat product-deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  namespace: network-review
+spec:
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: registry.ocp4.example.com:8443/redhattraining/do280-product:1.0
+          imagePullPolicy: Always
+          resources: { }
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /readyz
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /livez
+              scheme: HTTP
+          env:
+            - name: TLS_ENABLED
+              value: "false"
+            - name: STOCK_URL
+              value: "https://stock.network-review.svc"
+          volumeMounts:
+            - name: trusted-ca
+              mountPath: /etc/pki/ca-trust/extracted/pem
+      volumes:
+        - name: trusted-ca
+          configMap:
+            defaultMode: 420
+            name: service-ca
+            items:
+              - key: service-ca.crt
+                path: tls-ca-bundle.pem
+
+[student@workstation network-review]$ vim product-deployment.yaml
+[student@workstation network-review]$ cat product-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  namespace: network-review
+spec:
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: registry.ocp4.example.com:8443/redhattraining/do280-product:1.0
+          imagePullPolicy: Always
+          resources: { }
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /readyz
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /livez
+              scheme: HTTP
+          env:
+            - name: TLS_ENABLED
+              value: "false"
+            - name: STOCK_URL
+              value: "https://stock.network-review.svc"
+          volumeMounts:
+            - name: passthrough-cert
+              mountPath: /etc/pki/product/
+            - name: trusted-ca
+              mountPath: /etc/pki/ca-trust/extracted/pem
+      volumes:
+        - name: passthrough-cert
+          secret:
+            defaultMode: 420
+            secretName: passthrough-cert
+        - name: trusted-ca
+          configMap:
+            defaultMode: 420
+            name: service-ca
+            items:
+              - key: service-ca.crt
+                path: tls-ca-bundle.pem
+
+[student@workstation network-review]$ 
+[student@workstation network-review]$ vim product-deployment.yaml
+[student@workstation network-review]$ cat product-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  namespace: network-review
+spec:
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: registry.ocp4.example.com:8443/redhattraining/do280-product:1.0
+          imagePullPolicy: Always
+          resources: { }
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /readyz
+              scheme: HTTPS
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /livez
+              scheme: HTTPS
+          env:
+            - name: TLS_ENABLED
+              value: "true"
+            - name: STOCK_URL
+              value: "https://stock.network-review.svc"
+          volumeMounts:
+            - name: passthrough-cert
+              mountPath: /etc/pki/product/
+            - name: trusted-ca
+              mountPath: /etc/pki/ca-trust/extracted/pem
+      volumes:
+        - name: passthrough-cert
+          secret:
+            defaultMode: 420
+            secretName: passthrough-cert
+        - name: trusted-ca
+          configMap:
+            defaultMode: 420
+            name: service-ca
+            items:
+              - key: service-ca.crt
+                path: tls-ca-bundle.pem
+
+[student@workstation network-review]$ oc apply -f product-deployment.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "product" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "product" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "product" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "product" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/product configured
+[student@workstation network-review]$ oc create route passthrough product-https --service product --port 8080 --hostname product.apps.ocp4.example.com
+route.route.openshift.io/product-https created
+[student@workstation network-review]$ oc get route 
+NAME            HOST/PORT                       PATH   SERVICES   PORT   TERMINATION   WILDCARD
+product-https   product.apps.ocp4.example.com          product    8080   passthrough   None
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ curl --cacert certs/ca.pem https://product.apps.ocp4.example.com/products
+[{"id":1,"name":"rpi4_4gb","stock":10},{"id":2,"name":"rpi4_8gb","stock":5}][student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ cat stock-ingresspolicy.yaml 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: stock-ingress-policy
+  namespace: network-review
+spec:
+  CHANGE_ME[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ vim stock-ingresspolicy.yaml
+[student@workstation network-review]$ cat stock-ingresspolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: stock-ingress-policy
+  namespace: network-review
+spec:
+  podSelector:
+    matchLabels:
+      app: stock
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: product
+      ports:
+        - protocol: TCP
+          port: 8085
+[student@workstation network-review]$ 
+[student@workstation network-review]$ oc create -f stock-ingresspolicy.yaml
+networkpolicy.networking.k8s.io/stock-ingress-policy created
+[student@workstation network-review]$ 
+[student@workstation network-review]$ cat product-ingresspolicy.yaml 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: product-ingress-policy
+  namespace: network-review
+spec:
+  CHANGE_ME
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ vim product-ingresspolicy.yaml
+[student@workstation network-review]$ cat product-ingresspolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: product-ingress-policy
+  namespace: network-review
+spec:
+  podSelector:
+    matchLabels:
+      app: product
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: ingress
+      ports:
+       - protocol: TCP
+         port: 8080
+[student@workstation network-review]$ 
+[student@workstation network-review]$ 
+[student@workstation network-review]$ oc create -f product-ingresspolicy.yaml
+networkpolicy.networking.k8s.io/product-ingress-policy created
+[student@workstation network-review]$ cd
+[student@workstation ~]$ lab grade network-review 
+SUCCESS Waiting for cluster
+SUCCESS Checking the stock service annotations
+SUCCESS Checking the stock container definition in the stock deployment
+SUCCESS Checking the product container definition in the product deployment
+SUCCESS Checking tls between product and stock pods
+SUCCESS Checking tls from outside of the cluster using the /home/student/DO280/labs/network-review/certs/ca.pem CA certificate
+SUCCESS Verify that pods in network-review other than product cannot connect to the stock pod
+SUCCESS Verify that pods in network-review cannot connect to the product pod
+[student@workstation ~]$ lab finish network-review 
+SUCCESS Deleting network-review project
+        - Project network-review deleted
+[student@workstation ~]$ 
+
