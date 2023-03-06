@@ -1,0 +1,1418 @@
+[student@workstation ~]$ sudo yum install gnome-tweaks 
+Last metadata expiration check: 0:28:27 ago on Mon 06 Mar 2023 05:37:09 AM EST.
+Dependencies resolved.
+==================================================================================================================================================
+ Package                                      Architecture       Version                     Repository                                      Size
+==================================================================================================================================================
+Installing:
+ gnome-tweaks                                 noarch             3.28.1-7.el8                rhel-8.6-for-x86_64-appstream-rpms             331 k
+Installing dependencies:
+ gnome-shell-extension-user-theme             noarch             3.32.1-27.el8               rhel-8.6-for-x86_64-appstream-rpms              28 k
+
+Transaction Summary
+==================================================================================================================================================
+Install  2 Packages
+
+Total download size: 359 k
+Installed size: 1.4 M
+Is this ok [y/N]: y
+Downloading Packages:
+(1/2): gnome-shell-extension-user-theme-3.32.1-27.el8.noarch.rpm                                                  199 kB/s |  28 kB     00:00    
+(2/2): gnome-tweaks-3.28.1-7.el8.noarch.rpm                                                                       1.0 MB/s | 331 kB     00:00    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                             1.1 MB/s | 359 kB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                          1/1 
+  Installing       : gnome-shell-extension-user-theme-3.32.1-27.el8.noarch                                                                    1/2 
+  Installing       : gnome-tweaks-3.28.1-7.el8.noarch                                                                                         2/2 
+  Running scriptlet: gnome-tweaks-3.28.1-7.el8.noarch                                                                                         2/2 
+  Verifying        : gnome-shell-extension-user-theme-3.32.1-27.el8.noarch                                                                    1/2 
+  Verifying        : gnome-tweaks-3.28.1-7.el8.noarch                                                                                         2/2 
+
+Installed:
+  gnome-shell-extension-user-theme-3.32.1-27.el8.noarch                              gnome-tweaks-3.28.1-7.el8.noarch                             
+
+Complete!
+[student@workstation ~]$ gnome-tweaks
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab start console-admin 
+
+Starting lab.
+
+SUCCESS Waiting for cluster
+SUCCESS Add htpasswd authentication
+
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 70 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+Welcome! See 'oc help' to get started.
+[student@workstation ~]$ oc whoami --show-console
+https://console-openshift-console.apps.ocp4.example.com
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-consol) & 
+[1] 9597
+[student@workstation ~]$ error: unknown flag: --show-consol
+See 'oc whoami --help' for usage.
+^C
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[2] 9632
+[student@workstation ~]$ 
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+firefox $(oc whoami --show-console) & 
+[3] 10187
+[1]   Done                    firefox $(oc whoami --show-consol)
+[2]   Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=270.714) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ htpasswd -n -b tester redhat
+tester:$apr1$PL7sl9Q9$vXeTnDhmoDhNSQT189XCR/
+
+[student@workstation ~]$ lab finish console-admin 
+
+Finishing lab.
+
+   /    Remove htpasswd authentication
+FAIL    Remove htpasswd authentication
+        - An unexpected error ocurred: Timed out
+        - Check the log file for more details
+        - Cannot continue finishing lab
+An error has ocurred. Check the logs for more details
+[3]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish console-admin 
+
+Finishing lab.
+
+SUCCESS Remove htpasswd authentication
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab start console-workloads
+SUCCESS Waiting for cluster
+
+Starting lab.
+
+SUCCESS Copy exercise files
+SUCCESS Creating console-apps project
+SUCCESS Apply manifest file group.yaml
+SUCCESS Apply manifest file rolebinding.yaml
+
+[student@workstation ~]$ o clogin -u admin -p redhatocp https://api.ocp4.example.com:6443
+bash: o: command not found...
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ oc whoami --show-console 
+https://console-openshift-console.apps.ocp4.example.com
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[1] 12557
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=4.92852) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish  console-workloads
+
+Finishing lab.
+
+
+[student@workstation ~]$ lab start console-metrics
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+SUCCESS Creating console-apps project if not exist
+SUCCESS Apply manifest file resourcequota.yaml
+SUCCESS Apply manifest file limitrange.yaml
+SUCCESS Apply manifest file deployment.yaml
+SUCCESS Apply manifest file service.yaml
+SUCCESS Apply manifest file route.yaml
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ oc whoami  --show-console
+https://console-openshift-console.apps.ocp4.example.com
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[1] 13435
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=3.72567) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ls 
+Desktop  DO280  Documents  Downloads  Music  Pictures  Public  Templates  Videos
+[student@workstation ~]$ cat DO280/labs/console-metrics/
+deployment.yaml     limitrange.yaml     load.sh             resourcequota.yaml  route.yaml          service.yaml        
+[student@workstation ~]$ cat DO280/labs/console-metrics/
+deployment.yaml     limitrange.yaml     load.sh             resourcequota.yaml  route.yaml          service.yaml        
+[student@workstation ~]$ cat DO280/labs/console-metrics/load.sh 
+#!/bin/bash
+
+function poll {
+  local iterations="$1"
+  local duration="$2"
+  local endpoint="http://books-console-apps.apps.ocp4.example.com/leak"
+
+  echo "Polling ${endpoint} every ${duration} seconds ${iterations} times..."
+
+  for ((i=0; i < $iterations; i++))
+  do
+    curl -s -o /dev/null ${endpoint}
+    sleep ${duration}
+  done
+}
+
+test -f ~/DO280/labs/console-metrics/executed && {
+  echo "This script should only be run once. Memory usage might take a while to appear in the console"
+  exit 1
+}
+
+# Poll the leak endpoint. We start fast so that we see immediate results.
+poll 300 0
+touch ~/DO280/labs/console-metrics/executed
+[student@workstation ~]$ DO280/labs/console-metrics/load.sh
+Polling http://books-console-apps.apps.ocp4.example.com/leak every 0 seconds 300 times...
+[student@workstation ~]$ oc adm top pod -n console-apps
+NAME                          CPU(cores)   MEMORY(bytes)   
+books-56b9fff848-g6cxz        0m           2498Mi          
+hello-world-c4f46dbcb-wllxl   0m           10Mi            
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish console-metrics 
+SUCCESS Remove console-apps project
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab start console-review
+
+Starting lab.
+
+SUCCESS Waiting for cluster
+SUCCESS Add htpasswd authentication
+SUCCESS Remove console-review project
+SUCCESS Copy exercise files
+
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ htpasswd -n -b dba redhat
+dba:$apr1$VqxQQX2Y$zHuY4KswI.nODSB0cPDbp0
+
+[student@workstation ~]$ htpasswd -n -b tester redhat
+tester:$apr1$jFaFLtS6$TsBbO1cseCGvPNcntUL/L/
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[1] 15609
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=6.01149) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[1] 16192
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=4.40321) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u dba -p redhat 
+Login successful.
+
+You have one project on this server: "console-review"
+
+Using project "console-review".
+[student@workstation ~]$ oc new-app --name database --image registry.ocp4.example.com:8443/rhel8/mysql-80:1-211.1664898586 -e MYSQL_USER=famous -e MYSQL_PASSWORD=famous -e MYSQL_DATABASE=famous
+--> Found container image b5b0298 (5 months old) from registry.ocp4.example.com:8443 for "registry.ocp4.example.com:8443/rhel8/mysql-80:1-211.1664898586"
+
+    MySQL 8.0 
+    --------- 
+    MySQL is a multi-user, multi-threaded SQL database server. The container image provides a containerized packaging of the MySQL mysqld daemon and client application. The mysqld server daemon accepts connections from clients and provides access to content from MySQL databases on behalf of the clients.
+
+    Tags: database, mysql, mysql80, mysql-80
+
+    * An image stream tag will be created as "database:1-211.1664898586" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "database" created
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "database" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "database" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "database" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "database" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+    deployment.apps "database" created
+    service "database" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/database' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ 
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[1] 17133
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=19.8799) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ lan grade console-review
+bash: lan: command not found...
+[student@workstation ~]$ lab grade console-review
+
+Grading lab.
+
+SUCCESS User dba can login to cluster with redhat password
+SUCCESS User tester can login to cluster with redhat password
+SUCCESS Group app-team exists containing developer, dba
+SUCCESS Project console-review exists
+FAIL    Validating app-team role binding
+        - Not found
+FAIL    Validating tester role binding
+        - Not found
+SUCCESS Resource quota 'quota' exists
+SUCCESS Validating database deployment
+SUCCESS Validating famous-quotes deployment
+SUCCESS Validate famous-quotes service
+SUCCESS Validate famous route
+SUCCESS Resource quota has been extended
+SUCCESS Validating famous-quotes scaling
+SUCCESS Check that app responds
+
+[student@workstation ~]$ oc whoami 
+dba
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "console-review".
+[student@workstation ~]$ oc get rolebinding -o wide 
+NAME                    ROLE                               AGE   USERS    GROUPS                                  SERVICEACCOUNTS
+admin                   ClusterRole/admin                  18m   admin                                            
+edit-app-team           ClusterRole/edit                   16m            app-team                                
+system:deployers        ClusterRole/system:deployer        18m                                                    console-review/deployer
+system:image-builders   ClusterRole/system:image-builder   18m                                                    console-review/builder
+system:image-pullers    ClusterRole/system:image-puller    18m            system:serviceaccounts:console-review   
+tester-view             ClusterRole/view                   17m   tester                                           
+[student@workstation ~]$ oc edit rolebinding/edit-app-team
+A copy of your changes has been stored to "/tmp/oc-edit-3638294754.yaml"
+error: At least one of apiVersion, kind and name was changed
+[student@workstation ~]$ oc delete rolebinding/edit-app-team
+rolebinding.rbac.authorization.k8s.io "edit-app-team" deleted
+[student@workstation ~]$ oc delete rolebinding/tester-view
+rolebinding.rbac.authorization.k8s.io "tester-view" deleted
+[student@workstation ~]$ oc policy add-role-to-user view tester -n console-review 
+clusterrole.rbac.authorization.k8s.io/view added: "tester"
+[student@workstation ~]$ oc policy add-role-to-group edit app-team -n console-review
+clusterrole.rbac.authorization.k8s.io/edit added: "app-team"
+[student@workstation ~]$ oc logout 
+Logged "admin" out on "https://api.ocp4.example.com:6443"
+[student@workstation ~]$ lab grade console-review
+
+Grading lab.
+
+SUCCESS User dba can login to cluster with redhat password
+SUCCESS User tester can login to cluster with redhat password
+SUCCESS Group app-team exists containing developer, dba
+SUCCESS Project console-review exists
+FAIL    Validating app-team role binding
+        - Not found
+FAIL    Validating tester role binding
+        - Not found
+SUCCESS Resource quota 'quota' exists
+SUCCESS Validating database deployment
+SUCCESS Validating famous-quotes deployment
+SUCCESS Validate famous-quotes service
+SUCCESS Validate famous route
+SUCCESS Resource quota has been extended
+SUCCESS Validating famous-quotes scaling
+SUCCESS Check that app responds
+
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[1] 18352
+[student@workstation ~]$ error: unable to determine console location: configmaps "console-public" is forbidden: User "system:anonymous" cannot get resource "configmaps" in API group "" in the namespace "openshift-config-managed"
+Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=4.16843) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "console-review".
+[student@workstation ~]$ oc get rolebinding -o wide 
+NAME                    ROLE                               AGE   USERS    GROUPS                                  SERVICEACCOUNTS
+admin                   ClusterRole/admin                  21m   admin                                            
+edit                    ClusterRole/edit                   60s            app-team                                
+system:deployers        ClusterRole/system:deployer        21m                                                    console-review/deployer
+system:image-builders   ClusterRole/system:image-builder   21m                                                    console-review/builder
+system:image-pullers    ClusterRole/system:image-puller    21m            system:serviceaccounts:console-review   
+view                    ClusterRole/view                   73s   tester                                           
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[1] 18703
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=3.49581) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get rolebinding -o wide 
+NAME                    ROLE                               AGE     USERS    GROUPS                                  SERVICEACCOUNTS
+admin                   ClusterRole/admin                  23m     admin                                            
+app-team                ClusterRole/edit                   54s              app-team                                
+edit                    ClusterRole/edit                   3m10s            app-team                                
+system:deployers        ClusterRole/system:deployer        23m                                                      console-review/deployer
+system:image-builders   ClusterRole/system:image-builder   23m                                                      console-review/builder
+system:image-pullers    ClusterRole/system:image-puller    23m              system:serviceaccounts:console-review   
+tester                  ClusterRole/view                   16s     tester                                           
+view                    ClusterRole/view                   3m23s   tester                                           
+[student@workstation ~]$ 
+[student@workstation ~]$ oc delete rolebinding/edit
+rolebinding.rbac.authorization.k8s.io "edit" deleted
+[student@workstation ~]$ oc delete rolebinding/view
+rolebinding.rbac.authorization.k8s.io "view" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab grade console-review
+
+Grading lab.
+
+SUCCESS User dba can login to cluster with redhat password
+SUCCESS User tester can login to cluster with redhat password
+SUCCESS Group app-team exists containing developer, dba
+SUCCESS Project console-review exists
+SUCCESS Validating app-team role binding
+SUCCESS Validating tester role binding
+SUCCESS Resource quota 'quota' exists
+SUCCESS Validating database deployment
+SUCCESS Validating famous-quotes deployment
+SUCCESS Validate famous-quotes service
+SUCCESS Validate famous route
+SUCCESS Resource quota has been extended
+SUCCESS Validating famous-quotes scaling
+SUCCESS Check that app responds
+
+[student@workstation ~]$ lab finish console-review 
+
+Finishing lab.
+
+SUCCESS Remove htpasswd authentication
+SUCCESS Remove console-review project
+SUCCESS Remove app-team group
+SUCCESS Remove lab files
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab start auth-providers
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+SUCCESS Remove auth-providers project
+SUCCESS Remove cluster admin role
+SUCCESS Remove HTPasswd secret
+SUCCESS Reset identity provider
+SUCCESS Removing all users
+SUCCESS Removing all identities
+SUCCESS Removing authentication pods
+SUCCESS Waiting for authentication to work
+[student@workstation ~]$ cd DO280/labs/auth-providers/
+[student@workstation auth-providers]$ ls
+oauth.yaml
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ htpasswd -c -B -b htpasswd new_admin redhat
+Adding password for user new_admin
+[student@workstation auth-providers]$ cat htpasswd 
+new_admin:$2y$05$Pp.jNRdjTwAHPLVk2A1m/O5bUz/Bxx4jZyMi3DkUFynKeaJgjBQzS
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ htpasswd -b htpasswd new_developer developer
+Adding password for user new_developer
+[student@workstation auth-providers]$ cat htpasswd 
+new_admin:$2y$05$Pp.jNRdjTwAHPLVk2A1m/O5bUz/Bxx4jZyMi3DkUFynKeaJgjBQzS
+new_developer:$apr1$Q4qY1Ywy$AU8PLCMOQp/HITIwKN04O0
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation auth-providers]$ oc whoami 
+admin
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc create secret generic localusers --from-file=htpasswd=htpasswd -n openshift-config
+secret/localusers created
+[student@workstation auth-providers]$ oc adm policy add-cluster-role-to-user cluster-admin new_admin 
+Warning: User 'new_admin' not found
+clusterrole.rbac.authorization.k8s.io/cluster-admin added: "new_admin"
+[student@workstation auth-providers]$ # oc get oauth cluster -o yaml > oauth.yaml 
+[student@workstation auth-providers]$ cat oauth.yaml 
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      bindDN: uid=admin,cn=users,cn=accounts,dc=ocp4,dc=example,dc=com
+      bindPassword:
+        name: ldap-secret
+      ca:
+        name: ca-config-map
+      insecure: false
+      url: ldap://idm.ocp4.example.com/cn=users,cn=accounts,dc=ocp4,dc=example,dc=com?uid
+    mappingMethod: claim
+    name: Red Hat Identity Management
+    type: LDAP[student@workstation aut^Coviders]$ # oc get oauth cluster -o yaml > oauth.yaml 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc get oauth cluster -o yaml > oauth.yaml 
+[student@workstation auth-providers]$ cat oauth.yaml 
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  creationTimestamp: "2023-02-24T17:06:54Z"
+  generation: 6
+  name: cluster
+  resourceVersion: "324076"
+  uid: 27555dd7-c4d7-4d2e-be4e-4e03ea4dd1ed
+spec:
+  identityProviders:
+  - ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      bindDN: uid=admin,cn=users,cn=accounts,dc=ocp4,dc=example,dc=com
+      bindPassword:
+        name: ldap-secret
+      ca:
+        name: ca-config-map
+      insecure: false
+      url: ldap://idm.ocp4.example.com/cn=users,cn=accounts,dc=ocp4,dc=example,dc=com?uid
+    mappingMethod: claim
+    name: Red Hat Identity Management
+    type: LDAP
+[student@workstation auth-providers]$ vim oauth.yaml 
+[student@workstation auth-providers]$ cat oauth.yaml
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  creationTimestamp: "2023-02-24T17:06:54Z"
+  generation: 6
+  name: cluster
+  resourceVersion: "324076"
+  uid: 27555dd7-c4d7-4d2e-be4e-4e03ea4dd1ed
+spec:
+  identityProviders:
+  - ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      bindDN: uid=admin,cn=users,cn=accounts,dc=ocp4,dc=example,dc=com
+      bindPassword:
+        name: ldap-secret
+      ca:
+        name: ca-config-map
+      insecure: false
+      url: ldap://idm.ocp4.example.com/cn=users,cn=accounts,dc=ocp4,dc=example,dc=com?uid
+    mappingMethod: claim
+    name: Red Hat Identity Management
+    type: LDAP
+  - htpasswd:
+      fileData:
+        name: localusers
+      mappingMethod: claim
+      name: myusers
+      type: HTPasswd
+[student@workstation auth-providers]$ oc replace -f oauth.yaml
+The OAuth "cluster" is invalid: 
+* spec.identityProviders[1].name: Required value
+* spec.identityProviders[1].type: Required value
+* spec.identityProviders[1]: Invalid value: v1.IdentityProviderConfig{Type:"", BasicAuth:(*v1.BasicAuthIdentityProvider)(nil), GitHub:(*v1.GitHubIdentityProvider)(nil), GitLab:(*v1.GitLabIdentityProvider)(nil), Google:(*v1.GoogleIdentityProvider)(nil), HTPasswd:(*v1.HTPasswdIdentityProvider)(0xc05a9b3520), Keystone:(*v1.KeystoneIdentityProvider)(nil), LDAP:(*v1.LDAPIdentityProvider)(nil), OpenID:(*v1.OpenIDIdentityProvider)(nil), RequestHeader:(*v1.RequestHeaderIdentityProvider)(nil)}: only one identity provider can be configured in single object
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ vim oauth.yaml 
+[student@workstation auth-providers]$ oc replace -f oauth.yaml
+oauth.config.openshift.io/cluster replaced
+[student@workstation auth-providers]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-56c64b6f4b-2ntvg   1/1     Running   0          7m10s
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-56c64b6f4b-2ntvg   1/1     Running   0          7m14s
+[student@workstation auth-providers]$ watch oc get pods -n openshift-authentication
+[student@workstation auth-providers]$ watch oc get pods -n openshift-authentication
+[student@workstation auth-providers]$ watch oc get pods -n openshift-authentication
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc get pods -n openshift-authentication
+NAME                              READY   STATUS    RESTARTS   AGE
+oauth-openshift-8cb6449df-l5kjr   1/1     Running   0          37s
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc login -u new_admin -p redhat
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc get nodes
+NAME       STATUS   ROLES                         AGE   VERSION
+master01   Ready    control-plane,master,worker   9d    v1.25.4+77bec7a
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc login -u new_developer -p developer 
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation auth-providers]$ oc get nodes
+Error from server (Forbidden): nodes is forbidden: User "new_developer" cannot list resource "nodes" in API group "" at the cluster scope
+[student@workstation auth-providers]$ oc login -u new_admin -p redhat 
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation auth-providers]$ oc get users
+NAME            UID                                    FULL NAME       IDENTITIES
+admin           14f73205-310a-4206-aef8-e86835408746   Administrator   Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20
+new_admin       ac88caf0-dfa6-4e68-947a-9b93e280d34c                   myusers:new_admin
+new_developer   b31cb88e-cd2d-4827-803c-b2a05efa8aa1                   myusers:new_developer
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ 
+[student@workstation auth-providers]$ oc get identity
+NAME                                                                                                      IDP NAME                      IDP USER NAME                                                                 USER NAME       USER UID
+Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20   Red Hat Identity Management   dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20   admin           14f73205-310a-4206-aef8-e86835408746
+myusers:new_admin                                                                                         myusers                       new_admin                                                                     new_admin       ac88caf0-dfa6-4e68-947a-9b93e280d34c
+myusers:new_developer                                                                                     myusers                       new_developer                                                                 new_developer   b31cb88e-cd2d-4827-803c-b2a05efa8aa1
+[student@workstation auth-providers]$ cd
+[student@workstation ~]$ oc extract secret/localusers -n openshift-config --to ~/DO280/labs/auth-providers/ --confirm
+/home/student/DO280/labs/auth-providers/htpasswd
+[student@workstation ~]$ cat /home/student/DO280/labs/auth-providers/htpasswd
+new_admin:$2y$05$Pp.jNRdjTwAHPLVk2A1m/O5bUz/Bxx4jZyMi3DkUFynKeaJgjBQzS
+new_developer:$apr1$Q4qY1Ywy$AU8PLCMOQp/HITIwKN04O0
+[student@workstation ~]$ 
+[student@workstation ~]$ htpasswd -b /home/student/DO280/labs/auth-providers/htpasswd managed redhat 
+Adding password for user managed
+[student@workstation ~]$ htpasswd -b /home/student/DO280/labs/auth-providers/htpasswd manager redhat 
+Adding password for user manager
+[student@workstation ~]$ htpasswd -D /home/student/DO280/labs/auth-providers/htpasswd managed
+Deleting password for user managed
+[student@workstation ~]$ cat /home/student/DO280/labs/auth-providers/htpasswd
+new_admin:$2y$05$Pp.jNRdjTwAHPLVk2A1m/O5bUz/Bxx4jZyMi3DkUFynKeaJgjBQzS
+new_developer:$apr1$Q4qY1Ywy$AU8PLCMOQp/HITIwKN04O0
+manager:$apr1$s/uZmJ1L$jHJ6OesOIV6MG5SFZ7N0S/
+[student@workstation ~]$ oc set data secret/localusers --from-file=htpasswd=/home/student/DO280/labs/auth-providers/htpasswd -n openshift-config
+secret/localusers data updated
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                              READY   STATUS    RESTARTS   AGE
+oauth-openshift-8cb6449df-l5kjr   1/1     Running   0          3m46s
+[student@workstation ~]$ watch oc get pods -n openshift-authentication
+[student@workstation ~]$ oc get pods -n openshift-authentication -w
+NAME                              READY   STATUS    RESTARTS   AGE
+oauth-openshift-8cb6449df-l5kjr   1/1     Running   0          5m26s
+
+
+
+
+
+
+^C[student@workstation ~]$ oc login -u manager -p redhat 
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc get pods -n openshift-authentication
+Error from server (Forbidden): pods is forbidden: User "manager" cannot list resource "pods" in API group "" in the namespace "openshift-authentication"
+[student@workstation ~]$ oc new-app --name database --image registry.ocp4.example.com:8443/rhel8/mysql-80:1-211.1664898586 -e MYSQL_USER=famous -e MYSQL_PASSWORD=famous -e MYSQL_DATABASE=famous
+error: can't lookup images: imagestreamimports.image.openshift.io is forbidden: User "manager" cannot create resource "imagestreamimports" in API group "image.openshift.io" in the namespace "default"
+error: unable to locate any local docker images with name "registry.ocp4.example.com:8443/rhel8/mysql-80:1-211.1664898586"
+
+The 'oc new-app' command will match arguments to the following types:
+
+  1. Images tagged into image streams in the current project or the 'openshift' project
+     - if you don't specify a tag, we'll add ':latest'
+  2. Images in the container storage, on remote registries, or on the local container engine
+  3. Templates in the current project or the 'openshift' project
+  4. Git repository URLs or local paths that point to Git repositories
+
+--allow-missing-images can be used to point to an image that does not exist yet.
+
+See 'oc new-app -h' for examples.
+[student@workstation ~]$ oc login -u new_admin -p redhat 
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS        RESTARTS   AGE
+oauth-openshift-64b85c8787-bslvw   0/1     Pending       0          1s
+oauth-openshift-8cb6449df-l5kjr    1/1     Terminating   0          6m20s
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS        RESTARTS   AGE
+oauth-openshift-64b85c8787-bslvw   0/1     Pending       0          4s
+oauth-openshift-8cb6449df-l5kjr    1/1     Terminating   0          6m23s
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS        RESTARTS   AGE
+oauth-openshift-64b85c8787-bslvw   0/1     Pending       0          7s
+oauth-openshift-8cb6449df-l5kjr    1/1     Terminating   0          6m26s
+[student@workstation ~]$ oc get pods -n openshift-authentication -w
+NAME                               READY   STATUS        RESTARTS   AGE
+oauth-openshift-64b85c8787-bslvw   0/1     Pending       0          9s
+oauth-openshift-8cb6449df-l5kjr    1/1     Terminating   0          6m28s
+
+
+^C[student@workstation ~]watch $ oc get pods -n openshift-authentication 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods -n openshift-authentication 
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-64b85c8787-bslvw   1/1     Running   0          39s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u manager -p redhat 
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc new-project auth-providers
+Now using project "auth-providers" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc login -u new_developer -p developer 
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc delete project auth-providers
+Error from server (Forbidden): projects.project.openshift.io "auth-providers" is forbidden: User "new_developer" cannot delete resource "projects" in API group "project.openshift.io" in the namespace "auth-providers"
+[student@workstation ~]$ oc login -u new_admin -p redhat 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ oc extract secret/localusers -n openshift-config --to ~/DO280/labs/auth-providers/ --confirm
+/home/student/DO280/labs/auth-providers/htpasswd
+[student@workstation ~]$ 
+[student@workstation ~]$ cat /home/student/DO280/labs/auth-providers/htpasswd
+new_admin:$2y$05$Pp.jNRdjTwAHPLVk2A1m/O5bUz/Bxx4jZyMi3DkUFynKeaJgjBQzS
+new_developer:$apr1$Q4qY1Ywy$AU8PLCMOQp/HITIwKN04O0
+manager:$apr1$s/uZmJ1L$jHJ6OesOIV6MG5SFZ7N0S/
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ MANAGER_PASSWD="$(openssl rand -hex 15)"
+[student@workstation ~]$ echo ${MANAGER_PASSWD}
+85b7893b3c43f162ddc2975a662894
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ htpasswd -b /home/student/DO280/labs/auth-providers/htpasswd manager ${MANAGER_PASSWD}
+Updating password for user manager
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc set data secret/localusers --from-file=htpasswd=/home/student/DO280/labs/auth-providers/htpasswd -n openshift-config
+secret/localusers data updated
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-64b85c8787-bslvw   1/1     Running   0          3m11s
+[student@workstation ~]$ watch oc get pods -n openshift-authentication
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u manager -p ${MANAGER_PASSWD}
+Unable to connect to the server: EOF
+[student@workstation ~]$ watch oc get pods -n openshift-authentication
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-6996f67f86-ksgwl   1/1     Running   0          38s
+[student@workstation ~]$ oc login -u manager -p ${MANAGER_PASSWD}
+Login successful.
+
+You have one project on this server: "auth-providers"
+
+Using project "auth-providers".
+[student@workstation ~]$ oc login -u new_admin -p redhat 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "auth-providers".
+[student@workstation ~]$ oc extract secret/localusers -n openshift-config --to ~/DO280/labs/auth-providers/ --confirm
+/home/student/DO280/labs/auth-providers/htpasswd
+[student@workstation ~]$ cat /home/student/DO280/labs/auth-providers/htpasswd
+new_admin:$2y$05$Pp.jNRdjTwAHPLVk2A1m/O5bUz/Bxx4jZyMi3DkUFynKeaJgjBQzS
+new_developer:$apr1$Q4qY1Ywy$AU8PLCMOQp/HITIwKN04O0
+manager:$apr1$pPfOLQ1b$xvcokHY6jAeM4yjtjGpMl/
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ htpasswd -D /home/student/DO280/labs/auth-providers/htpasswd manager
+Deleting password for user manager
+[student@workstation ~]$ cat /home/student/DO280/labs/auth-providers/htpasswd
+new_admin:$2y$05$Pp.jNRdjTwAHPLVk2A1m/O5bUz/Bxx4jZyMi3DkUFynKeaJgjBQzS
+new_developer:$apr1$Q4qY1Ywy$AU8PLCMOQp/HITIwKN04O0
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc set data secret/localusers --from-file=htpasswd=/home/student/DO280/labs/auth-providers/htpasswd -n openshift-config
+secret/localusers data updated
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-6996f67f86-ksgwl   1/1     Running   0          110s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ watch oc get pods -n openshift-authentication
+[student@workstation ~]$ oc login -u manager -p ${MANAGER_PASSWD}
+Login failed (401 Unauthorized)
+Verify you have provided the correct credentials.
+[student@workstation ~]$ watch oc get pods -n openshift-authentication
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-6996f67f86-ksgwl   1/1     Running   0          3m3s
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-6996f67f86-ksgwl   1/1     Running   0          3m5s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-6996f67f86-ksgwl   1/1     Running   0          3m11s
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-6996f67f86-ksgwl   1/1     Running   0          3m14s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u new_admin -p redhat 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "auth-providers".
+[student@workstation ~]$ oc get identity
+NAME                                                                                                      IDP NAME                      IDP USER NAME                                                                 USER NAME       USER UID
+Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20   Red Hat Identity Management   dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20   admin           14f73205-310a-4206-aef8-e86835408746
+myusers:manager                                                                                           myusers                       manager                                                                       manager         1831ecaf-87bc-4eb9-852a-579a1500acca
+myusers:new_admin                                                                                         myusers                       new_admin                                                                     new_admin       ac88caf0-dfa6-4e68-947a-9b93e280d34c
+myusers:new_developer                                                                                     myusers                       new_developer                                                                 new_developer   b31cb88e-cd2d-4827-803c-b2a05efa8aa1
+[student@workstation ~]$ oc delete identity "myusers:manager"
+identity.user.openshift.io "myusers:manager" deleted
+[student@workstation ~]$ oc get user
+NAME            UID                                    FULL NAME       IDENTITIES
+admin           14f73205-310a-4206-aef8-e86835408746   Administrator   Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20
+manager         1831ecaf-87bc-4eb9-852a-579a1500acca                   myusers:manager
+new_admin       ac88caf0-dfa6-4e68-947a-9b93e280d34c                   myusers:new_admin
+new_developer   b31cb88e-cd2d-4827-803c-b2a05efa8aa1                   myusers:new_developer
+[student@workstation ~]$ oc delete user manager
+user.user.openshift.io "manager" deleted
+[student@workstation ~]$ oc get user 
+NAME            UID                                    FULL NAME       IDENTITIES
+admin           14f73205-310a-4206-aef8-e86835408746   Administrator   Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20
+new_admin       ac88caf0-dfa6-4e68-947a-9b93e280d34c                   myusers:new_admin
+new_developer   b31cb88e-cd2d-4827-803c-b2a05efa8aa1                   myusers:new_developer
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get identity
+NAME                                                                                                      IDP NAME                      IDP USER NAME                                                                 USER NAME       USER UID
+Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20   Red Hat Identity Management   dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20   admin           14f73205-310a-4206-aef8-e86835408746
+myusers:new_admin                                                                                         myusers                       new_admin                                                                     new_admin       ac88caf0-dfa6-4e68-947a-9b93e280d34c
+myusers:new_developer                                                                                     myusers                       new_developer                                                                 new_developer   b31cb88e-cd2d-4827-803c-b2a05efa8aa1
+[student@workstation ~]$ oc extract secret/localuser -n openshift-config --to - 
+Error from server (NotFound): secrets "localuser" not found
+[student@workstation ~]$ oc extract secret/localusers -n openshift-config --to - 
+# htpasswd
+new_admin:$2y$05$Pp.jNRdjTwAHPLVk2A1m/O5bUz/Bxx4jZyMi3DkUFynKeaJgjBQzS
+new_developer:$apr1$Q4qY1Ywy$AU8PLCMOQp/HITIwKN04O0
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "auth-providers".
+[student@workstation ~]$ oc delete project auth-providers
+project.project.openshift.io "auth-providers" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc edit oauth 
+oauth.config.openshift.io/cluster edited
+[student@workstation ~]$ oc delete secret/localusers -n openshift-config
+secret "localusers" deleted
+[student@workstation ~]$ oc get user 
+NAME            UID                                    FULL NAME       IDENTITIES
+admin           14f73205-310a-4206-aef8-e86835408746   Administrator   Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20
+new_admin       ac88caf0-dfa6-4e68-947a-9b93e280d34c                   myusers:new_admin
+new_developer   b31cb88e-cd2d-4827-803c-b2a05efa8aa1                   myusers:new_developer
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc delete user --all
+user.user.openshift.io "admin" deleted
+user.user.openshift.io "new_admin" deleted
+user.user.openshift.io "new_developer" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get identity 
+NAME                                                                                                      IDP NAME                      IDP USER NAME                                                                 USER NAME       USER UID
+Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20   Red Hat Identity Management   dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20   admin           14f73205-310a-4206-aef8-e86835408746
+myusers:new_admin                                                                                         myusers                       new_admin                                                                     new_admin       ac88caf0-dfa6-4e68-947a-9b93e280d34c
+myusers:new_developer                                                                                     myusers                       new_developer                                                                 new_developer   b31cb88e-cd2d-4827-803c-b2a05efa8aa1
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc delete identity --all
+identity.user.openshift.io "Red Hat Identity Management:dWlkPWFkbWluLGNuPXVzZXJzLGNuPWFjY291bnRzLGRjPW9jcDQsZGM9ZXhhbXBsZSxkYz1jb20" deleted
+identity.user.openshift.io "myusers:new_admin" deleted
+identity.user.openshift.io "myusers:new_developer" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish  auth-providers
+SUCCESS Remove auth-providers project
+SUCCESS Remove cluster admin role
+SUCCESS Remove HTPasswd secret
+SUCCESS Reset identity provider
+SUCCESS Removing all users
+SUCCESS Removing all identities
+SUCCESS Removing authentication pods
+SUCCESS Waiting for authentication to work
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ls -a
+.   .ansible  .bash_logout   .bashrc  .config  DO280      Downloads  .grading       .kube   .mozilla  Pictures  Public  Templates  Videos
+..  .auth     .bash_profile  .cache   Desktop  Documents  .esd_auth  .ICEauthority  .local  Music     .pki      .ssh    .venv      .viminfo
+[student@workstation ~]$ ls -a .auth/ocp4-kubeconfig 
+.auth/ocp4-kubeconfig
+[student@workstation ~]$ lab start auth-rbac
+SUCCESS Waiting for cluster
+SUCCESS Remove auth-rbac project
+SUCCESS Creating admin in IdM
+SUCCESS Creating leader in IdM
+SUCCESS Creating developer in IdM
+SUCCESS Creating qa-engineer in IdM
+SUCCESS Restore project creation privileges
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get clusterrolebinding -o wide | grep -E 'NAME|self-provisioner'
+NAME                                                                        ROLE                                                                                    AGE   USERS                                                            GROUPS                                         SERVICEACCOUNTS
+self-provisioners                                                           ClusterRole/self-provisioner                                                            9d                                                                     system:authenticated:oauth                     
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc describe  clusterrolebindings self-provisioners
+Name:         self-provisioners
+Labels:       <none>
+Annotations:  rbac.authorization.kubernetes.io/autoupdate: true
+Role:
+  Kind:  ClusterRole
+  Name:  self-provisioner
+Subjects:
+  Kind   Name                        Namespace
+  ----   ----                        ---------
+  Group  system:authenticated:oauth  
+[student@workstation ~]$ oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+Warning: Your changes may get lost whenever a master is restarted, unless you prevent reconciliation of this rolebinding using the following command: oc annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false' --overwrite
+clusterrole.rbac.authorization.k8s.io/self-provisioner removed: "system:authenticated:oauth"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc describe  clusterrolebindings self-provisioners
+Error from server (NotFound): clusterrolebindings.rbac.authorization.k8s.io "self-provisioners" not found
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get clusterrolebinding -o wide | grep -E 'NAME|self-provisioner'
+NAME                                                                        ROLE                                                                                    AGE   USERS                                                            GROUPS                                         SERVICEACCOUNTS
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u leader -p redhat 
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc new-project test 
+Error from server (Forbidden): You may not request a new project via this API.
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "webconsole-apps".
+[student@workstation ~]$ oc new-project auth-rbac
+Now using project "auth-rbac" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc policy add-role-to-user admin leader
+clusterrole.rbac.authorization.k8s.io/admin added: "leader"
+[student@workstation ~]$ oc adm groups new dev-group
+group.user.openshift.io/dev-group created
+[student@workstation ~]$ oc adm groups dev-group
+error: unknown command "dev-group"
+See 'oc adm groups -h' for help and examples
+[student@workstation ~]$ oc adm groups dev-group -h
+Manage groups in your cluster
+
+ Groups are sets of users that can be used when describing policy.
+
+Available Commands:
+  add-users      Add users to a group
+  new            Create a new group
+  prune          Remove old OpenShift groups referencing missing records from an external provider
+  remove-users   Remove users from a group
+  sync           Sync OpenShift groups with records from an external provider
+
+Usage:
+  oc adm groups [flags] [options]
+
+Use "oc <command> --help" for more information about a given command.
+Use "oc options" for a list of global command-line options (applies to all commands).
+[student@workstation ~]$ oc get groups dev-group
+NAME        USERS
+dev-group   
+[student@workstation ~]$ oc adm groups add-users dev-group developer
+group.user.openshift.io/dev-group added: "developer"
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get groups dev-group
+NAME        USERS
+dev-group   developer
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm groups new qa-group
+group.user.openshift.io/qa-group created
+[student@workstation ~]$ oc get groups
+NAME                USERS
+Default SMB Group   
+admins              Administrator
+dev-group           developer
+developer           
+editors             
+ocpadmins           Administrator
+ocpdevs             . developer
+project-team        developer, tester
+qa-group            
+[student@workstation ~]$ oc adm groups add-users qa-group qa-engineer
+group.user.openshift.io/qa-group added: "qa-engineer"
+[student@workstation ~]$ oc get groups
+NAME                USERS
+Default SMB Group   
+admins              Administrator
+dev-group           developer
+developer           
+editors             
+ocpadmins           Administrator
+ocpdevs             . developer
+project-team        developer, tester
+qa-group            qa-engineer
+[student@workstation ~]$ oc policy add-role-to-group edit dev-group
+clusterrole.rbac.authorization.k8s.io/edit added: "dev-group"
+[student@workstation ~]$ oc policy add-role-to-group view qa-group
+clusterrole.rbac.authorization.k8s.io/view added: "qa-group"
+[student@workstation ~]$ oc get rolebindings -o wide | grep -v "^system:'
+> ^C
+[student@workstation ~]$ oc get rolebindings -o wide | grep -v "^system:"
+NAME                    ROLE                               AGE     USERS    GROUPS                             SERVICEACCOUNTS
+admin                   ClusterRole/admin                  3m26s   admin                                       
+admin-0                 ClusterRole/admin                  3m15s   leader                                      
+edit                    ClusterRole/edit                   41s              dev-group                          
+view                    ClusterRole/view                   32s              qa-group                           
+[student@workstation ~]$ oc login -u developer -p developer 
+Login successful.
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * auth-rbac
+    webconsole-apps
+
+Using project "auth-rbac".
+[student@workstation ~]$ oc new-app --name httpd httpd:2.4 
+warning: Cannot check if git requires authentication.
+--> Found image 2ffb964 (6 weeks old) in image stream "openshift/httpd" under tag "2.4" for "httpd:2.4"
+
+    Apache httpd 2.4 
+    ---------------- 
+    Apache httpd 2.4 available as container, is a powerful, efficient, and extensible web server. Apache supports a variety of features, many implemented as compiled modules which extend the core functionality. These can range from server-side programming language support to authentication schemes. Virtual hosting allows one Apache installation to serve many different Web sites.
+
+    Tags: builder, httpd, httpd24
+
+
+--> Creating resources ...
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "httpd" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "httpd" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "httpd" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "httpd" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+    deployment.apps "httpd" created
+    service "httpd" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/httpd' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ oc policy add-role-to-user edit qa-engineer
+Error from server (Forbidden): rolebindings.rbac.authorization.k8s.io is forbidden: User "developer" cannot list resource "rolebindings" in API group "rbac.authorization.k8s.io" in the namespace "auth-rbac"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u qa-engineer -p redhat 
+Login successful.
+
+You have one project on this server: "auth-rbac"
+
+Using project "auth-rbac".
+[student@workstation ~]$ oc scale deployment httpd --replicas 3 
+Error from server (Forbidden): deployments.apps "httpd" is forbidden: User "qa-engineer" cannot patch resource "deployments/scale" in API group "apps" in the namespace "auth-rbac"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "auth-rbac".
+[student@workstation ~]$ oc adm policy add-cluster-role-to-group --rolebinding-name self-provisioners self-provisioner system:authenticated:oauth
+Warning: Group 'system:authenticated:oauth' not found
+clusterrole.rbac.authorization.k8s.io/self-provisioner added: "system:authenticated:oauth"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish  auth-rbac 
+SUCCESS Remove auth-rbac project
+SUCCESS Deleting group dev-group
+SUCCESS Deleting group qa-group
+SUCCESS Deleting qa-engineer in IdM
+SUCCESS Removing all users
+SUCCESS Removing all identities
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab start auth-review 
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+SUCCESS Remove auth-review project
+SUCCESS Remove cluster admin role
+SUCCESS Remove HTPasswd secret
+SUCCESS Reset identity provider
+SUCCESS Removing all users
+SUCCESS Removing all identities
+SUCCESS Removing authentication pods
+SUCCESS Waiting for authentication to work
+[student@workstation ~]$ cat DO280/labs/auth-review/tmp_users 
+analyst:$apr1$hWPR4T6T$ArBfJyvDF1rHDv6dpqyTY.
+tester:$apr1$eR/Ct6Pi$snWCZ.ecsMQNwYJhEHxYM1
+leader:$apr1$v5ldniVX$XwMiaUdkuQJ5lKz7ayEy/0
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ htpasswd -D DO280/labs/auth-review/tmp_users analyst
+Deleting password for user analyst
+[student@workstation ~]$ cat DO280/labs/auth-review/tmp_users 
+tester:$apr1$eR/Ct6Pi$snWCZ.ecsMQNwYJhEHxYM1
+leader:$apr1$v5ldniVX$XwMiaUdkuQJ5lKz7ayEy/0
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ for NAME in tester leader new_admin new_developer
+> do
+> htpasswd -b /home/student/DO280/labs/auth-review/tmp_users ${NAME} 'L@bR3v!ew'
+> done
+Updating password for user tester
+Updating password for user leader
+Adding password for user new_admin
+Adding password for user new_developer
+[student@workstation ~]$ cat DO280/labs/auth-review/tmp_users
+tester:$apr1$mzl0kQFN$ETgFSrS5wSHIYD/PP1uOf/
+leader:$apr1$zQrYJEh7$11wZSm0mWqSPO3ARj5hEV0
+new_admin:$apr1$F4rLUDrr$zmo2tDvPhczXym3jE/v3E.
+new_developer:$apr1$Yq41pVvq$iYMwv4ExBguLoRrQ5wGHb/
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ oc create secret generic auth-review --from-file=htpasswd=/home/student/DO280/labs/auth-review/tmp_users -n openshift-config
+secret/auth-review created
+[student@workstation ~]$ oc get oauth cluster -o yaml > /home/student/DO280/labs/auth-review/oauth.yaml 
+[student@workstation ~]$ 
+[student@workstation ~]$ vim /home/student/DO280/labs/auth-review/oauth.yaml
+[student@workstation ~]$ cat /home/student/DO280/labs/auth-review/oauth.yaml
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  creationTimestamp: "2023-02-24T17:06:54Z"
+  generation: 8
+  name: cluster
+  resourceVersion: "331883"
+  uid: 27555dd7-c4d7-4d2e-be4e-4e03ea4dd1ed
+spec:
+  identityProviders:
+  - ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      bindDN: uid=admin,cn=users,cn=accounts,dc=ocp4,dc=example,dc=com
+      bindPassword:
+        name: ldap-secret
+      ca:
+        name: ca-config-map
+      insecure: false
+      url: ldap://idm.ocp4.example.com/cn=users,cn=accounts,dc=ocp4,dc=example,dc=com?uid
+    mappingMethod: claim
+    name: Red Hat Identity Management
+    type: LDAP
+  - htpasswd:
+      fileData:
+        name: auth-review
+    mappingMethod: claim
+    name: htpasswd
+    type: HTPasswd
+[student@workstation ~]$ 
+[student@workstation ~]$ oc replace -f /home/student/DO280/labs/auth-review/oauth.yaml
+oauth.config.openshift.io/cluster replaced
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ watch oc get pods -n openshift-authentication 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods -n openshift-authentication
+NAME                               READY   STATUS    RESTARTS   AGE
+oauth-openshift-779f9f4496-gmx7g   1/1     Running   0          38s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm policy add-cluster-role-to-user cluster-admin new_admin
+clusterrole.rbac.authorization.k8s.io/cluster-admin added: "new_admin"
+[student@workstation ~]$ oc login -u new_admin -p 'L@bR3v!ew'
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ ic get nodes
+bash: ic: command not found...
+[student@workstation ~]$ oc get nodes
+NAME       STATUS   ROLES                         AGE   VERSION
+master01   Ready    control-plane,master,worker   9d    v1.25.4+77bec7a
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u develper -p 'L@bR3v!ew'
+Login failed (401 Unauthorized)
+Verify you have provided the correct credentials.
+[student@workstation ~]$ oc login -u developer -p 'L@bR3v!ew'
+Login failed (401 Unauthorized)
+Verify you have provided the correct credentials.
+[student@workstation ~]$ oc login -u new_developer -p 'L@bR3v!ew'
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc get nodes
+Error from server (Forbidden): nodes is forbidden: User "new_developer" cannot list resource "nodes" in API group "" at the cluster scope
+[student@workstation ~]$ oc login -u new_admin -p 'L@bR3v!ew'
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+clusterrole.rbac.authorization.k8s.io/self-provisioner removed: "system:authenticated:oauth"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm groups new managers
+group.user.openshift.io/managers created
+[student@workstation ~]$ oc adm groups add-users managers leader
+group.user.openshift.io/managers added: "leader"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm policy add-cluster-role-to-group self-provisioner managers
+clusterrole.rbac.authorization.k8s.io/self-provisioner added: "managers"
+[student@workstation ~]$ oc login -u leader -p 'L@bR3v!ew'
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ oc new-project auth-review
+Now using project "auth-review" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u new_admin -p 'L@bR3v!ew'
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "auth-review".
+[student@workstation ~]$ oc adm groups new developers
+group.user.openshift.io/developers created
+[student@workstation ~]$ oc get group
+NAME                USERS
+Default SMB Group   
+admins              Administrator
+developer           
+developers          
+editors             
+managers            leader
+ocpadmins           Administrator
+ocpdevs             . developer
+project-team        developer, tester
+[student@workstation ~]$ oc adm groups add-users developers new_developer
+group.user.openshift.io/developers added: "new_developer"
+[student@workstation ~]$ oc get groups developers
+NAME         USERS
+developers   new_developer
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc policy add-role-to-group edit developers
+clusterrole.rbac.authorization.k8s.io/edit added: "developers"
+[student@workstation ~]$ oc adm groups new qa
+group.user.openshift.io/qa created
+[student@workstation ~]$ oc adm groups add-users qa tester
+group.user.openshift.io/qa added: "tester"
+[student@workstation ~]$ oc policy add-role-to-group view qa
+clusterrole.rbac.authorization.k8s.io/view added: "qa"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab grade auth-review 
+SUCCESS Verify cluster uses HTPasswd
+SUCCESS User analyst does not exist in the HTPasswd secret
+SUCCESS Verify new_admin user can login with a password of L@bR3v!ew
+SUCCESS Verify the new_admin group has a cluster role binding with the cluster-admin role
+SUCCESS The self-provisioner cluster role has been removed from the system:authenticated:oauth group
+SUCCESS Verify managers group exists
+SUCCESS Verify the managers group has a cluster role binding with the self-provisioner role
+SUCCESS The managers group contains the leader user
+SUCCESS Verify leader user can login with a password of L@bR3v!ew
+SUCCESS The auth-review project exists
+SUCCESS Validating admin role binding
+SUCCESS Verify developers group exists
+SUCCESS Validating edit role binding
+SUCCESS The developers group contains the new_developer user
+SUCCESS Verify new_developer user can login with a password of L@bR3v!ew
+SUCCESS Verify qa group exists
+SUCCESS Validating view role binding
+SUCCESS The qa group contains the tester user
+SUCCESS Verify tester user can login with a password of L@bR3v!ew
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish auth-review
+SUCCESS Remove auth-review project
+SUCCESS Apply manifest file self-provisioner.yaml
+SUCCESS Remove self-provisioner role from managers group
+SUCCESS Deleting group managers
+SUCCESS Deleting group developers
+SUCCESS Deleting group qa
+SUCCESS Remove cluster admin role
+SUCCESS Remove HTPasswd secret
+SUCCESS Reset identity provider
+SUCCESS Removing all users
+SUCCESS Removing all identities
+SUCCESS Removing authentication pods
+SUCCESS Waiting for authentication to work
+[student@workstation ~]$ 
+
