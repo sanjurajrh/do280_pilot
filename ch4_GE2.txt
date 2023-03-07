@@ -1,0 +1,34 @@
+[student@workstation ~]$ lab start selfservice-ranges 
+SUCCESS Waiting for cluster
+SUCCESS Remove selfservice-ranges project
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:8443
+error: dial tcp 192.168.50.254:8443: connect: connection refused - verify you have provided the correct host and port and that the server is currently running.
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc whoami --show-console 
+https://console-openshift-console.apps.ocp4.example.com
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-console) &
+[1] 46245
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=3.46778) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish selfservice-ranges 
+SUCCESS Remove selfservice-ranges project
+[student@workstation ~]$ 
+

@@ -1,0 +1,639 @@
+[student@workstation ~]$ lab start selfservice-quotas 
+SUCCESS Waiting for cluster
+SUCCESS Remove selfservice-quotas project
+SUCCESS Remove test project
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u developer -p developer https://api.ocp4.example.com:6443
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc new-project selfservice-quotas
+Now using project "selfservice-quotas" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create deployment test --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test created
+[student@workstation ~]$ 
+[student@workstation ~]$ oc set resources deployment test --requests=cpu=1
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test resource requirements updated
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pod,deployment 
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/test-7b849f5d46-r7wrw   1/1     Running   0          73s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   1/1     1            1           90s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc scale deployment test --replicas=8
+deployment.apps/test scaled
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pod,deployment 
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/test-7b849f5d46-6wlg7   0/1     Pending   0          6s
+pod/test-7b849f5d46-b4kpk   0/1     Pending   0          6s
+pod/test-7b849f5d46-bvjgw   0/1     Pending   0          6s
+pod/test-7b849f5d46-l6ppb   0/1     Pending   0          6s
+pod/test-7b849f5d46-lbw8c   1/1     Running   0          6s
+pod/test-7b849f5d46-r7wrw   1/1     Running   0          96s
+pod/test-7b849f5d46-rvslp   1/1     Running   0          6s
+pod/test-7b849f5d46-zzshc   1/1     Running   0          6s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   4/8     8            4           113s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get event --sort-by .metadata.creationTimestamp 
+LAST SEEN   TYPE      REASON              OBJECT                       MESSAGE
+2m22s       Normal    ScalingReplicaSet   deployment/test              Scaled up replica set test-b8d5658b6 to 1
+2m22s       Normal    SuccessfulCreate    replicaset/test-b8d5658b6    Created pod: test-b8d5658b6-z6xf6
+2m22s       Normal    Pulling             pod/test-b8d5658b6-z6xf6     Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+2m22s       Normal    AddedInterface      pod/test-b8d5658b6-z6xf6     Add eth0 [10.8.1.15/23] from ovn-kubernetes
+2m21s       Normal    Scheduled           pod/test-b8d5658b6-z6xf6     Successfully assigned selfservice-quotas/test-b8d5658b6-z6xf6 to master01
+2m21s       Normal    Started             pod/test-b8d5658b6-z6xf6     Started container hello-world-nginx
+2m21s       Normal    Created             pod/test-b8d5658b6-z6xf6     Created container hello-world-nginx
+2m21s       Normal    Pulled              pod/test-b8d5658b6-z6xf6     Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 322.509619ms
+2m6s        Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-r7wrw
+2m6s        Normal    ScalingReplicaSet   deployment/test              Scaled up replica set test-7b849f5d46 to 1
+2m5s        Normal    Scheduled           pod/test-7b849f5d46-r7wrw    Successfully assigned selfservice-quotas/test-7b849f5d46-r7wrw to master01
+2m5s        Normal    Pulling             pod/test-7b849f5d46-r7wrw    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+2m5s        Normal    Pulled              pod/test-7b849f5d46-r7wrw    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 313.31547ms
+2m5s        Normal    AddedInterface      pod/test-7b849f5d46-r7wrw    Add eth0 [10.8.1.16/23] from ovn-kubernetes
+2m4s        Normal    SuccessfulDelete    replicaset/test-b8d5658b6    Deleted pod: test-b8d5658b6-z6xf6
+2m4s        Normal    Created             pod/test-7b849f5d46-r7wrw    Created container hello-world-nginx
+2m4s        Normal    Started             pod/test-7b849f5d46-r7wrw    Started container hello-world-nginx
+2m4s        Normal    Killing             pod/test-b8d5658b6-z6xf6     Stopping container hello-world-nginx
+2m4s        Normal    ScalingReplicaSet   deployment/test              Scaled down replica set test-b8d5658b6 to 0 from 1
+35s         Normal    Scheduled           pod/test-7b849f5d46-rvslp    Successfully assigned selfservice-quotas/test-7b849f5d46-rvslp to master01
+36s         Normal    ScalingReplicaSet   deployment/test              Scaled up replica set test-7b849f5d46 to 8 from 1
+35s         Normal    Scheduled           pod/test-7b849f5d46-lbw8c    Successfully assigned selfservice-quotas/test-7b849f5d46-lbw8c to master01
+35s         Normal    Scheduled           pod/test-7b849f5d46-zzshc    Successfully assigned selfservice-quotas/test-7b849f5d46-zzshc to master01
+35s         Warning   FailedScheduling    pod/test-7b849f5d46-6wlg7    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+36s         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-b4kpk
+36s         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-zzshc
+36s         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-rvslp
+36s         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-lbw8c
+35s         Normal    Pulling             pod/test-7b849f5d46-lbw8c    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+35s         Normal    AddedInterface      pod/test-7b849f5d46-lbw8c    Add eth0 [10.8.1.17/23] from ovn-kubernetes
+35s         Warning   FailedScheduling    pod/test-7b849f5d46-b4kpk    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+35s         Warning   FailedScheduling    pod/test-7b849f5d46-bvjgw    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+35s         Warning   FailedScheduling    pod/test-7b849f5d46-l6ppb    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+36s         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-6wlg7
+36s         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-bvjgw
+36s         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-l6ppb
+34s         Normal    AddedInterface      pod/test-7b849f5d46-zzshc    Add eth0 [10.8.1.18/23] from ovn-kubernetes
+34s         Normal    Created             pod/test-7b849f5d46-lbw8c    Created container hello-world-nginx
+34s         Normal    Pulled              pod/test-7b849f5d46-lbw8c    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 325.975335ms
+34s         Normal    Started             pod/test-7b849f5d46-lbw8c    Started container hello-world-nginx
+34s         Normal    Pulling             pod/test-7b849f5d46-zzshc    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+34s         Normal    Pulled              pod/test-7b849f5d46-rvslp    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 312.589829ms
+34s         Normal    Pulled              pod/test-7b849f5d46-zzshc    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 523.459366ms
+34s         Normal    Pulling             pod/test-7b849f5d46-rvslp    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+35s         Normal    AddedInterface      pod/test-7b849f5d46-rvslp    Add eth0 [10.8.1.19/23] from ovn-kubernetes
+33s         Normal    Started             pod/test-7b849f5d46-zzshc    Started container hello-world-nginx
+33s         Normal    Started             pod/test-7b849f5d46-rvslp    Started container hello-world-nginx
+33s         Normal    Created             pod/test-7b849f5d46-rvslp    Created container hello-world-nginx
+33s         Normal    Created             pod/test-7b849f5d46-zzshc    Created container hello-world-nginx
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "selfservice-quotas".
+[student@workstation ~]$ oc adm top node 
+NAME       CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+master01   1079m        14%    13398Mi         70%       
+[student@workstation ~]$ oc describe node/master01
+Name:               master01
+Roles:              control-plane,master,worker
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=master01
+                    kubernetes.io/os=linux
+                    node-role.kubernetes.io/control-plane=
+                    node-role.kubernetes.io/master=
+                    node-role.kubernetes.io/worker=
+                    node.openshift.io/os_id=rhcos
+                    topology.topolvm.io/node=master01
+Annotations:        capacity.topolvm.io/00default: 0
+                    capacity.topolvm.io/vg1: 482638561280
+                    csi.volume.kubernetes.io/nodeid: {"topolvm.io":"master01"}
+                    k8s.ovn.org/host-addresses: ["192.168.50.10"]
+                    k8s.ovn.org/l3-gateway-config:
+                      {"default":{"mode":"shared","interface-id":"br-ex_master01","mac-address":"52:54:00:00:32:0a","ip-addresses":["192.168.50.10/24"],"ip-addr...
+                    k8s.ovn.org/node-chassis-id: 00a2bb47-e4f9-4111-a3e0-ae1c12deabbe
+                    k8s.ovn.org/node-gateway-router-lrp-ifaddr: {"ipv4":"100.64.0.2/16"}
+                    k8s.ovn.org/node-mgmt-port-mac-address: 1e:c3:1c:65:a6:7f
+                    k8s.ovn.org/node-primary-ifaddr: {"ipv4":"192.168.50.10/24"}
+                    k8s.ovn.org/node-subnets: {"default":"10.8.0.0/23"}
+                    machineconfiguration.openshift.io/controlPlaneTopology: SingleReplica
+                    machineconfiguration.openshift.io/currentConfig: rendered-master-180065df8c9f6325ac4d9bad901eae02
+                    machineconfiguration.openshift.io/desiredConfig: rendered-master-180065df8c9f6325ac4d9bad901eae02
+                    machineconfiguration.openshift.io/desiredDrain: uncordon-rendered-master-180065df8c9f6325ac4d9bad901eae02
+                    machineconfiguration.openshift.io/lastAppliedDrain: uncordon-rendered-master-180065df8c9f6325ac4d9bad901eae02
+                    machineconfiguration.openshift.io/reason: 
+                    machineconfiguration.openshift.io/state: Done
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Fri, 24 Feb 2023 12:13:37 -0500
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  master01
+  AcquireTime:     <unset>
+  RenewTime:       Tue, 07 Mar 2023 09:32:53 -0500
+Conditions:
+  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----             ------  -----------------                 ------------------                ------                       -------
+  MemoryPressure   False   Tue, 07 Mar 2023 09:31:18 -0500   Sun, 05 Mar 2023 20:52:20 -0500   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure     False   Tue, 07 Mar 2023 09:31:18 -0500   Sun, 05 Mar 2023 20:52:20 -0500   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure      False   Tue, 07 Mar 2023 09:31:18 -0500   Sun, 05 Mar 2023 20:52:20 -0500   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready            True    Tue, 07 Mar 2023 09:31:18 -0500   Sun, 05 Mar 2023 20:52:20 -0500   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  192.168.50.10
+  Hostname:    master01
+Capacity:
+  cpu:                8
+  ephemeral-storage:  125293548Ki
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             20531668Ki
+  pods:               250
+Allocatable:
+  cpu:                7500m
+  ephemeral-storage:  114396791822
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             19380692Ki
+  pods:               250
+System Info:
+  Machine ID:                                       b6148dc14dc74fd499fd1a5fb366f706
+  System UUID:                                      6aa90335-bf64-47f9-9e05-b44a128645a7
+  Boot ID:                                          2b79a160-dfbf-4d48-9c72-547d213d6301
+  Kernel Version:                                   4.18.0-372.40.1.el8_6.x86_64
+  OS Image:                                         Red Hat Enterprise Linux CoreOS 412.86.202301061548-0 (Ootpa)
+  Operating System:                                 linux
+  Architecture:                                     amd64
+  Container Runtime Version:                        cri-o://1.25.1-5.rhaos4.12.git6005903.el8
+  Kubelet Version:                                  v1.25.4+77bec7a
+  Kube-Proxy Version:                               v1.25.4+77bec7a
+Non-terminated Pods:                                (92 in total)
+  Namespace                                         Name                                                          CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                                         ----                                                          ------------  ----------  ---------------  -------------  ---
+  metallb-system                                    controller-7db44668b9-lmbnh                                   10m (0%)      0 (0%)      20Mi (0%)        0 (0%)         10d
+  metallb-system                                    metallb-operator-controller-manager-674bc8d5db-nlwfn          50m (0%)      0 (0%)      20Mi (0%)        0 (0%)         10d
+  metallb-system                                    metallb-operator-webhook-server-645779fbd5-7njxc              0 (0%)        0 (0%)      0 (0%)           0 (0%)         10d
+  metallb-system                                    speaker-c8n7p                                                 20m (0%)      0 (0%)      40Mi (0%)        0 (0%)         10d
+  nfs-client-provisioner                            nfs-client-provisioner-79c9d77bf5-tjv7r                       0 (0%)        0 (0%)      0 (0%)           0 (0%)         10d
+  openshift-apiserver-operator                      openshift-apiserver-operator-7ddc8958fb-crt5v                 10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-apiserver                               apiserver-7b449cd99c-cxgl9                                    110m (1%)     0 (0%)      250Mi (1%)       0 (0%)         10d
+  openshift-authentication-operator                 authentication-operator-65f78f5bc6-zd4n9                      20m (0%)      0 (0%)      200Mi (1%)       0 (0%)         10d
+  openshift-authentication                          oauth-openshift-59d7f84557-7bb9q                              10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         21h
+  openshift-cloud-controller-manager-operator       cluster-cloud-controller-manager-operator-6b6d666976-p4t2b    20m (0%)      0 (0%)      75Mi (0%)        0 (0%)         10d
+  openshift-cloud-credential-operator               cloud-credential-operator-6ffc47fc7f-p4s8r                    20m (0%)      0 (0%)      170Mi (0%)       0 (0%)         10d
+  openshift-cluster-machine-approver                machine-approver-745689cc9c-z6cwg                             20m (0%)      0 (0%)      70Mi (0%)        0 (0%)         10d
+  openshift-cluster-node-tuning-operator            cluster-node-tuning-operator-8648f4dc6c-2kzm7                 10m (0%)      0 (0%)      20Mi (0%)        0 (0%)         10d
+  openshift-cluster-node-tuning-operator            tuned-nvmtj                                                   10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-cluster-samples-operator                cluster-samples-operator-cb84469d6-dtz6r                      20m (0%)      0 (0%)      100Mi (0%)       0 (0%)         10d
+  openshift-cluster-storage-operator                cluster-storage-operator-66c94c594-pvvwd                      10m (0%)      0 (0%)      20Mi (0%)        0 (0%)         10d
+  openshift-cluster-storage-operator                csi-snapshot-controller-6587df558d-jtcvw                      10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-cluster-storage-operator                csi-snapshot-controller-operator-7d599d59ff-478hl             10m (0%)      0 (0%)      65Mi (0%)        0 (0%)         10d
+  openshift-cluster-storage-operator                csi-snapshot-webhook-8688766d4c-xfnkn                         10m (0%)      0 (0%)      20Mi (0%)        0 (0%)         10d
+  openshift-cluster-version                         cluster-version-operator-bf4b56b57-tgm5m                      20m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-config-operator                         openshift-config-operator-77b6ddc656-6sx5k                    10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-console-operator                        console-operator-c9ff497c-gdnqp                               20m (0%)      0 (0%)      200Mi (1%)       0 (0%)         10d
+  openshift-console                                 console-66b6b79c6b-djk5l                                      10m (0%)      0 (0%)      100Mi (0%)       0 (0%)         10d
+  openshift-console                                 downloads-6f8d7cfffb-pzvjx                                    10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-controller-manager-operator             openshift-controller-manager-operator-67f74c4b9b-x4wgf        10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-controller-manager                      controller-manager-667cd9646d-wsf8t                           100m (1%)     0 (0%)      100Mi (0%)       0 (0%)         36h
+  openshift-dns-operator                            dns-operator-64688bfdd4-s5fr8                                 20m (0%)      0 (0%)      69Mi (0%)        0 (0%)         10d
+  openshift-dns                                     dns-default-bw6pb                                             60m (0%)      0 (0%)      110Mi (0%)       0 (0%)         10d
+  openshift-dns                                     node-resolver-rjjzl                                           5m (0%)       0 (0%)      21Mi (0%)        0 (0%)         10d
+  openshift-etcd-operator                           etcd-operator-79996f5bfb-24lgq                                10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-etcd                                    etcd-master01                                                 360m (4%)     0 (0%)      910Mi (4%)       0 (0%)         10d
+  openshift-image-registry                          cluster-image-registry-operator-77bbb4466-kgchv               10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-image-registry                          image-registry-7d94bd9ddf-d9dnv                               100m (1%)     0 (0%)      256Mi (1%)       0 (0%)         10d
+  openshift-image-registry                          node-ca-997v9                                                 10m (0%)      0 (0%)      10Mi (0%)        0 (0%)         10d
+  openshift-ingress-canary                          ingress-canary-ddr4z                                          10m (0%)      0 (0%)      20Mi (0%)        0 (0%)         10d
+  openshift-ingress-operator                        ingress-operator-597cb6fb8f-62jjf                             20m (0%)      0 (0%)      96Mi (0%)        0 (0%)         10d
+  openshift-ingress                                 router-default-cb87c4797-th9sl                                100m (1%)     0 (0%)      256Mi (1%)       0 (0%)         10d
+  openshift-insights                                insights-operator-86b7db95f-8lt5g                             10m (0%)      0 (0%)      30Mi (0%)        0 (0%)         10d
+  openshift-kube-apiserver-operator                 kube-apiserver-operator-78f848f7c5-5svqj                      10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-kube-apiserver                          kube-apiserver-master01                                       290m (3%)     0 (0%)      1224Mi (6%)      0 (0%)         36h
+  openshift-kube-controller-manager-operator        kube-controller-manager-operator-697bdbf7-zkxl5               10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-kube-controller-manager                 kube-controller-manager-master01                              80m (1%)      0 (0%)      500Mi (2%)       0 (0%)         10d
+  openshift-kube-scheduler-operator                 openshift-kube-scheduler-operator-699ddd695-zhmx6             10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-kube-scheduler                          openshift-kube-scheduler-master01                             25m (0%)      0 (0%)      150Mi (0%)       0 (0%)         10d
+  openshift-kube-storage-version-migrator-operator  kube-storage-version-migrator-operator-579cb6b6b8-zfh4z       10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-kube-storage-version-migrator           migrator-5c54d8d69d-xqr5s                                     10m (0%)      0 (0%)      200Mi (1%)       0 (0%)         10d
+  openshift-machine-api                             cluster-autoscaler-operator-647cbf4d9d-7ntzc                  30m (0%)      0 (0%)      70Mi (0%)        0 (0%)         10d
+  openshift-machine-api                             cluster-baremetal-operator-856f996786-j7l4g                   20m (0%)      0 (0%)      70Mi (0%)        0 (0%)         10d
+  openshift-machine-api                             control-plane-machine-set-operator-ff9599746-zr7rf            10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-machine-api                             machine-api-operator-5576f85d6c-8bxsb                         20m (0%)      0 (0%)      70Mi (0%)        0 (0%)         10d
+  openshift-machine-config-operator                 machine-config-controller-74b4b5cbcf-8m84h                    40m (0%)      0 (0%)      100Mi (0%)       0 (0%)         10d
+  openshift-machine-config-operator                 machine-config-daemon-xqts9                                   40m (0%)      0 (0%)      100Mi (0%)       0 (0%)         10d
+  openshift-machine-config-operator                 machine-config-operator-649f7f8847-frd6s                      20m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-machine-config-operator                 machine-config-server-cnl6m                                   20m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-marketplace                             do280-catalog-community-4cl66                                 10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-marketplace                             do280-catalog-redhat-lbspt                                    10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-marketplace                             marketplace-operator-5c4786fc48-d6zmg                         10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-monitoring                              alertmanager-main-0                                           9m (0%)       0 (0%)      120Mi (0%)       0 (0%)         10d
+  openshift-monitoring                              cluster-monitoring-operator-56b769b58f-vtb97                  11m (0%)      0 (0%)      95Mi (0%)        0 (0%)         10d
+  openshift-monitoring                              kube-state-metrics-75455b796c-vldvt                           4m (0%)       0 (0%)      110Mi (0%)       0 (0%)         10d
+  openshift-monitoring                              node-exporter-t6f5b                                           9m (0%)       0 (0%)      47Mi (0%)        0 (0%)         10d
+  openshift-monitoring                              openshift-state-metrics-5ff95d844f-js2dn                      3m (0%)       0 (0%)      72Mi (0%)        0 (0%)         10d
+  openshift-monitoring                              prometheus-adapter-7f5d7996d8-zkbp4                           1m (0%)       0 (0%)      40Mi (0%)        0 (0%)         36h
+  openshift-monitoring                              prometheus-k8s-0                                              75m (1%)      0 (0%)      1104Mi (5%)      0 (0%)         10d
+  openshift-monitoring                              prometheus-operator-7985bb87b6-bn7jh                          6m (0%)       0 (0%)      165Mi (0%)       0 (0%)         10d
+  openshift-monitoring                              prometheus-operator-admission-webhook-849b6cd6bf-2tkz7        5m (0%)       0 (0%)      30Mi (0%)        0 (0%)         10d
+  openshift-monitoring                              thanos-querier-7ccdbd6fb5-rb594                               15m (0%)      0 (0%)      92Mi (0%)        0 (0%)         10d
+  openshift-multus                                  multus-additional-cni-plugins-bw922                           10m (0%)      0 (0%)      10Mi (0%)        0 (0%)         10d
+  openshift-multus                                  multus-admission-controller-7fcfddfd4f-6b59m                  20m (0%)      0 (0%)      70Mi (0%)        0 (0%)         36h
+  openshift-multus                                  multus-q9ffl                                                  10m (0%)      0 (0%)      65Mi (0%)        0 (0%)         10d
+  openshift-multus                                  network-metrics-daemon-ldhkq                                  20m (0%)      0 (0%)      120Mi (0%)       0 (0%)         10d
+  openshift-network-diagnostics                     network-check-source-746dd6c885-h2hxp                         10m (0%)      0 (0%)      40Mi (0%)        0 (0%)         10d
+  openshift-network-diagnostics                     network-check-target-grqz5                                    10m (0%)      0 (0%)      15Mi (0%)        0 (0%)         10d
+  openshift-network-operator                        network-operator-6668bb7647-pwsdd                             10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-oauth-apiserver                         apiserver-7cd6c689fc-qqrq4                                    150m (2%)     0 (0%)      200Mi (1%)       0 (0%)         10d
+  openshift-operator-lifecycle-manager              catalog-operator-756ccdbd48-kwqxm                             10m (0%)      0 (0%)      80Mi (0%)        0 (0%)         10d
+  openshift-operator-lifecycle-manager              olm-operator-6ff789c848-8c827                                 10m (0%)      0 (0%)      160Mi (0%)       0 (0%)         10d
+  openshift-operator-lifecycle-manager              package-server-manager-58c47669df-sxk58                       10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-operator-lifecycle-manager              packageserver-6f47cd6999-hv5sp                                10m (0%)      0 (0%)      50Mi (0%)        0 (0%)         10d
+  openshift-ovn-kubernetes                          ovnkube-master-rvp4v                                          60m (0%)      0 (0%)      1520Mi (8%)      0 (0%)         10d
+  openshift-ovn-kubernetes                          ovnkube-node-fltkr                                            50m (0%)      0 (0%)      660Mi (3%)       0 (0%)         10d
+  openshift-route-controller-manager                route-controller-manager-7cb48b6854-7rj2v                     100m (1%)     0 (0%)      100Mi (0%)       0 (0%)         36h
+  openshift-service-ca-operator                     service-ca-operator-78ddbb4597-txgch                          10m (0%)      0 (0%)      80Mi (0%)        0 (0%)         10d
+  openshift-service-ca                              service-ca-5d96446959-vh52r                                   10m (0%)      0 (0%)      120Mi (0%)       0 (0%)         10d
+  openshift-storage                                 lvms-operator-5cd8df6fbf-n8ws9                                80m (1%)      200m (2%)   80Mi (0%)        200Mi (1%)     10d
+  openshift-storage                                 topolvm-controller-5d4695c8b4-4h5ls                           220m (2%)     350m (4%)   280Mi (1%)       500Mi (2%)     10d
+  openshift-storage                                 topolvm-node-htmkt                                            250m (3%)     380m (5%)   310Mi (1%)       450Mi (2%)     10d
+  openshift-storage                                 vg-manager-7qt4b                                              30m (0%)      50m (0%)    50Mi (0%)        100Mi (0%)     10d
+  selfservice-quotas                                test-7b849f5d46-lbw8c                                         1 (13%)       0 (0%)      0 (0%)           0 (0%)         39m
+  selfservice-quotas                                test-7b849f5d46-r7wrw                                         1 (13%)       0 (0%)      0 (0%)           0 (0%)         41m
+  selfservice-quotas                                test-7b849f5d46-rvslp                                         1 (13%)       0 (0%)      0 (0%)           0 (0%)         39m
+  selfservice-quotas                                test-7b849f5d46-zzshc                                         1 (13%)       0 (0%)      0 (0%)           0 (0%)         39m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests       Limits
+  --------           --------       ------
+  cpu                7168m (95%)    980m (13%)
+  memory             12717Mi (67%)  1250Mi (6%)
+  ephemeral-storage  0 (0%)         0 (0%)
+  hugepages-1Gi      0 (0%)         0 (0%)
+  hugepages-2Mi      0 (0%)         0 (0%)
+Events:              <none>
+[student@workstation ~]$ oc new-project test
+Now using project "test" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc create deployment test --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test created
+[student@workstation ~]$ oc set resources deployment test --requests=cpu=1
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test resource requirements updated
+[student@workstation ~]$ oc get deployment,pod
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   1/1     1            1           7m32s
+
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/test-7b849f5d46-bwqcc   0/1     Pending   0          6m4s
+pod/test-b8d5658b6-q2k9j    1/1     Running   0          7m31s
+[student@workstation ~]$ oc delete namespace test 
+namespace "test" deleted
+[student@workstation ~]$ oc project selfservice-quotas 
+Now using project "selfservice-quotas" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc get quota 
+No resources found in selfservice-quotas namespace.
+[student@workstation ~]$ oc get resourcequotas 
+No resources found in selfservice-quotas namespace.
+[student@workstation ~]$ oc scale deployment test --replicas=1
+deployment.apps/test scaled
+[student@workstation ~]$ oc create quota two-cpus --hard=requests.cpu=2
+resourcequota/two-cpus created
+[student@workstation ~]$ oc get quota 
+NAME       AGE   REQUEST             LIMIT
+two-cpus   7s    requests.cpu: 1/2   
+[student@workstation ~]$ oc get quota two-cpus -o yaml 
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  creationTimestamp: "2023-03-07T14:44:55Z"
+  name: two-cpus
+  namespace: selfservice-quotas
+  resourceVersion: "760501"
+  uid: 39a6ec54-51fb-4703-801d-e9f127923ca6
+spec:
+  hard:
+    requests.cpu: "2"
+status:
+  hard:
+    requests.cpu: "2"
+  used:
+    requests.cpu: "1"
+[student@workstation ~]$ oc scale deployment test --replicas=8 
+deployment.apps/test scaled
+[student@workstation ~]$ oc get pods 
+NAME                    READY   STATUS    RESTARTS   AGE
+test-7b849f5d46-n6cdx   1/1     Running   0          4s
+test-7b849f5d46-r7wrw   1/1     Running   0          53m
+[student@workstation ~]$ oc get pods,deployment 
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/test-7b849f5d46-n6cdx   1/1     Running   0          9s
+pod/test-7b849f5d46-r7wrw   1/1     Running   0          53m
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   2/8     2            2           54m
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create deployment test2 --image registry.lab.example.com:8443/redhattraining/hello-world-nginx
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test2 created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods,deployment 
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/test-7b849f5d46-n6cdx   1/1     Running   0          44s
+pod/test-7b849f5d46-r7wrw   1/1     Running   0          54m
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test    2/8     2            2           54m
+deployment.apps/test2   0/1     0            0           8s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get quota two-cpus -o yaml 
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  creationTimestamp: "2023-03-07T14:44:55Z"
+  name: two-cpus
+  namespace: selfservice-quotas
+  resourceVersion: "760702"
+  uid: 39a6ec54-51fb-4703-801d-e9f127923ca6
+spec:
+  hard:
+    requests.cpu: "2"
+status:
+  hard:
+    requests.cpu: "2"
+  used:
+    requests.cpu: "2"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get event --sort-by .metadata.creationTimestamp
+LAST SEEN   TYPE      REASON              OBJECT                       MESSAGE
+55m         Normal    SuccessfulCreate    replicaset/test-b8d5658b6    Created pod: test-b8d5658b6-z6xf6
+55m         Normal    Scheduled           pod/test-b8d5658b6-z6xf6     Successfully assigned selfservice-quotas/test-b8d5658b6-z6xf6 to master01
+55m         Normal    AddedInterface      pod/test-b8d5658b6-z6xf6     Add eth0 [10.8.1.15/23] from ovn-kubernetes
+55m         Normal    ScalingReplicaSet   deployment/test              Scaled up replica set test-b8d5658b6 to 1
+55m         Normal    Pulling             pod/test-b8d5658b6-z6xf6     Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+55m         Normal    Created             pod/test-b8d5658b6-z6xf6     Created container hello-world-nginx
+55m         Normal    Started             pod/test-b8d5658b6-z6xf6     Started container hello-world-nginx
+55m         Normal    Pulled              pod/test-b8d5658b6-z6xf6     Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 322.509619ms
+55m         Normal    Scheduled           pod/test-7b849f5d46-r7wrw    Successfully assigned selfservice-quotas/test-7b849f5d46-r7wrw to master01
+55m         Normal    ScalingReplicaSet   deployment/test              Scaled up replica set test-7b849f5d46 to 1
+55m         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-r7wrw
+55m         Normal    Pulled              pod/test-7b849f5d46-r7wrw    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 313.31547ms
+55m         Normal    AddedInterface      pod/test-7b849f5d46-r7wrw    Add eth0 [10.8.1.16/23] from ovn-kubernetes
+55m         Normal    Pulling             pod/test-7b849f5d46-r7wrw    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+55m         Normal    ScalingReplicaSet   deployment/test              Scaled down replica set test-b8d5658b6 to 0 from 1
+55m         Normal    Created             pod/test-7b849f5d46-r7wrw    Created container hello-world-nginx
+55m         Normal    Started             pod/test-7b849f5d46-r7wrw    Started container hello-world-nginx
+55m         Normal    Killing             pod/test-b8d5658b6-z6xf6     Stopping container hello-world-nginx
+55m         Normal    SuccessfulDelete    replicaset/test-b8d5658b6    Deleted pod: test-b8d5658b6-z6xf6
+53m         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-zzshc
+53m         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-rvslp
+98s         Normal    ScalingReplicaSet   deployment/test              Scaled up replica set test-7b849f5d46 to 8 from 1
+53m         Normal    Scheduled           pod/test-7b849f5d46-zzshc    Successfully assigned selfservice-quotas/test-7b849f5d46-zzshc to master01
+53m         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-b4kpk
+53m         Normal    Scheduled           pod/test-7b849f5d46-rvslp    Successfully assigned selfservice-quotas/test-7b849f5d46-rvslp to master01
+53m         Normal    Scheduled           pod/test-7b849f5d46-lbw8c    Successfully assigned selfservice-quotas/test-7b849f5d46-lbw8c to master01
+53m         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-lbw8c
+53m         Warning   FailedScheduling    pod/test-7b849f5d46-6wlg7    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+53m         Warning   FailedScheduling    pod/test-7b849f5d46-l6ppb    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+53m         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-l6ppb
+53m         Normal    Pulling             pod/test-7b849f5d46-lbw8c    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+53m         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-bvjgw
+53m         Normal    AddedInterface      pod/test-7b849f5d46-lbw8c    Add eth0 [10.8.1.17/23] from ovn-kubernetes
+53m         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-6wlg7
+53m         Warning   FailedScheduling    pod/test-7b849f5d46-bvjgw    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+53m         Warning   FailedScheduling    pod/test-7b849f5d46-b4kpk    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+53m         Normal    Pulled              pod/test-7b849f5d46-rvslp    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 312.589829ms
+53m         Normal    AddedInterface      pod/test-7b849f5d46-zzshc    Add eth0 [10.8.1.18/23] from ovn-kubernetes
+53m         Normal    Pulling             pod/test-7b849f5d46-zzshc    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+53m         Normal    Pulled              pod/test-7b849f5d46-zzshc    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 523.459366ms
+53m         Normal    Pulling             pod/test-7b849f5d46-rvslp    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+53m         Normal    AddedInterface      pod/test-7b849f5d46-rvslp    Add eth0 [10.8.1.19/23] from ovn-kubernetes
+53m         Normal    Pulled              pod/test-7b849f5d46-lbw8c    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 325.975335ms
+53m         Normal    Created             pod/test-7b849f5d46-lbw8c    Created container hello-world-nginx
+53m         Normal    Started             pod/test-7b849f5d46-lbw8c    Started container hello-world-nginx
+53m         Normal    Started             pod/test-7b849f5d46-rvslp    Started container hello-world-nginx
+53m         Normal    Created             pod/test-7b849f5d46-rvslp    Created container hello-world-nginx
+53m         Normal    Created             pod/test-7b849f5d46-zzshc    Created container hello-world-nginx
+53m         Normal    Started             pod/test-7b849f5d46-zzshc    Started container hello-world-nginx
+4m15s       Warning   FailedScheduling    pod/test-7b849f5d46-bvjgw    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+4m15s       Warning   FailedScheduling    pod/test-7b849f5d46-6wlg7    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+4m15s       Warning   FailedScheduling    pod/test-7b849f5d46-l6ppb    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+4m15s       Warning   FailedScheduling    pod/test-7b849f5d46-b4kpk    0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.
+2m56s       Normal    SuccessfulDelete    replicaset/test-7b849f5d46   Deleted pod: test-7b849f5d46-lbw8c
+2m56s       Normal    ScalingReplicaSet   deployment/test              Scaled down replica set test-7b849f5d46 to 1 from 8
+2m56s       Normal    SuccessfulDelete    replicaset/test-7b849f5d46   Deleted pod: test-7b849f5d46-rvslp
+2m56s       Normal    SuccessfulDelete    replicaset/test-7b849f5d46   Deleted pod: test-7b849f5d46-l6ppb
+2m56s       Normal    SuccessfulDelete    replicaset/test-7b849f5d46   Deleted pod: test-7b849f5d46-b4kpk
+2m56s       Normal    SuccessfulDelete    replicaset/test-7b849f5d46   Deleted pod: test-7b849f5d46-6wlg7
+2m56s       Normal    SuccessfulDelete    replicaset/test-7b849f5d46   Deleted pod: test-7b849f5d46-bvjgw
+2m55s       Warning   FailedScheduling    pod/test-7b849f5d46-l6ppb    skip schedule deleting pod: selfservice-quotas/test-7b849f5d46-l6ppb
+2m54s       Normal    Killing             pod/test-7b849f5d46-zzshc    Stopping container hello-world-nginx
+2m56s       Normal    SuccessfulDelete    replicaset/test-7b849f5d46   Deleted pod: test-7b849f5d46-zzshc
+2m55s       Warning   FailedScheduling    pod/test-7b849f5d46-6wlg7    skip schedule deleting pod: selfservice-quotas/test-7b849f5d46-6wlg7
+2m54s       Normal    Killing             pod/test-7b849f5d46-rvslp    Stopping container hello-world-nginx
+2m55s       Warning   FailedScheduling    pod/test-7b849f5d46-b4kpk    skip schedule deleting pod: selfservice-quotas/test-7b849f5d46-b4kpk
+2m55s       Warning   FailedScheduling    pod/test-7b849f5d46-bvjgw    skip schedule deleting pod: selfservice-quotas/test-7b849f5d46-bvjgw
+2m54s       Normal    Killing             pod/test-7b849f5d46-lbw8c    Stopping container hello-world-nginx
+98s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-bww2z" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+98s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-xsjhc" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+98s         Normal    SuccessfulCreate    replicaset/test-7b849f5d46   Created pod: test-7b849f5d46-n6cdx
+97s         Normal    Scheduled           pod/test-7b849f5d46-n6cdx    Successfully assigned selfservice-quotas/test-7b849f5d46-n6cdx to master01
+98s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-sdk64" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+98s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-k5nr4" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+98s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-lb427" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+98s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-q7wsc" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+98s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-kwzl6" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+98s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-czbxt" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+97s         Normal    AddedInterface      pod/test-7b849f5d46-n6cdx    Add eth0 [10.8.1.25/23] from ovn-kubernetes
+97s         Normal    Pulled              pod/test-7b849f5d46-n6cdx    Successfully pulled image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx" in 320.668667ms
+97s         Warning   FailedCreate        replicaset/test-7b849f5d46   Error creating: pods "test-7b849f5d46-655db" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+97s         Normal    Pulling             pod/test-7b849f5d46-n6cdx    Pulling image "registry.ocp4.example.com:8443/redhattraining/hello-world-nginx"
+32s         Warning   FailedCreate        replicaset/test-7b849f5d46   (combined from similar events): Error creating: pods "test-7b849f5d46-rq6x2" is forbidden: exceeded quota: two-cpus, requested: requests.cpu=1, used: requests.cpu=2, limited: requests.cpu=2
+96s         Normal    Created             pod/test-7b849f5d46-n6cdx    Created container hello-world-nginx
+96s         Normal    Started             pod/test-7b849f5d46-n6cdx    Started container hello-world-nginx
+62s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-vk78q" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+62s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-fkk8q" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+62s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-2w5l6" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+62s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-k9xl5" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+62s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-5tcj6" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+62s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-ksvb2" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+62s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-h7hb5" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+62s         Normal    ScalingReplicaSet   deployment/test2             Scaled up replica set test2-bd9b9fd5 to 1
+61s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-cg86q" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+61s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    Error creating: pods "test2-bd9b9fd5-5hkn6" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+21s         Warning   FailedCreate        replicaset/test2-bd9b9fd5    (combined from similar events): Error creating: pods "test2-bd9b9fd5-r44mc" is forbidden: failed quota: two-cpus: must specify requests.cpu for: hello-world-nginx
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc new-project test 
+Now using project "test" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create deployment test --image registry.lab.example.com:8443/redhattraining/hello-world-nginx
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test created
+[student@workstation ~]$ 
+[student@workstation ~]$ oc set resources deployment test --requests=cpu=1
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test resource requirements updated
+[student@workstation ~]$ oc get pods,deployment
+NAME                        READY   STATUS             RESTARTS   AGE
+pod/test-77b85bcd49-mzc7z   0/1     ImagePullBackOff   0          5s
+pod/test-7c98d9d599-gds9q   0/1     ErrImagePull       0          26s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   0/1     1            0           26s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods,deployment
+NAME                        READY   STATUS             RESTARTS   AGE
+pod/test-77b85bcd49-mzc7z   0/1     ImagePullBackOff   0          8s
+pod/test-7c98d9d599-gds9q   0/1     ErrImagePull       0          29s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   0/1     1            0           29s
+[student@workstation ~]$ oc get pods,deployment
+NAME                        READY   STATUS             RESTARTS   AGE
+pod/test-77b85bcd49-mzc7z   0/1     ImagePullBackOff   0          14s
+pod/test-7c98d9d599-gds9q   0/1     ErrImagePull       0          35s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   0/1     1            0           35s
+[student@workstation ~]$ oc get pods,deployment
+NAME                        READY   STATUS             RESTARTS   AGE
+pod/test-77b85bcd49-mzc7z   0/1     ImagePullBackOff   0          17s
+pod/test-7c98d9d599-gds9q   0/1     ImagePullBackOff   0          38s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   0/1     1            0           38s
+[student@workstation ~]$ oc delete pod/test-7c98d9d599-gds9q
+pod "test-7c98d9d599-gds9q" deleted
+[student@workstation ~]$ oc get pods,deployment
+NAME                        READY   STATUS             RESTARTS   AGE
+pod/test-77b85bcd49-mzc7z   0/1     ImagePullBackOff   0          48s
+pod/test-7c98d9d599-p8g6d   0/1     ImagePullBackOff   0          4s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   0/1     1            0           69s
+[student@workstation ~]$ oc project 
+Using project "test" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods,deployment
+NAME                        READY   STATUS             RESTARTS   AGE
+pod/test-77b85bcd49-mzc7z   0/1     ImagePullBackOff   0          2m9s
+pod/test-7c98d9d599-p8g6d   0/1     ImagePullBackOff   0          85s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   0/1     1            0           2m30s
+[student@workstation ~]$ oc get pod,deployment
+NAME                        READY   STATUS             RESTARTS   AGE
+pod/test-77b85bcd49-mzc7z   0/1     ImagePullBackOff   0          2m15s
+pod/test-7c98d9d599-p8g6d   0/1     ImagePullBackOff   0          91s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   0/1     1            0           2m36s
+[student@workstation ~]$ oc delete project test 
+project.project.openshift.io "test" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project
+error: you do not have rights to view project "test" specified in your config or the project doesn't exist
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get projects | grep test 
+[student@workstation ~]$ oc new-project test
+Already on project "test" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create deployment test --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx 
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get all
+NAME                       READY   STATUS    RESTARTS   AGE
+pod/test-b8d5658b6-thtng   1/1     Running   0          7s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   1/1     1            1           8s
+
+NAME                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/test-b8d5658b6   1         1         1       8s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc set resources deployment test --requests=cpu=1
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test resource requirements updated
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pod,deployment
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/test-7b849f5d46-jvprh   1/1     Running   0          8s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test   1/1     1            1           36s
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish selfservice-quotas 
+SUCCESS Remove selfservice-quotas project
+SUCCESS Remove test project
+[student@workstation ~]$ 
+

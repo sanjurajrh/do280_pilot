@@ -1,0 +1,304 @@
+[student@workstation ~]$ lab start selfservice-review 
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create namespace template-test
+namespace/template-test created
+[student@workstation ~]$ 
+[student@workstation ~]$ oc creatq quota memory --hard=requests.memory=2Gi,limits.memory=4Gi -n template-test 
+error: unknown command "creatq" for "oc"
+
+Did you mean this?
+	create
+[student@workstation ~]$ oc create quota memory --hard=requests.memory=2Gi,limits.memory=4Gi -n template-test 
+resourcequota/memory created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cat DO280/labs/selfservice-review/limitrange.yaml 
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: CHANGE_ME
+  namespace: CHANGE_ME
+spec:
+  limits:
+  - min:
+      memory: CHANGE_ME
+    defaultRequest:
+      memory: CHANGE_ME
+    default:
+      memory: CHANGE_ME
+    max:
+      memory: CHANGE_ME
+    type: Container
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ vim DO280/labs/selfservice-review/limitrange.yaml
+[student@workstation ~]$ cat DO280/labs/selfservice-review/limitrange.yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: memory
+  namespace: template-test
+spec:
+  limits:
+  - min:
+      memory: 128Mi
+    defaultRequest:
+      memory: 256Mi
+    default:
+      memory: 512Mi
+    max:
+      memory: 1Gi
+    type: Container
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create -f DO280/labs/selfservice-review/limitrange.yaml
+limitrange/memory created
+[student@workstation ~]$ oc create deployment -n template-test test-limits --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0 
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test-limits created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pod -n template-test 
+NAME                           READY   STATUS    RESTARTS   AGE
+test-limits-86bc6cd458-zns7d   1/1     Running   0          9s
+[student@workstation ~]$ oc get pod -n template-test -o jsonpath='{.items[0].spec.containers[0].resources}'
+{"limits":{"memory":"512Mi"},"requests":{"memory":"256Mi"}}[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc scale deployment -n template-test test-limits --replicas=10
+deployment.apps/test-limits scaled
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get deployment -n template-test 
+NAME          READY   UP-TO-DATE   AVAILABLE   AGE
+test-limits   8/10    8            8           63s
+[student@workstation ~]$ oc describe resourcequotas -n template-test memory
+Name:            memory
+Namespace:       template-test
+Resource         Used  Hard
+--------         ----  ----
+limits.memory    4Gi   4Gi
+requests.memory  2Gi   2Gi
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm create-bootstrap-project-template -o yaml > template.yaml
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get limitrange,quota -n template-test -o yaml >> template.yaml
+[student@workstation ~]$ cat template.yaml 
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    creationTimestamp: "2023-03-07T15:54:13Z"
+    name: memory
+    namespace: template-test
+    resourceVersion: "784042"
+    uid: 453392ba-4249-4499-a16f-d96c65d730fb
+  spec:
+    limits:
+    - default:
+        memory: 512Mi
+      defaultRequest:
+        memory: 256Mi
+      max:
+        memory: 1Gi
+      min:
+        memory: 128Mi
+      type: Container
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    creationTimestamp: "2023-03-07T15:52:55Z"
+    name: memory
+    namespace: template-test
+    resourceVersion: "784589"
+    uid: 293e12cd-d6d8-4c31-8f2e-3622b0c7b475
+  spec:
+    hard:
+      limits.memory: 4Gi
+      requests.memory: 2Gi
+  status:
+    hard:
+      limits.memory: 4Gi
+      requests.memory: 2Gi
+    used:
+      limits.memory: 4Gi
+      requests.memory: 2Gi
+kind: List
+metadata:
+  resourceVersion: ""
+[student@workstation ~]$ vim template.yaml 
+[student@workstation ~]$ cat template.yaml 
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: memory
+    namespace: ${PROJECT_NAME}
+  spec:
+    limits:
+    - default:
+        memory: 512Mi
+      defaultRequest:
+        memory: 256Mi
+      max:
+        memory: 1Gi
+      min:
+        memory: 128Mi
+      type: Container
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: memory
+    namespace: ${PROJECT_NAME}
+  spec:
+    hard:
+      limits.memory: 4Gi
+      requests.memory: 2Gi
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+[student@workstation ~]$ oc create -f template.yaml -n openshift-config
+template.template.openshift.io/project-request created
+[student@workstation ~]$ oc get template -n openshift-config
+NAME              DESCRIPTION   PARAMETERS    OBJECTS
+project-request                 5 (5 blank)   4
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc edit projects.config.openshift.io cluster
+project.config.openshift.io/cluster edited
+[student@workstation ~]$ watch oc get pod -n openshift-apiserver
+[student@workstation ~]$ oc get pod -n openshift-apiserver
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-5c5649c945-lgn8d   2/2     Running   0          100s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc new-project template-validate
+Now using project "template-validate" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc describe quota
+Name:            memory
+Namespace:       template-validate
+Resource         Used  Hard
+--------         ----  ----
+limits.memory    0     4Gi
+requests.memory  0     2Gi
+[student@workstation ~]$ oc describe limitranges 
+Name:       memory
+Namespace:  template-validate
+Type        Resource  Min    Max  Default Request  Default Limit  Max Limit/Request Ratio
+----        --------  ---    ---  ---------------  -------------  -----------------------
+Container   memory    128Mi  1Gi  256Mi            512Mi          -
+[student@workstation ~]$ lab grade selfservice-review 
+PASS    If you created the template-test namespace, checking it
+PASS    Validating the quota in the template-test project
+PASS    Validating the limit range in the template-test project
+PASS    Validating project configuration
+PASS    Validating the project-request template exists
+PASS    Creating the selfservice-review-grading-ttrzfznejm test project using the template
+PASS    Validating the quota in the selfservice-review-grading-ttrzfznejm project
+PASS    Validating the limit range in the selfservice-review-grading-ttrzfznejm project
+PASS    Deleting the selfservice-review-grading-ttrzfznejm test project
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish selfservice-review
+SUCCESS Deleting the template-test project
+SUCCESS Deleting the template-validate project
+SUCCESS Restoring project template configuration. This can take a few minutes to complete.
+SUCCESS Cleaning templates
+[student@workstation ~]$ 
+

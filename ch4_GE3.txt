@@ -1,0 +1,387 @@
+[student@workstation ~]$ lab start selfservice-projtemplate
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+SUCCESS Creating provisioner1 in IdM
+SUCCESS Creating provisioner2 in IdM
+SUCCESS Create provisioners group
+SUCCESS Restore project creation privileges
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc describe group provisioners
+Name:		provisioners
+Created:	36 seconds ago
+Labels:		<none>
+Annotations:	<none>
+Users:		provisioner1
+           	provisioner2
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc edit clusterrolebinding self-provisioners
+clusterrolebinding.rbac.authorization.k8s.io/self-provisioners edited
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u developer -p developer 
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc logout 
+Logged "developer" out on "https://api.ocp4.example.com:6443"
+[student@workstation ~]$ oc login -u developer -p developer 
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ oc new-project test 
+Error from server (Forbidden): You may not request a new project via this API.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u provisioner1 -p redhat 
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc new-project test 
+Now using project "test" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ oc create configmap test 
+configmap/test created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u provisioner2 -p redhat 
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc project test 
+error: You are not a member of project "test".
+You are not a member of any projects. You can request a project to be created with the 'new-project' command.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc delete project test 
+project.project.openshift.io "test" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create namespace template-test
+namespace/template-test created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cat DO280/labs/selfservice-projtemplate/limitrange.yaml 
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: CHANGE_ME
+  namespace: CHANGE_ME
+spec:
+  limits:
+  - CHANGE_ME: {}
+    type: Container
+[student@workstation ~]$ 
+[student@workstation ~]$ vim DO280/labs/selfservice-projtemplate/limitrange.yaml
+[student@workstation ~]$ cat DO280/labs/selfservice-projtemplate/limitrange.yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: max-memory
+  namespace: template-test
+spec:
+  limits:
+  - max:
+      memory: 1Gi
+    type: Container
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ls DO280/solutions/selfservice-projtemplate/
+template.yaml
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create -f DO280/labs/selfservice-projtemplate/limitrange.yaml
+limitrange/max-memory created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cat DO280/labs/selfservice-projtemplate/deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: test
+  name: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: test
+    spec:
+      containers:
+      - image: registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0
+        name: hello-world-nginx
+        resources:
+          limits:
+            memory: 2Gi
+[student@workstation ~]$ oc create -f DO280/labs/selfservice-projtemplate/deployment.yaml -n template-test
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test created
+[student@workstation ~]$ oc get pod -n template-test
+No resources found in template-test namespace.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get event -n template-test --sort-by .metadata.creationTimestamp 
+LAST SEEN   TYPE      REASON              OBJECT                       MESSAGE
+34s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-99lqq" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+34s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-xx6gs" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+34s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-68lmq" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+34s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-tmsnx" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+34s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-7dzxc" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+34s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-zmkm9" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+34s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-2sk8n" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+34s         Normal    ScalingReplicaSet   deployment/test              Scaled up replica set test-846769884c to 1
+33s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-76jzr" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+33s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-whqr6" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+13s         Warning   FailedCreate        replicaset/test-846769884c   (combined from similar events): Error creating: pods "test-846769884c-9df6w" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm create-bootstrap-project-template -o yaml > template.yaml
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get limitrange -n template-test -o yaml >> template.yaml 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cat template.yaml 
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    creationTimestamp: "2023-03-07T15:28:20Z"
+    name: max-memory
+    namespace: template-test
+    resourceVersion: "775097"
+    uid: ff2cae63-2d5c-4463-811f-31775f5db949
+  spec:
+    limits:
+    - default:
+        memory: 1Gi
+      defaultRequest:
+        memory: 1Gi
+      max:
+        memory: 1Gi
+      type: Container
+kind: List
+metadata:
+  resourceVersion: ""
+[student@workstation ~]$ vim template.yaml 
+[student@workstation ~]$ cat template.yaml 
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: provisioners
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: max-memory
+    namespace: ${PROJECT_NAME}
+  spec:
+    limits:
+    - default:
+        memory: 1Gi
+      defaultRequest:
+        memory: 1Gi
+      max:
+        memory: 1Gi
+      type: Container
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+[student@workstation ~]$ oc create -f template.yaml -n openshift-conifg
+Error from server (NotFound): error when creating "template.yaml": namespaces "openshift-conifg" not found
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create -f template.yaml -n openshift-config
+template.template.openshift.io/project-request created
+[student@workstation ~]$ oc get template -n openshift-config
+NAME              DESCRIPTION   PARAMETERS    OBJECTS
+project-request                 5 (5 blank)   3
+[student@workstation ~]$ oc edit projects.config.openshift.io cluster
+project.config.openshift.io/cluster edited
+[student@workstation ~]$ watch oc get pod -n openshift-apiserver
+[student@workstation ~]$ oc get pod -n openshift-apiserver
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-7d4fc6c7b7-2dqv2   2/2     Running   0          3m38s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u provisioner1 -p redhat 
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation ~]$ oc new-project test 
+Now using project "test" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u provisioner2 -p redhat 
+Login successful.
+
+You have one project on this server: "test"
+
+Using project "test".
+[student@workstation ~]$ oc create configmap test 
+configmap/test created
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create -f ~/DO280/labs/selfservice-projtemplate/deployment.yaml 
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test created
+[student@workstation ~]$ oc get pod
+No resources found in test namespace.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get event --sort-by .metadata.creationTimestamp
+LAST SEEN   TYPE      REASON              OBJECT                       MESSAGE
+21s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-mr4kf" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+21s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-lm8hn" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+21s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-z9qjj" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+21s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-dm76b" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+21s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-wp2p9" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+21s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-mt28w" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+21s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-qpf5w" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+21s         Normal    ScalingReplicaSet   deployment/test              Scaled up replica set test-846769884c to 1
+20s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-xskk9" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+20s         Warning   FailedCreate        replicaset/test-846769884c   Error creating: pods "test-846769884c-gr49z" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+0s          Warning   FailedCreate        replicaset/test-846769884c   (combined from similar events): Error creating: pods "test-846769884c-sstkv" is forbidden: maximum memory usage per Container is 1Gi, but limit is 2Gi
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish selfservice-projtemplate 
+SUCCESS Deleting the template-test project
+SUCCESS Deleting the test project
+SUCCESS Restoring project template configuration. This can take a few minutes to complete.
+SUCCESS Cleaning templates
+SUCCESS Restore project creation privileges
+SUCCESS Deleting provisioner1 in IdM
+SUCCESS Deleting provisioner2 in IdM
+SUCCESS Delete provisioners group
+[student@workstation ~]$ 
+
