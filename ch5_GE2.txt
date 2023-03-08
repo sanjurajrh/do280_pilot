@@ -1,0 +1,886 @@
+[student@workstation ~]$ lab start operators-cli 
+SUCCESS Waiting for cluster
+SUCCESS Remove file-integrity-operator operator
+SUCCESS Copy exercise files
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get packagemanifests
+NAME                      CATALOG                            AGE
+metallb-operator          do280 Operator Catalog Red Hat     10d
+devworkspace-operator     do280 Operator Catalog Red Hat     10d
+postgresql                do280 Operator Catalog Community   10d
+lvms-operator             do280 Operator Catalog Red Hat     10d
+file-integrity-operator   do280 Operator Catalog Red Hat     10d
+web-terminal              do280 Operator Catalog Red Hat     10d
+compliance-operator       do280 Operator Catalog Red Hat     10d
+[student@workstation ~]$ 
+[student@workstation ~]$ oc describe packagemanifests file-integrity-operator
+Name:         file-integrity-operator
+Namespace:    default
+Labels:       catalog=do280-catalog-redhat
+              catalog-namespace=openshift-marketplace
+              operatorframework.io/arch.amd64=supported
+              operatorframework.io/arch.ppc64le=supported
+              operatorframework.io/arch.s390x=supported
+              operatorframework.io/os.linux=supported
+              operatorframework.io/os.zos=supported
+              provider=Red Hat
+              provider-url=https://github.com/openshift/file-integrity-operator
+Annotations:  <none>
+API Version:  packages.operators.coreos.com/v1
+Kind:         PackageManifest
+Metadata:
+  Creation Timestamp:  2023-02-24T19:11:50Z
+Spec:
+Status:
+  Catalog Source:               do280-catalog-redhat
+  Catalog Source Display Name:  do280 Operator Catalog Red Hat
+  Catalog Source Namespace:     openshift-marketplace
+  Catalog Source Publisher:     
+  Channels:
+    Current CSV:  file-integrity-operator.v1.0.0
+    Current CSV Desc:
+      Annotations:
+        Alm - Examples:  [
+  {
+    "apiVersion": "fileintegrity.openshift.io/v1alpha1",
+    "kind": "FileIntegrity",
+    "metadata": {
+      "name": "example-fileintegrity",
+      "namespace": "openshift-file-integrity"
+    },
+    "spec": {
+      "config": {},
+      "debug": false
+    }
+  }
+]
+        Capabilities:                                    Seamless Upgrades
+        Categories:                                      Monitoring,Security
+        olm.skipRange:                                   >=0.1.6 <1.0.0
+        operatorframework.io/cluster-monitoring:         true
+        operatorframework.io/suggested-namespace:        openshift-file-integrity
+        operators.openshift.io/infrastructure-features:  ["disconnected", "fips"]
+        operators.openshift.io/valid-subscription:       ["OpenShift Kubernetes Engine", "OpenShift Container Platform", "OpenShift Platform Plus"]
+        operators.operatorframework.io/builder:          operator-sdk-v1.14.0+git
+        operators.operatorframework.io/project_layout:   go.kubebuilder.io/v3
+        Repository:                                      https://github.com/openshift/file-integrity-operator
+      Apiservicedefinitions:
+      Customresourcedefinitions:
+        Owned:
+          Description:   FileIntegrity is the Schema for the fileintegrities API
+          Display Name:  File Integrity
+          Kind:          FileIntegrity
+          Name:          fileintegrities.fileintegrity.openshift.io
+          Version:       v1alpha1
+          Description:   FileIntegrityNodeStatus defines the status of a specific node
+          Kind:          FileIntegrityNodeStatus
+          Name:          fileintegritynodestatuses.fileintegrity.openshift.io
+          Version:       v1alpha1
+      Description:       An operator that manages file integrity checks on nodes.
+      Display Name:      File Integrity Operator
+      Install Modes:
+        Supported:  true
+        Type:       OwnNamespace
+        Supported:  true
+        Type:       SingleNamespace
+        Supported:  false
+        Type:       MultiNamespace
+        Supported:  true
+        Type:       AllNamespaces
+      Keywords:
+        Integrity
+        security
+      Links:
+        Name:  File Integrity Operator upstream repo
+        URL:   https://github.com/openshift/file-integrity-operator
+        Name:  File Integrity Operator documentation
+        URL:   https://docs.openshift.com/container-platform/latest/security/file_integrity_operator/file-integrity-operator-understanding.html
+      Maintainers:
+        Email:   mrogers@redhat.com
+        Name:    Matt Rogers
+      Maturity:  alpha
+      Provider:
+        Name:  Red Hat
+        URL:   https://github.com/openshift/file-integrity-operator
+      Related Images:
+        registry.redhat.io/compliance/openshift-file-integrity-rhel8-operator@sha256:dd1dfeccf59214a0de653c3a4c4dbbc8c41640954318d13386cda73891660e4f
+      Version:      1.0.0
+    Name:           v1
+  Default Channel:  v1
+  Package Name:     file-integrity-operator
+  Provider:
+    Name:  Red Hat
+    URL:   https://github.com/openshift/file-integrity-operator
+Events:    <none>
+[student@workstation ~]$ cat DO280/labs/operators-cli/sub.yaml 
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    labels:
+      openshift.io/clustermonitoring: CHANGE_ME
+      pod-security.kubernetes.io/enforce: CHANGE_ME
+    name: CHANGE_ME
+- apiVersion: operators.coreos.com/v1
+  kind: OperatorGroup
+  metadata:
+    name: CHANGE_ME
+    namespace: CHANGE_ME
+  spec:
+    targetNamespaces:
+    - CHANGE_ME
+- apiVersion: operators.coreos.com/v1alpha1
+  kind: Subscription
+  metadata:
+    name: CHANGE_ME
+    namespace: CHANGE_ME
+  spec:
+    channel: CHANGE_ME
+    name: CHANGE_ME
+    source: CHANGE_ME
+    installPlanApproval: CHANGE_ME
+    startingCSV: CHANGE_ME
+    sourceNamespace: CHANGE_ME
+    config:
+      tolerations:
+      - operator: "Exists"
+      resources:
+        requests:
+          memory: "64Mi"
+          cpu: "250m"
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+[student@workstation ~]$ vim DO280/labs/operators-cli/sub.yaml
+[student@workstation ~]$ cat DO280/labs/operators-cli/sub.yaml
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    labels:
+      openshift.io/clustermonitoring: "true"
+      pod-security.kubernetes.io/enforce: privileged
+    name: openshift-file-integrity
+- apiVersion: operators.coreos.com/v1
+  kind: OperatorGroup
+  metadata:
+    name: file-integrity-operator
+    namespace: openshift-file-integrity
+  spec:
+    targetNamespaces:
+    - openshift-file-integrity
+- apiVersion: operators.coreos.com/v1alpha1
+  kind: Subscription
+  metadata:
+    name: file-integrity-operator
+    namespace: openshift-file-integrity
+  spec:
+    channel: v1
+    name: file-integrity-operator
+    source: do280-catalog-redhat
+    installPlanApproval: Manual
+    startingCSV: file-integrity-operator.v1.0.0
+    sourceNamespace: openshift-marketplace
+    config:
+      tolerations:
+      - operator: "Exists"
+      resources:
+        requests:
+          memory: "64Mi"
+          cpu: "250m"
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+[student@workstation ~]$ cat DO280/solutions/operators-cli/sub.yaml 
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    labels:
+      openshift.io/clustermonitoring: "true"
+      pod-security.kubernetes.io/enforce: privileged
+    name: openshift-file-integrity
+- apiVersion: operators.coreos.com/v1
+  kind: OperatorGroup
+  metadata:
+    name: file-integrity-operator
+    namespace: openshift-file-integrity
+  spec:
+    targetNamespaces:
+    - openshift-file-integrity
+- apiVersion: operators.coreos.com/v1alpha1
+  kind: Subscription
+  metadata:
+    name: file-integrity-operator
+    namespace: openshift-file-integrity
+  spec:
+    channel: v1
+    name: file-integrity-operator
+    source: do280-catalog-redhat
+    installPlanApproval: Manual
+    startingCSV: file-integrity-operator.v1.0.0
+    sourceNamespace: openshift-marketplace
+    config:
+      tolerations:
+      - operator: "Exists"
+      resources:
+        requests:
+          memory: "64Mi"
+          cpu: "250m"
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+[student@workstation ~]$ diff DO280/solutions/operators-cli/sub.yaml DO280/labs/operators-cli/sub.yaml 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc apply -f DO280/labs/operators-cli/sub.yaml
+namespace/openshift-file-integrity created
+operatorgroup.operators.coreos.com/file-integrity-operator created
+subscription.operators.coreos.com/file-integrity-operator created
+[student@workstation ~]$ oc describe operator file-integrity-operator 
+Name:         file-integrity-operator.openshift-file-integrity
+Namespace:    
+Labels:       <none>
+Annotations:  <none>
+API Version:  operators.coreos.com/v1
+Kind:         Operator
+Metadata:
+  Creation Timestamp:  2023-03-07T16:44:05Z
+  Generation:          1
+  Managed Fields:
+    API Version:  operators.coreos.com/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+    Manager:      olm
+    Operation:    Update
+    Time:         2023-03-07T16:44:05Z
+    API Version:  operators.coreos.com/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:status:
+        .:
+        f:components:
+          .:
+          f:labelSelector:
+            .:
+            f:matchExpressions:
+          f:refs:
+    Manager:         olm
+    Operation:       Update
+    Subresource:     status
+    Time:            2023-03-07T17:16:48Z
+  Resource Version:  812949
+  UID:               b0eb576d-4a96-4730-a9dc-a2a934eba7f6
+Spec:
+Status:
+  Components:
+    Label Selector:
+      Match Expressions:
+        Key:       operators.coreos.com/file-integrity-operator.openshift-file-integrity
+        Operator:  Exists
+    Refs:
+      API Version:  apiextensions.k8s.io/v1
+      Conditions:
+        Last Transition Time:  2023-03-07T16:44:39Z
+        Message:               no conflicts found
+        Reason:                NoConflicts
+        Status:                True
+        Type:                  NamesAccepted
+        Last Transition Time:  2023-03-07T16:44:39Z
+        Message:               the initial names have been accepted
+        Reason:                InitialNamesAccepted
+        Status:                True
+        Type:                  Established
+      Kind:                    CustomResourceDefinition
+      Name:                    fileintegrities.fileintegrity.openshift.io
+      API Version:             apiextensions.k8s.io/v1
+      Conditions:
+        Last Transition Time:  2023-03-07T16:44:39Z
+        Message:               no conflicts found
+        Reason:                NoConflicts
+        Status:                True
+        Type:                  NamesAccepted
+        Last Transition Time:  2023-03-07T16:44:39Z
+        Message:               the initial names have been accepted
+        Reason:                InitialNamesAccepted
+        Status:                True
+        Type:                  Established
+      Kind:                    CustomResourceDefinition
+      Name:                    fileintegritynodestatuses.fileintegrity.openshift.io
+      API Version:             operators.coreos.com/v1alpha1
+      Kind:                    InstallPlan
+      Name:                    install-7qk7l
+      Namespace:               openshift-file-integrity
+      API Version:             operators.coreos.com/v1alpha1
+      Conditions:
+        Last Transition Time:  2023-03-07T17:16:47Z
+        Message:               all available catalogsources are healthy
+        Reason:                AllCatalogSourcesHealthy
+        Status:                False
+        Type:                  CatalogSourcesUnhealthy
+        Last Transition Time:  2023-03-07T17:16:47Z
+        Reason:                RequiresApproval
+        Status:                True
+        Type:                  InstallPlanPending
+      Kind:                    Subscription
+      Name:                    file-integrity-operator
+      Namespace:               openshift-file-integrity
+Events:                        <none>
+
+[student@workstation ~]$ oc describe installplan install-7qk7l -n openshift-file-integrity
+Name:         install-7qk7l
+Namespace:    openshift-file-integrity
+Labels:       operators.coreos.com/file-integrity-operator.openshift-file-integrity=
+Annotations:  <none>
+API Version:  operators.coreos.com/v1alpha1
+Kind:         InstallPlan
+Metadata:
+  Creation Timestamp:  2023-03-07T17:16:41Z
+  Generate Name:       install-
+  Generation:          1
+  Managed Fields:
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:generateName:
+        f:ownerReferences:
+          .:
+          k:{"uid":"315ba81e-9dc2-4b4e-8864-2881d33a8593"}:
+      f:spec:
+        .:
+        f:approval:
+        f:approved:
+        f:clusterServiceVersionNames:
+        f:generation:
+    Manager:      catalog
+    Operation:    Update
+    Time:         2023-03-07T17:16:41Z
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:status:
+        .:
+        f:bundleLookups:
+        f:catalogSources:
+        f:phase:
+        f:plan:
+    Manager:      catalog
+    Operation:    Update
+    Subresource:  status
+    Time:         2023-03-07T17:16:42Z
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:labels:
+          .:
+          f:operators.coreos.com/file-integrity-operator.openshift-file-integrity:
+    Manager:    olm
+    Operation:  Update
+    Time:       2023-03-07T17:16:45Z
+  Owner References:
+    API Version:           operators.coreos.com/v1alpha1
+    Block Owner Deletion:  false
+    Controller:            false
+    Kind:                  Subscription
+    Name:                  file-integrity-operator
+    UID:                   315ba81e-9dc2-4b4e-8864-2881d33a8593
+  Resource Version:        812930
+  UID:                     deda3103-dfd6-426d-af05-9bfe2123dec0
+Spec:
+  Approval:  Manual
+  Approved:  false
+  Cluster Service Version Names:
+    file-integrity-operator.v1.0.0
+  Generation:  1
+Status:
+  Bundle Lookups:
+    Catalog Source Ref:
+      Name:       do280-catalog-redhat
+      Namespace:  openshift-marketplace
+    Identifier:   file-integrity-operator.v1.0.0
+    Path:         registry.redhat.io/compliance/openshift-file-integrity-operator-bundle@sha256:f234e8af232f2d3a9472307ae82834f96756841b8d60b8c42ac4f9ca3fd17545
+    Properties:   {"properties":[{"type":"olm.gvk","value":{"group":"fileintegrity.openshift.io","kind":"FileIntegrity","version":"v1alpha1"}},{"type":"olm.gvk","value":{"group":"fileintegrity.openshift.io","kind":"FileIntegrityNodeStatus","version":"v1alpha1"}},{"type":"olm.package","value":{"packageName":"file-integrity-operator","version":"1.0.0"}}]}
+    Replaces:     
+  Catalog Sources:
+  Phase:  RequiresApproval
+  Plan:
+    Resolving:  file-integrity-operator.v1.0.0
+    Resource:
+      Group:             operators.coreos.com
+      Kind:              ClusterServiceVersion
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator.v1.0.0
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1alpha1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              Role
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              leader-election-role
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              RoleBinding
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              leader-election-rolebinding
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              ClusterRole
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator-metrics
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              ClusterRole
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              fileintegrity-viewer-role
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             apiextensions.k8s.io
+      Kind:              CustomResourceDefinition
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              fileintegrities.fileintegrity.openshift.io
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             apiextensions.k8s.io
+      Kind:              CustomResourceDefinition
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              fileintegritynodestatuses.fileintegrity.openshift.io
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              RoleBinding
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator-metrics
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              ClusterRole
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              fileintegrity-editor-role
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             
+      Kind:              ServiceAccount
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-daemon
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              Role
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator.v1.0.0-file-integrity-daemon-6dd75bf465
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              RoleBinding
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator.v1.0.0-file-integrity-daemon-6dd75bf465
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             
+      Kind:              ServiceAccount
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              Role
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator.v1.0.0-file-integrity-operator-bf8967fd5
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              RoleBinding
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator.v1.0.0-file-integrity-operator-bf8967fd5
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              ClusterRole
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator.v1.0.0-69995dc948
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+    Resolving:           file-integrity-operator.v1.0.0
+    Resource:
+      Group:             rbac.authorization.k8s.io
+      Kind:              ClusterRoleBinding
+      Manifest:          {"kind":"ConfigMap","name":"8467c85721f61fa0ab8eb5e8d27a94ee9a5b5139a18a5bd9a86bc0001a41193","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"","properties":"{\"properties\":[{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrity\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk\",\"value\":{\"group\":\"fileintegrity.openshift.io\",\"kind\":\"FileIntegrityNodeStatus\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"file-integrity-operator\",\"version\":\"1.0.0\"}}]}"}
+      Name:              file-integrity-operator.v1.0.0-69995dc948
+      Source Name:       do280-catalog-redhat
+      Source Namespace:  openshift-marketplace
+      Version:           v1
+    Status:              Unknown
+Events:                  <none>
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc patch installplans ved:  false
+error: must specify --patch or --patch-file containing the contents of the patch
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ # oc describe installplan install-7qk7l -n openshift-file-integrity
+[student@workstation ~]$ 
+[student@workstation ~]$ oc patch installplan install-7qk7l --type merge -p '{"spec":{"approved":true}}' -n openshift-file-integrity
+installplan.operators.coreos.com/install-7qk7l patched
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc describe operator file-integrity-operator 
+Name:         file-integrity-operator.openshift-file-integrity
+Namespace:    
+Labels:       <none>
+Annotations:  <none>
+API Version:  operators.coreos.com/v1
+Kind:         Operator
+Metadata:
+  Creation Timestamp:  2023-03-07T16:44:05Z
+  Generation:          1
+  Managed Fields:
+    API Version:  operators.coreos.com/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+    Manager:      olm
+    Operation:    Update
+    Time:         2023-03-07T16:44:05Z
+    API Version:  operators.coreos.com/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:status:
+        .:
+        f:components:
+          .:
+          f:labelSelector:
+            .:
+            f:matchExpressions:
+          f:refs:
+    Manager:         olm
+    Operation:       Update
+    Subresource:     status
+    Time:            2023-03-07T17:20:08Z
+  Resource Version:  814140
+  UID:               b0eb576d-4a96-4730-a9dc-a2a934eba7f6
+Spec:
+Status:
+  Components:
+    Label Selector:
+      Match Expressions:
+        Key:       operators.coreos.com/file-integrity-operator.openshift-file-integrity
+        Operator:  Exists
+    Refs:
+      API Version:  rbac.authorization.k8s.io/v1
+      Kind:         ClusterRole
+      Name:         file-integrity-operator.v1.0.0-69995dc948
+      API Version:  rbac.authorization.k8s.io/v1
+      Kind:         ClusterRoleBinding
+      Name:         file-integrity-operator.v1.0.0-69995dc948
+      API Version:  operators.coreos.com/v1alpha1
+      Conditions:
+        Last Transition Time:  2023-03-07T17:20:08Z
+        Last Update Time:      2023-03-07T17:20:08Z
+        Message:               install strategy completed with no errors
+        Reason:                InstallSucceeded
+        Status:                True
+        Type:                  Succeeded
+      Kind:                    ClusterServiceVersion
+      Name:                    file-integrity-operator.v1.0.0
+      Namespace:               openshift-file-integrity
+      API Version:             apiextensions.k8s.io/v1
+      Conditions:
+        Last Transition Time:  2023-03-07T16:44:39Z
+        Message:               no conflicts found
+        Reason:                NoConflicts
+        Status:                True
+        Type:                  NamesAccepted
+        Last Transition Time:  2023-03-07T16:44:39Z
+        Message:               the initial names have been accepted
+        Reason:                InitialNamesAccepted
+        Status:                True
+        Type:                  Established
+      Kind:                    CustomResourceDefinition
+      Name:                    fileintegrities.fileintegrity.openshift.io
+      API Version:             apiextensions.k8s.io/v1
+      Conditions:
+        Last Transition Time:  2023-03-07T16:44:39Z
+        Message:               no conflicts found
+        Reason:                NoConflicts
+        Status:                True
+        Type:                  NamesAccepted
+        Last Transition Time:  2023-03-07T16:44:39Z
+        Message:               the initial names have been accepted
+        Reason:                InitialNamesAccepted
+        Status:                True
+        Type:                  Established
+      Kind:                    CustomResourceDefinition
+      Name:                    fileintegritynodestatuses.fileintegrity.openshift.io
+      API Version:             apps/v1
+      Conditions:
+        Last Transition Time:  2023-03-07T17:20:08Z
+        Last Update Time:      2023-03-07T17:20:08Z
+        Message:               Deployment has minimum availability.
+        Reason:                MinimumReplicasAvailable
+        Status:                True
+        Type:                  Available
+        Last Transition Time:  2023-03-07T17:20:05Z
+        Last Update Time:      2023-03-07T17:20:08Z
+        Message:               ReplicaSet "file-integrity-operator-68b976c6c9" has successfully progressed.
+        Reason:                NewReplicaSetAvailable
+        Status:                True
+        Type:                  Progressing
+      Kind:                    Deployment
+      Name:                    file-integrity-operator
+      Namespace:               openshift-file-integrity
+      API Version:             operators.coreos.com/v1alpha1
+      Conditions:
+        Last Transition Time:  2023-03-07T17:20:00Z
+        Last Update Time:      2023-03-07T17:20:00Z
+        Status:                True
+        Type:                  Installed
+      Kind:                    InstallPlan
+      Name:                    install-7qk7l
+      Namespace:               openshift-file-integrity
+      API Version:             operators.coreos.com/v2
+      Kind:                    OperatorCondition
+      Name:                    file-integrity-operator.v1.0.0
+      Namespace:               openshift-file-integrity
+      API Version:             rbac.authorization.k8s.io/v1
+      Kind:                    Role
+      Name:                    file-integrity-operator.v1.0.0-file-integrity-daemon-6dd75bf465
+      Namespace:               openshift-file-integrity
+      API Version:             rbac.authorization.k8s.io/v1
+      Kind:                    Role
+      Name:                    file-integrity-operator.v1.0.0-file-integrity-operator-bf8967fd5
+      Namespace:               openshift-file-integrity
+      API Version:             rbac.authorization.k8s.io/v1
+      Kind:                    RoleBinding
+      Name:                    file-integrity-operator.v1.0.0-file-integrity-daemon-6dd75bf465
+      Namespace:               openshift-file-integrity
+      API Version:             rbac.authorization.k8s.io/v1
+      Kind:                    RoleBinding
+      Name:                    file-integrity-operator.v1.0.0-file-integrity-operator-bf8967fd5
+      Namespace:               openshift-file-integrity
+      API Version:             v1
+      Kind:                    ServiceAccount
+      Name:                    file-integrity-daemon
+      Namespace:               openshift-file-integrity
+      API Version:             v1
+      Kind:                    ServiceAccount
+      Name:                    file-integrity-operator
+      Namespace:               openshift-file-integrity
+      API Version:             operators.coreos.com/v1alpha1
+      Conditions:
+        Last Transition Time:  2023-03-07T17:16:47Z
+        Message:               all available catalogsources are healthy
+        Reason:                AllCatalogSourcesHealthy
+        Status:                False
+        Type:                  CatalogSourcesUnhealthy
+      Kind:                    Subscription
+      Name:                    file-integrity-operator
+      Namespace:               openshift-file-integrity
+Events:                        <none>
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cat DO280/labs/operators-cli/worker-fileintegrity.yaml 
+apiVersion: fileintegrity.openshift.io/v1alpha1
+kind: FileIntegrity
+metadata:
+  name: worker-fileintegrity
+  namespace: openshift-file-integrity
+spec:
+  nodeSelector:
+      node-role.kubernetes.io/worker: ""
+  config: {}
+[student@workstation ~]$ oc apply -f DO280/labs/operators-cli/worker-fileintegrity.yaml
+fileintegrity.fileintegrity.openshift.io/worker-fileintegrity created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc describe fileintegrity worker-fileintegrity -n openshift-file-integrity
+Name:         worker-fileintegrity
+Namespace:    openshift-file-integrity
+Labels:       <none>
+Annotations:  <none>
+API Version:  fileintegrity.openshift.io/v1alpha1
+Kind:         FileIntegrity
+Metadata:
+  Creation Timestamp:  2023-03-07T17:20:48Z
+  Generation:          1
+  Managed Fields:
+    API Version:  fileintegrity.openshift.io/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .:
+          f:kubectl.kubernetes.io/last-applied-configuration:
+      f:spec:
+        .:
+        f:config:
+          .:
+          f:gracePeriod:
+          f:maxBackups:
+        f:nodeSelector:
+          .:
+          f:node-role.kubernetes.io/worker:
+        f:tolerations:
+    Manager:      kubectl-client-side-apply
+    Operation:    Update
+    Time:         2023-03-07T17:20:48Z
+    API Version:  fileintegrity.openshift.io/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:status:
+        .:
+        f:phase:
+    Manager:         file-integrity-operator
+    Operation:       Update
+    Subresource:     status
+    Time:            2023-03-07T17:20:52Z
+  Resource Version:  814489
+  UID:               c6a6b21d-242e-496a-ada0-9c5d1fd76f00
+Spec:
+  Config:
+    Grace Period:  900
+    Max Backups:   5
+  Node Selector:
+    node-role.kubernetes.io/worker:  
+  Tolerations:
+    Effect:    NoSchedule
+    Key:       node-role.kubernetes.io/master
+    Operator:  Exists
+    Effect:    NoSchedule
+    Key:       node-role.kubernetes.io/infra
+    Operator:  Exists
+Status:
+  Phase:  Active
+Events:
+  Type    Reason               Age   From        Message
+  ----    ------               ----  ----        -------
+  Normal  FileIntegrityStatus  41s   statusctrl  Pending
+  Normal  FileIntegrityStatus  40s   statusctrl  Initializing
+  Normal  FileIntegrityStatus  37s   statusctrl  Active
+[student@workstation ~]$ oc get fileintegritynodestatuses -n openshift-file-integrity 
+No resources found in openshift-file-integrity namespace.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get fileintegritynodestatuses -n openshift-file-integrity 
+No resources found in openshift-file-integrity namespace.
+[student@workstation ~]$ watch oc get fileintegritynodestatuses -n openshift-file-integrity 
+[student@workstation ~]$ oc get fileintegritynodestatuses -n openshift-file-integrity 
+NAME                            NODE       STATUS
+worker-fileintegrity-master01   master01   Succeeded
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc delete subscriptions file-integrity-operator -n openshift-file-integrity
+subscription.operators.coreos.com "file-integrity-operator" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get subscription -n openshift-file-integrity
+No resources found in openshift-file-integrity namespace.
+[student@workstation ~]$ oc get csv -n openshift-file-integrity
+NAME                                   DISPLAY                   VERSION               REPLACES   PHASE
+file-integrity-operator.v1.0.0         File Integrity Operator   1.0.0                            Succeeded
+metallb-operator.4.12.0-202302061702   MetalLB Operator          4.12.0-202302061702              Succeeded
+[student@workstation ~]$ oc delete csv file-integrity-operator.v1.0.0 -n openshift-file-integrity
+clusterserviceversion.operators.coreos.com "file-integrity-operator.v1.0.0" deleted
+[student@workstation ~]$ oc get csv -n openshift-file-integrity
+NAME                                   DISPLAY            VERSION               REPLACES   PHASE
+metallb-operator.4.12.0-202302061702   MetalLB Operator   4.12.0-202302061702              Succeeded
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get namespace | grep openshift-file-integrity
+openshift-file-integrity                           Active   10m
+[student@workstation ~]$ oc delete namespace openshift-file-integrity
+namespace "openshift-file-integrity" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish operators-cli
+SUCCESS Remove file-integrity-operator operator
+[student@workstation ~]$ 
+

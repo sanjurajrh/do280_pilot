@@ -1,0 +1,1194 @@
+[student@workstation ~]$ lab start operators-review 
+SUCCESS Waiting for cluster
+SUCCESS Remove compliance-operator operator
+SUCCESS Copy exercise files
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 71 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get packagemanifest
+NAME                      CATALOG                            AGE
+lvms-operator             do280 Operator Catalog Red Hat     10d
+file-integrity-operator   do280 Operator Catalog Red Hat     10d
+web-terminal              do280 Operator Catalog Red Hat     10d
+compliance-operator       do280 Operator Catalog Red Hat     10d
+metallb-operator          do280 Operator Catalog Red Hat     10d
+devworkspace-operator     do280 Operator Catalog Red Hat     10d
+postgresql                do280 Operator Catalog Community   10d
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get packagemanifest compliance-operator -o yaml 
+apiVersion: packages.operators.coreos.com/v1
+kind: PackageManifest
+metadata:
+  creationTimestamp: "2023-02-24T19:11:50Z"
+  labels:
+    catalog: do280-catalog-redhat
+    catalog-namespace: openshift-marketplace
+    operatorframework.io/arch.amd64: supported
+    operatorframework.io/arch.ppc64le: supported
+    operatorframework.io/arch.s390x: supported
+    operatorframework.io/os.linux: supported
+    provider: Red Hat Inc.
+    provider-url: www.redhat.com
+  name: compliance-operator
+  namespace: default
+spec: {}
+status:
+  catalogSource: do280-catalog-redhat
+  catalogSourceDisplayName: do280 Operator Catalog Red Hat
+  catalogSourceNamespace: openshift-marketplace
+  catalogSourcePublisher: ""
+  channels:
+  - currentCSV: compliance-operator.v0.1.61
+    currentCSVDesc:
+      annotations:
+        alm-examples: |-
+          [
+            {
+              "apiVersion": "compliance.openshift.io/v1alpha1",
+              "kind": "ComplianceScan",
+              "metadata": {
+                "name": "example-compliancescan-node"
+              },
+              "spec": {
+                "content": "ssg-rhcos4-ds.xml",
+                "profile": "xccdf_org.ssgproject.content_profile_moderate"
+              }
+            },
+            {
+              "apiVersion": "compliance.openshift.io/v1alpha1",
+              "kind": "ComplianceScan",
+              "metadata": {
+                "name": "example-compliancescan-platform"
+              },
+              "spec": {
+                "content": "ssg-ocp4-ds.xml",
+                "profile": "xccdf_org.ssgproject.content_profile_moderate",
+                "scanType": "Platform"
+              }
+            },
+            {
+              "apiVersion": "compliance.openshift.io/v1alpha1",
+              "kind": "ComplianceSuite",
+              "metadata": {
+                "name": "example-compliancesuite"
+              },
+              "spec": {
+                "autoApplyRemediations": false,
+                "scans": [
+                  {
+                    "content": "ssg-rhcos4-ds.xml",
+                    "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b",
+                    "name": "workers-scan",
+                    "nodeSelector": {
+                      "node-role.kubernetes.io/worker": ""
+                    },
+                    "profile": "xccdf_org.ssgproject.content_profile_moderate"
+                  },
+                  {
+                    "content": "ssg-ocp4-ds.xml",
+                    "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b",
+                    "name": "platform-scan",
+                    "profile": "xccdf_org.ssgproject.content_profile_moderate",
+                    "scanType": "Platform"
+                  }
+                ],
+                "schedule": "0 1 * * *"
+              }
+            },
+            {
+              "apiVersion": "compliance.openshift.io/v1alpha1",
+              "kind": "ProfileBundle",
+              "metadata": {
+                "name": "ocp4"
+              },
+              "spec": {
+                "contentFile": "ssg-ocp4-ds.xml",
+                "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b"
+              }
+            },
+            {
+              "apiVersion": "compliance.openshift.io/v1alpha1",
+              "autoApplyRemediations": false,
+              "debug": true,
+              "kind": "ScanSetting",
+              "metadata": {
+                "name": "my-companys-constraints"
+              },
+              "rawResultStorage": {
+                "rotation": 10,
+                "size": "2Gi"
+              },
+              "roles": [
+                "worker",
+                "master"
+              ],
+              "schedule": "0 1 * * *"
+            },
+            {
+              "apiVersion": "compliance.openshift.io/v1alpha1",
+              "kind": "ScanSettingBinding",
+              "metadata": {
+                "name": "nist-moderate"
+              },
+              "profiles": [
+                {
+                  "apiGroup": "compliance.openshift.io/v1alpha1",
+                  "kind": "Profile",
+                  "name": "rhcos4-moderate"
+                }
+              ],
+              "settingsRef": {
+                "apiGroup": "compliance.openshift.io/v1alpha1",
+                "kind": "ScanSetting",
+                "name": "default"
+              }
+            },
+            {
+              "apiVersion": "compliance.openshift.io/v1alpha1",
+              "kind": "TailoredProfile",
+              "metadata": {
+                "name": "example-tailoredprofile"
+              },
+              "spec": {
+                "description": "Example of a tailoredProfile that extends OCP4 FedRAMP Moderate",
+                "disableRules": [
+                  {
+                    "name": "ocp4-file-permissions-node-config",
+                    "rationale": "This breaks X application."
+                  },
+                  {
+                    "name": "ocp4-account-disable-post-pw-expiration",
+                    "rationale": "testing this"
+                  },
+                  {
+                    "name": "ocp4-accounts-no-uid-except-zero",
+                    "rationale": "testing this"
+                  },
+                  {
+                    "name": "ocp4-audit-rules-dac-modification-chmod",
+                    "rationale": "testing this"
+                  },
+                  {
+                    "name": "ocp4-audit-rules-dac-modification-chown",
+                    "rationale": "testing this"
+                  },
+                  {
+                    "name": "ocp4-audit-rules-dac-modification-fchmod",
+                    "rationale": "testing this"
+                  },
+                  {
+                    "name": "ocp4-audit-rules-dac-modification-fchmodat",
+                    "rationale": "testing this"
+                  },
+                  {
+                    "name": "ocp4-audit-rules-dac-modification-fchown",
+                    "rationale": "testing this"
+                  }
+                ],
+                "extends": "ocp4-moderate",
+                "setValues": [
+                  {
+                    "name": "ocp4-var-selinux-state",
+                    "rationale": "trolling dwalsh",
+                    "value": "permissive"
+                  }
+                ],
+                "title": "My little profile"
+              }
+            }
+          ]
+        capabilities: Seamless Upgrades
+        categories: Monitoring,Security
+        olm.skipRange: '>=0.1.17 <0.1.61'
+        operatorframework.io/cluster-monitoring: "true"
+        operatorframework.io/suggested-namespace: openshift-compliance
+        operators.openshift.io/infrastructure-features: '["disconnected", "fips",
+          "proxy-aware"]'
+        operators.openshift.io/valid-subscription: '["OpenShift Kubernetes Engine",
+          "OpenShift Container Platform", "OpenShift Platform Plus"]'
+        operators.operatorframework.io/builder: operator-sdk-v1.19.0+git
+        operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
+        repository: https://github.com/openshift/compliance-operator
+        support: Red Hat Inc.
+      apiservicedefinitions: {}
+      customresourcedefinitions:
+        owned:
+        - description: ComplianceCheckResult represent a result of a single compliance
+            "test"
+          kind: ComplianceCheckResult
+          name: compliancecheckresults.compliance.openshift.io
+          version: v1alpha1
+        - description: ComplianceRemediation represents a remediation that can be
+            applied to the cluster to fix the found issues.
+          displayName: Compliance Remediation
+          kind: ComplianceRemediation
+          name: complianceremediations.compliance.openshift.io
+          version: v1alpha1
+        - description: ComplianceScan represents a scan with a certain configuration
+            that will be applied to objects of a certain entity in the host. These
+            could be nodes that apply to a certain nodeSelector, or the cluster itself.
+          displayName: Compliance Scan
+          kind: ComplianceScan
+          name: compliancescans.compliance.openshift.io
+          version: v1alpha1
+        - description: ComplianceSuite represents a set of scans that will be applied
+            to the cluster. These should help deployers achieve a certain compliance
+            target.
+          displayName: Compliance Suite
+          kind: ComplianceSuite
+          name: compliancesuites.compliance.openshift.io
+          version: v1alpha1
+        - description: ProfileBundle is the Schema for the profilebundles API
+          displayName: Profile Bundle
+          kind: ProfileBundle
+          name: profilebundles.compliance.openshift.io
+          version: v1alpha1
+        - description: Profile is the Schema for the profiles API
+          kind: Profile
+          name: profiles.compliance.openshift.io
+          version: v1alpha1
+        - description: Rule is the Schema for the rules API
+          kind: Rule
+          name: rules.compliance.openshift.io
+          version: v1alpha1
+        - description: ScanSettingBinding is the Schema for the scansettingbindings
+            API
+          displayName: Scan Setting Binding
+          kind: ScanSettingBinding
+          name: scansettingbindings.compliance.openshift.io
+          version: v1alpha1
+        - description: ScanSetting is the Schema for the scansettings API
+          kind: ScanSetting
+          name: scansettings.compliance.openshift.io
+          version: v1alpha1
+        - description: TailoredProfile is the Schema for the tailoredprofiles API
+          displayName: Tailored Profile
+          kind: TailoredProfile
+          name: tailoredprofiles.compliance.openshift.io
+          version: v1alpha1
+        - description: Variable describes a tunable in the XCCDF profile
+          kind: Variable
+          name: variables.compliance.openshift.io
+          version: v1alpha1
+      description: An operator which runs OpenSCAP and allows you to keep your cluster
+        compliant with the security benchmark you need.
+      displayName: Compliance Operator
+      installModes:
+      - supported: true
+        type: OwnNamespace
+      - supported: true
+        type: SingleNamespace
+      - supported: true
+        type: MultiNamespace
+      - supported: true
+        type: AllNamespaces
+      keywords:
+      - security
+      - compliance
+      - openscap
+      - audit
+      links:
+      - name: Compliance Operator upstream repo
+        url: https://github.com/openshift/compliance-operator
+      - name: Compliance Operator documentation
+        url: https://docs.openshift.com/container-platform/latest/security/compliance_operator/compliance-operator-understanding.html
+      maintainers:
+      - email: support@redhat.com
+        name: Red Hat Support
+      maturity: alpha
+      provider:
+        name: Red Hat Inc.
+        url: www.redhat.com
+      relatedImages:
+      - registry.redhat.io/compliance/openshift-compliance-openscap-rhel8@sha256:83ad3113964ec48c5cf28315d923adb6edb95e45960e2756665d617dcd9b2e47
+      - registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b
+      - registry.redhat.io/compliance/openshift-compliance-rhel8-operator@sha256:5578e2225365ac1c15e4c189c5c7a8d14fd3fd26189414b36028f7f0879bb1dc
+      version: 0.1.61
+    name: release-0.1
+  defaultChannel: release-0.1
+  packageName: compliance-operator
+  provider:
+    name: Red Hat Inc.
+    url: www.redhat.com
+[student@workstation ~]$ oc create namespace openshift-compliance
+namespace/openshift-compliance created
+[student@workstation ~]$ cat DO280/labs/operators-review/operator-group.yaml 
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: OPERATOR
+  namespace: NAMESPACE
+spec:
+  targetNamespaces:
+  - NAMESPACE
+
+[student@workstation ~]$ vim DO280/labs/operators-review/operator-group.yaml
+[student@workstation ~]$ cat DO280/labs/operators-review/operator-group.yaml
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: compliance-operator
+  namespace: openshift-compliance
+spec:
+  targetNamespaces:
+  - openshift-compliance
+
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create -f DO280/labs/operators-review/operator-group.yaml
+operatorgroup.operators.coreos.com/compliance-operator created
+[student@workstation ~]$ 
+[student@workstation ~]$ cat DO280/labs/operators-review/subscription.yaml 
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: SUBSCRIPTION
+  namespace: OPERATOR_NAMESPACE
+spec:
+  channel: CHANNEL
+  installPlanApproval: Automatic
+  name: OPERATOR
+  source: CATALOG
+  sourceNamespace: CATALOG_NAMESPACE
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ vim DO280/labs/operators-review/subscription.yaml
+[student@workstation ~]$ cat DO280/labs/operators-review/subscription.yaml
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: compliance-operator
+  namespace: openshift-compliance
+spec:
+  channel: release-0.1
+  installPlanApproval: Automatic
+  name: compliance-operator
+  source: do280-catalog-redhat
+  sourceNamespace: openshift-marketplace
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create -f DO280/labs/operators-review/subscription.yaml
+subscription.operators.coreos.com/compliance-operator created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project openshift-compliance
+error: unable to default to a user name: the server is currently unable to handle the request (get users.user.openshift.io ~)
+[student@workstation ~]$ oc whoami 
+Error from server (ServiceUnavailable): the server is currently unable to handle the request (get users.user.openshift.io ~)
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get projects --kubeconfig=/home/student/.auth/ocp4-kubeconfig | grep compliance
+openshift-compliance                                                              Active
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project openshift-compliance --kubeconfig=/home/student/.auth/ocp4-kubeconfig 
+error: unable to default to a user name: the server is currently unable to handle the request (get users.user.openshift.io ~)
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project openshift-compliance --kubeconfig=/home/student/.auth/ocp4-kubeconfig 
+error: unable to default to a user name: the server is currently unable to handle the request (get users.user.openshift.io ~)
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get co --kubeconfig=/home/student/.auth/ocp4-kubeconfig
+NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+authentication                             4.12.0    True        False         True       3s      OAuthClientsControllerDegraded: unable to get "openshift-browser-client" bootstrapped OAuth client: the server is currently unable to handle the request (post oauthclients.oauth.openshift.io)
+baremetal                                  4.12.0    True        False         False      11d     
+cloud-controller-manager                   4.12.0    True        False         False      11d     
+cloud-credential                           4.12.0    True        False         False      11d     
+cluster-autoscaler                         4.12.0    True        False         False      11d     
+config-operator                            4.12.0    True        False         False      11d     
+console                                    4.12.0    True        False         False      123m    
+control-plane-machine-set                  4.12.0    True        False         False      11d     
+csi-snapshot-controller                    4.12.0    True        False         False      11d     
+dns                                        4.12.0    True        False         False      40h     
+etcd                                       4.12.0    True        False         False      11d     
+image-registry                             4.12.0    True        False         False      11d     
+ingress                                    4.12.0    True        False         False      11d     
+insights                                   4.12.0    True        False         False      6s      
+kube-apiserver                             4.12.0    True        False         False      11d     
+kube-controller-manager                    4.12.0    True        False         False      11d     
+kube-scheduler                             4.12.0    True        False         False      11d     
+kube-storage-version-migrator              4.12.0    True        False         False      40h     
+machine-api                                4.12.0    True        False         False      11d     
+machine-approver                           4.12.0    True        False         False      11d     
+machine-config                             4.12.0    True        False         False      11d     
+marketplace                                4.12.0    True        False         False      11d     
+monitoring                                 4.12.0    True        False         False      123m    
+network                                    4.12.0    True        False         False      11d     
+node-tuning                                4.12.0    True        False         False      11d     
+openshift-apiserver                        4.12.0    True        False         False      123m    
+openshift-controller-manager               4.12.0    True        False         False      40h     
+openshift-samples                          4.12.0    True        False         False      10d     
+operator-lifecycle-manager                 4.12.0    True        False         False      11d     
+operator-lifecycle-manager-catalog         4.12.0    True        False         False      11d     
+operator-lifecycle-manager-packageserver   4.12.0    True        False         False      40h     
+service-ca                                 4.12.0    True        False         False      11d     
+storage                                    4.12.0    True        False         False      11d     
+[student@workstation ~]$ oc get co --kubeconfig=/home/student/.auth/ocp4-kubeconfig
+NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+authentication                             4.12.0    True        False         True       19s     OAuthClientsControllerDegraded: unable to get "openshift-browser-client" bootstrapped OAuth client: the server is currently unable to handle the request (post oauthclients.oauth.openshift.io)
+baremetal                                  4.12.0    True        False         False      11d     
+cloud-controller-manager                   4.12.0    True        False         False      11d     
+cloud-credential                           4.12.0    True        False         False      11d     
+cluster-autoscaler                         4.12.0    True        False         False      11d     
+config-operator                            4.12.0    True        False         False      11d     
+console                                    4.12.0    True        False         False      123m    
+control-plane-machine-set                  4.12.0    True        False         False      11d     
+csi-snapshot-controller                    4.12.0    True        False         False      11d     
+dns                                        4.12.0    True        False         False      40h     
+etcd                                       4.12.0    True        False         False      11d     
+image-registry                             4.12.0    True        False         False      11d     
+ingress                                    4.12.0    True        False         False      11d     
+insights                                   4.12.0    True        False         False      22s     
+kube-apiserver                             4.12.0    True        False         False      11d     
+kube-controller-manager                    4.12.0    True        False         False      11d     
+kube-scheduler                             4.12.0    True        False         False      11d     
+kube-storage-version-migrator              4.12.0    True        False         False      40h     
+machine-api                                4.12.0    True        False         False      11d     
+machine-approver                           4.12.0    True        False         False      11d     
+machine-config                             4.12.0    True        False         False      11d     
+marketplace                                4.12.0    True        False         False      11d     
+monitoring                                 4.12.0    True        False         False      123m    
+network                                    4.12.0    True        False         False      11d     
+node-tuning                                4.12.0    True        False         False      11d     
+openshift-apiserver                        4.12.0    True        False         False      123m    
+openshift-controller-manager               4.12.0    True        False         False      40h     
+openshift-samples                          4.12.0    True        False         False      10d     
+operator-lifecycle-manager                 4.12.0    True        False         False      11d     
+operator-lifecycle-manager-catalog         4.12.0    True        False         False      11d     
+operator-lifecycle-manager-packageserver   4.12.0    True        False         False      40h     
+service-ca                                 4.12.0    True        False         False      11d     
+storage                                    4.12.0    True        False         False      11d     
+[student@workstation ~]$ oc get co --kubeconfig=/home/student/.auth/ocp4-kubeconfig | grep auth
+authentication                             4.12.0    True        False         False      35s     
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project openshift-compliance 
+Now using project "openshift-compliance" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc get csv 
+NAME                                   DISPLAY               VERSION               REPLACES   PHASE
+compliance-operator.v0.1.61            Compliance Operator   0.1.61                           Succeeded
+metallb-operator.4.12.0-202302061702   MetalLB Operator      4.12.0-202302061702              Succeeded
+[student@workstation ~]$ oc get csv compliance-operator.v0.1.61 -o jsonpath='{.spec.install.spec.deployments}'
+[{"name":"compliance-operator","spec":{"replicas":1,"selector":{"matchLabels":{"name":"compliance-operator"}},"strategy":{},"template":{"metadata":{"annotations":{"workload.openshift.io/management":"{\"effect\": \"PreferredDuringScheduling\"}"},"creationTimestamp":null,"labels":{"name":"compliance-operator"}},"spec":{"containers":[{"command":["compliance-operator","operator"],"env":[{"name":"WATCH_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.annotations['olm.targetNamespaces']"}}},{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"OPERATOR_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"RELATED_IMAGE_OPENSCAP","value":"registry.redhat.io/compliance/openshift-compliance-openscap-rhel8@sha256:83ad3113964ec48c5cf28315d923adb6edb95e45960e2756665d617dcd9b2e47"},{"name":"RELATED_IMAGE_OPERATOR","value":"registry.redhat.io/compliance/openshift-compliance-rhel8-operator@sha256:5578e2225365ac1c15e4c189c5c7a8d14fd3fd26189414b36028f7f0879bb1dc"},{"name":"RELATED_IMAGE_PROFILE","value":"registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b"}],"image":"registry.redhat.io/compliance/openshift-compliance-rhel8-operator@sha256:5578e2225365ac1c15e4c189c5c7a8d14fd3fd26189414b36028f7f0879bb1dc","imagePullPolicy":"Always","name":"compliance-operator","resources":{"limits":{"cpu":"200m","memory":"500Mi"},"requests":{"cpu":"10m","memory":"20Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/var/run/secrets/serving-cert","name":"serving-cert","readOnly":true}]}],"nodeSelector":{"node-role.kubernetes.io/master":""},"serviceAccountName":"compliance-operator","tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/master","operator":"Exists"}],"volumes":[{"name":"serving-cert","secret":{"optional":true,"secretName":"compliance-operator-serving-cert"}}]}}}}][student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get all
+NAME                                                 READY   STATUS     RESTARTS        AGE
+pod/compliance-operator-5c46659ffc-r8xlt             1/1     Running    5 (2m21s ago)   5m
+pod/ocp4-openshift-compliance-pp-5f975c6f4b-drc5x    0/1     Init:1/2   0               39s
+pod/rhcos4-openshift-compliance-pp-b466dfcbd-wr6f9   0/1     Init:1/2   0               39s
+
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/metrics   ClusterIP   172.30.208.209   <none>        8383/TCP,8585/TCP   4m41s
+
+NAME                                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/compliance-operator              1/1     1            1           5m
+deployment.apps/ocp4-openshift-compliance-pp     0/1     1            0           39s
+deployment.apps/rhcos4-openshift-compliance-pp   0/1     1            0           40s
+
+NAME                                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/compliance-operator-5c46659ffc             1         1         1       5m
+replicaset.apps/ocp4-openshift-compliance-pp-5f975c6f4b    1         1         0       39s
+replicaset.apps/rhcos4-openshift-compliance-pp-b466dfcbd   1         1         0       40s
+[student@workstation ~]$ oc get all
+NAME                                                 READY   STATUS     RESTARTS        AGE
+pod/compliance-operator-5c46659ffc-r8xlt             1/1     Running    5 (2m31s ago)   5m10s
+pod/ocp4-openshift-compliance-pp-5f975c6f4b-drc5x    0/1     Init:1/2   0               49s
+pod/rhcos4-openshift-compliance-pp-b466dfcbd-wr6f9   0/1     Init:1/2   0               49s
+
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/metrics   ClusterIP   172.30.208.209   <none>        8383/TCP,8585/TCP   4m51s
+
+NAME                                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/compliance-operator              1/1     1            1           5m10s
+deployment.apps/ocp4-openshift-compliance-pp     0/1     1            0           49s
+deployment.apps/rhcos4-openshift-compliance-pp   0/1     1            0           50s
+
+NAME                                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/compliance-operator-5c46659ffc             1         1         1       5m10s
+replicaset.apps/ocp4-openshift-compliance-pp-5f975c6f4b    1         1         0       49s
+replicaset.apps/rhcos4-openshift-compliance-pp-b466dfcbd   1         1         0       50s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get all
+NAME                                                 READY   STATUS    RESTARTS        AGE
+pod/compliance-operator-5c46659ffc-r8xlt             1/1     Running   5 (3m16s ago)   5m55s
+pod/ocp4-openshift-compliance-pp-5f975c6f4b-drc5x    1/1     Running   0               94s
+pod/rhcos4-openshift-compliance-pp-b466dfcbd-wr6f9   1/1     Running   0               94s
+
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/metrics   ClusterIP   172.30.208.209   <none>        8383/TCP,8585/TCP   5m36s
+
+NAME                                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/compliance-operator              1/1     1            1           5m55s
+deployment.apps/ocp4-openshift-compliance-pp     1/1     1            1           94s
+deployment.apps/rhcos4-openshift-compliance-pp   1/1     1            1           95s
+
+NAME                                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/compliance-operator-5c46659ffc             1         1         1       5m55s
+replicaset.apps/ocp4-openshift-compliance-pp-5f975c6f4b    1         1         1       94s
+replicaset.apps/rhcos4-openshift-compliance-pp-b466dfcbd   1         1         1       95s
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get csv compliance-operator.v0.1.61 -o jsonpath={.metadata.annotations.alm-examples}
+[
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ComplianceScan",
+    "metadata": {
+      "name": "example-compliancescan-node"
+    },
+    "spec": {
+      "content": "ssg-rhcos4-ds.xml",
+      "profile": "xccdf_org.ssgproject.content_profile_moderate"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ComplianceScan",
+    "metadata": {
+      "name": "example-compliancescan-platform"
+    },
+    "spec": {
+      "content": "ssg-ocp4-ds.xml",
+      "profile": "xccdf_org.ssgproject.content_profile_moderate",
+      "scanType": "Platform"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ComplianceSuite",
+    "metadata": {
+      "name": "example-compliancesuite"
+    },
+    "spec": {
+      "autoApplyRemediations": false,
+      "scans": [
+        {
+          "content": "ssg-rhcos4-ds.xml",
+          "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b",
+          "name": "workers-scan",
+          "nodeSelector": {
+            "node-role.kubernetes.io/worker": ""
+          },
+          "profile": "xccdf_org.ssgproject.content_profile_moderate"
+        },
+        {
+          "content": "ssg-ocp4-ds.xml",
+          "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b",
+          "name": "platform-scan",
+          "profile": "xccdf_org.ssgproject.content_profile_moderate",
+          "scanType": "Platform"
+        }
+      ],
+      "schedule": "0 1 * * *"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ProfileBundle",
+    "metadata": {
+      "name": "ocp4"
+    },
+    "spec": {
+      "contentFile": "ssg-ocp4-ds.xml",
+      "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "autoApplyRemediations": false,
+    "debug": true,
+    "kind": "ScanSetting",
+    "metadata": {
+      "name": "my-companys-constraints"
+    },
+    "rawResultStorage": {
+      "rotation": 10,
+      "size": "2Gi"
+    },
+    "roles": [
+      "worker",
+      "master"
+    ],
+    "schedule": "0 1 * * *"
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ScanSettingBinding",
+    "metadata": {
+      "name": "nist-moderate"
+    },
+    "profiles": [
+      {
+        "apiGroup": "compliance.openshift.io/v1alpha1",
+        "kind": "Profile",
+        "name": "rhcos4-moderate"
+      }
+    ],
+    "settingsRef": {
+      "apiGroup": "compliance.openshift.io/v1alpha1",
+      "kind": "ScanSetting",
+      "name": "default"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "TailoredProfile",
+    "metadata": {
+      "name": "example-tailoredprofile"
+    },
+    "spec": {
+      "description": "Example of a tailoredProfile that extends OCP4 FedRAMP Moderate",
+      "disableRules": [
+        {
+          "name": "ocp4-file-permissions-node-config",
+          "rationale": "This breaks X application."
+        },
+        {
+          "name": "ocp4-account-disable-post-pw-expiration",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-accounts-no-uid-except-zero",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-chmod",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-chown",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-fchmod",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-fchmodat",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-fchown",
+          "rationale": "testing this"
+        }
+      ],
+      "extends": "ocp4-moderate",
+      "setValues": [
+        {
+          "name": "ocp4-var-selinux-state",
+          "rationale": "trolling dwalsh",
+          "value": "permissive"
+        }
+      ],
+      "title": "My little profile"
+    }
+  }
+][student@workstation ~]$ ocget csv compliance-operator.v0.1.61 -o jsonpath={.spec.install.spec.deployments}
+[{"name":"compliance-operator","spec":{"replicas":1,"selector":{"matchLabels":{"name":"compliance-operator"}},"strategy":{},"template":{"metadata":{"annotations":{"workload.openshift.io/management":"{\"effect\": \"PreferredDuringScheduling\"}"},"creationTimestamp":null,"labels":{"name":"compliance-operator"}},"spec":{"containers":[{"command":["compliance-operator","operator"],"env":[{"name":"WATCH_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.annotations['olm.targetNamespaces']"}}},{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"OPERATOR_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"RELATED_IMAGE_OPENSCAP","value":"registry.redhat.io/compliance/openshift-compliance-openscap-rhel8@sha256:83ad3113964ec48c5cf28315d923adb6edb95e45960e2756665d617dcd9b2e47"},{"name":"RELATED_IMAGE_OPERATOR","value":"registry.redhat.io/compliance/openshift-compliance-rhel8-operator@sha256:5578e2225365ac1c15e4c189c5c7a8d14fd3fd26189414b36028f7f0879bb1dc"},{"name":"RELATED_IMAGE_PROFILE","value":"registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b"}],"image":"registry.redhat.io/compliance/openshift-compliance-rhel8-operator@sha256:5578e2225365ac1c15e4c189c5c7a8d14fd3fd26189414b36028f7f0879bb1dc","imagePullPolicy":"Always","name":"compliance-operator","resources":{"limits":{"cpu":"200m","memory":"500Mi"},"requests":{"cpu":"10m","memory":"20Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/var/run/secrets/serving-cert","name":"serving-cert","readOnly":true}]}],"nodeSelector":{"node-role.kubernetes.io/master":""},"serviceAccountName":"compliance-operator","tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/master","operator":"Exists"}],"volumes":[{"name":"serving-cert","secret":{"optional":true,"secretName":"compliance-operator-serving-cert"}}]}}}}][student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get csv compliance-operator.v0.1.61 -o jsonpath={.spec.install.spec.deployments}
+[{"name":"compliance-operator","spec":{"replicas":1,"selector":{"matchLabels":{"name":"compliance-operator"}},"strategy":{},"template":{"metadata":{"annotations":{"workload.openshift.io/management":"{\"effect\": \"PreferredDuringScheduling\"}"},"creationTimestamp":null,"labels":{"name":"compliance-operator"}},"spec":{"containers":[{"command":["compliance-operator","operator"],"env":[{"name":"WATCH_NAMESPACE","valueFrom":{"fieldRef":{"fieldPath":"metadata.annotations['olm.targetNamespaces']"}}},{"name":"POD_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"OPERATOR_NAME","valueFrom":{"fieldRef":{"fieldPath":"metadata.name"}}},{"name":"RELATED_IMAGE_OPENSCAP","value":"registry.redhat.io/compliance/openshift-compliance-openscap-rhel8@sha256:83ad3113964ec48c5cf28315d923adb6edb95e45960e2756665d617dcd9b2e47"},{"name":"RELATED_IMAGE_OPERATOR","value":"registry.redhat.io/compliance/openshift-compliance-rhel8-operator@sha256:5578e2225365ac1c15e4c189c5c7a8d14fd3fd26189414b36028f7f0879bb1dc"},{"name":"RELATED_IMAGE_PROFILE","value":"registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b"}],"image":"registry.redhat.io/compliance/openshift-compliance-rhel8-operator@sha256:5578e2225365ac1c15e4c189c5c7a8d14fd3fd26189414b36028f7f0879bb1dc","imagePullPolicy":"Always","name":"compliance-operator","resources":{"limits":{"cpu":"200m","memory":"500Mi"},"requests":{"cpu":"10m","memory":"20Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/var/run/secrets/serving-cert","name":"serving-cert","readOnly":true}]}],"nodeSelector":{"node-role.kubernetes.io/master":""},"serviceAccountName":"compliance-operator","tolerations":[{"effect":"NoSchedule","key":"node-role.kubernetes.io/master","operator":"Exists"}],"volumes":[{"name":"serving-cert","secret":{"optional":true,"secretName":"compliance-operator-serving-cert"}}]}}}}][student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get csv compliance-operator.v0.1.61 -o jsonpath={.metadata.annotations.alm-examples}
+[
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ComplianceScan",
+    "metadata": {
+      "name": "example-compliancescan-node"
+    },
+    "spec": {
+      "content": "ssg-rhcos4-ds.xml",
+      "profile": "xccdf_org.ssgproject.content_profile_moderate"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ComplianceScan",
+    "metadata": {
+      "name": "example-compliancescan-platform"
+    },
+    "spec": {
+      "content": "ssg-ocp4-ds.xml",
+      "profile": "xccdf_org.ssgproject.content_profile_moderate",
+      "scanType": "Platform"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ComplianceSuite",
+    "metadata": {
+      "name": "example-compliancesuite"
+    },
+    "spec": {
+      "autoApplyRemediations": false,
+      "scans": [
+        {
+          "content": "ssg-rhcos4-ds.xml",
+          "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b",
+          "name": "workers-scan",
+          "nodeSelector": {
+            "node-role.kubernetes.io/worker": ""
+          },
+          "profile": "xccdf_org.ssgproject.content_profile_moderate"
+        },
+        {
+          "content": "ssg-ocp4-ds.xml",
+          "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b",
+          "name": "platform-scan",
+          "profile": "xccdf_org.ssgproject.content_profile_moderate",
+          "scanType": "Platform"
+        }
+      ],
+      "schedule": "0 1 * * *"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ProfileBundle",
+    "metadata": {
+      "name": "ocp4"
+    },
+    "spec": {
+      "contentFile": "ssg-ocp4-ds.xml",
+      "contentImage": "registry.redhat.io/compliance/openshift-compliance-content-rhel8@sha256:c4bf5b2b20ff538adbc430b7ee993fbd7c291203a9810534005148304e3b169b"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "autoApplyRemediations": false,
+    "debug": true,
+    "kind": "ScanSetting",
+    "metadata": {
+      "name": "my-companys-constraints"
+    },
+    "rawResultStorage": {
+      "rotation": 10,
+      "size": "2Gi"
+    },
+    "roles": [
+      "worker",
+      "master"
+    ],
+    "schedule": "0 1 * * *"
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "ScanSettingBinding",
+    "metadata": {
+      "name": "nist-moderate"
+    },
+    "profiles": [
+      {
+        "apiGroup": "compliance.openshift.io/v1alpha1",
+        "kind": "Profile",
+        "name": "rhcos4-moderate"
+      }
+    ],
+    "settingsRef": {
+      "apiGroup": "compliance.openshift.io/v1alpha1",
+      "kind": "ScanSetting",
+      "name": "default"
+    }
+  },
+  {
+    "apiVersion": "compliance.openshift.io/v1alpha1",
+    "kind": "TailoredProfile",
+    "metadata": {
+      "name": "example-tailoredprofile"
+    },
+    "spec": {
+      "description": "Example of a tailoredProfile that extends OCP4 FedRAMP Moderate",
+      "disableRules": [
+        {
+          "name": "ocp4-file-permissions-node-config",
+          "rationale": "This breaks X application."
+        },
+        {
+          "name": "ocp4-account-disable-post-pw-expiration",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-accounts-no-uid-except-zero",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-chmod",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-chown",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-fchmod",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-fchmodat",
+          "rationale": "testing this"
+        },
+        {
+          "name": "ocp4-audit-rules-dac-modification-fchown",
+          "rationale": "testing this"
+        }
+      ],
+      "extends": "ocp4-moderate",
+      "setValues": [
+        {
+          "name": "ocp4-var-selinux-state",
+          "rationale": "trolling dwalsh",
+          "value": "permissive"
+        }
+      ],
+      "title": "My little profile"
+    }
+  }
+][student@workstation ~]$ cat DO280/labs/operators-review/scan-setting-binding.yaml 
+apiVersion: compliance.openshift.io/v1alpha1
+profiles:
+  - apiGroup: compliance.openshift.io/v1alpha1
+    name: rhcos4-moderate
+    kind: Profile
+settingsRef:
+  apiGroup: compliance.openshift.io/v1alpha1
+  name: default
+  kind: ScanSetting
+kind: ScanSettingBinding
+metadata:
+  name: nist-moderate
+  namespace: openshift-compliance
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create -f DO280/labs/operators-review/scan-setting-binding.yaml
+scansettingbinding.compliance.openshift.io/nist-moderate created
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get compliancesuite,pod
+NAME                                                    PHASE     RESULT
+compliancesuite.compliance.openshift.io/nist-moderate   RUNNING   NOT-AVAILABLE
+
+NAME                                                 READY   STATUS              RESTARTS      AGE
+pod/compliance-operator-5c46659ffc-r8xlt             1/1     Running             5 (19m ago)   21m
+pod/ocp4-openshift-compliance-pp-5f975c6f4b-drc5x    1/1     Running             0             17m
+pod/rhcos4-moderate-master-master01-pod              0/2     Init:0/1            0             2s
+pod/rhcos4-moderate-master-rs-7845b5587c-rmsgq       0/1     ContainerCreating   0             2s
+pod/rhcos4-moderate-worker-master01-pod              0/2     Init:0/1            0             1s
+pod/rhcos4-moderate-worker-rs-6cfb8fbfdf-7gbcv       0/1     ContainerCreating   0             1s
+pod/rhcos4-openshift-compliance-pp-b466dfcbd-wr6f9   1/1     Running             0             17m
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get compliancesuite,pod
+NAME                                                    PHASE     RESULT
+compliancesuite.compliance.openshift.io/nist-moderate   RUNNING   NOT-AVAILABLE
+
+NAME                                                 READY   STATUS            RESTARTS      AGE
+pod/compliance-operator-5c46659ffc-r8xlt             1/1     Running           5 (19m ago)   22m
+pod/ocp4-openshift-compliance-pp-5f975c6f4b-drc5x    1/1     Running           0             17m
+pod/rhcos4-moderate-master-master01-pod              0/2     PodInitializing   0             9s
+pod/rhcos4-moderate-master-rs-7845b5587c-rmsgq       1/1     Running           0             9s
+pod/rhcos4-moderate-worker-master01-pod              0/2     PodInitializing   0             8s
+pod/rhcos4-moderate-worker-rs-6cfb8fbfdf-7gbcv       1/1     Running           0             8s
+pod/rhcos4-openshift-compliance-pp-b466dfcbd-wr6f9   1/1     Running           0             17m
+[student@workstation ~]$ watch oc get compliancesuite,pod
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get compliancesuite,pod
+NAME                                                    PHASE     RESULT
+compliancesuite.compliance.openshift.io/nist-moderate   RUNNING   NOT-AVAILABLE
+
+NAME                                                 READY   STATUS    RESTARTS      AGE
+pod/compliance-operator-5c46659ffc-r8xlt             1/1     Running   5 (19m ago)   22m
+pod/ocp4-openshift-compliance-pp-5f975c6f4b-drc5x    1/1     Running   0             18m
+pod/rhcos4-moderate-master-master01-pod              2/2     Running   0             38s
+pod/rhcos4-moderate-master-rs-7845b5587c-rmsgq       1/1     Running   0             38s
+pod/rhcos4-moderate-worker-master01-pod              2/2     Running   0             37s
+pod/rhcos4-moderate-worker-rs-6cfb8fbfdf-7gbcv       1/1     Running   0             37s
+pod/rhcos4-openshift-compliance-pp-b466dfcbd-wr6f9   1/1     Running   0             18m
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab grade operators-review 
+PASS    The openshift-compliance namespace exists
+PASS    The compliance-operator operator group is correct
+PASS    The compliance-operator subscription is correct
+FAIL    The CSV succeeded
+        - No CSV found
+[student@workstation ~]$ oc get compliancesuite,pod
+NAME                                                    PHASE     RESULT
+compliancesuite.compliance.openshift.io/nist-moderate   RUNNING   NOT-AVAILABLE
+
+NAME                                                 READY   STATUS    RESTARTS      AGE
+pod/compliance-operator-5c46659ffc-r8xlt             1/1     Running   5 (20m ago)   23m
+pod/ocp4-openshift-compliance-pp-5f975c6f4b-drc5x    1/1     Running   0             18m
+pod/rhcos4-moderate-master-master01-pod              2/2     Running   0             67s
+pod/rhcos4-moderate-master-rs-7845b5587c-rmsgq       1/1     Running   0             67s
+pod/rhcos4-moderate-worker-master01-pod              2/2     Running   0             66s
+pod/rhcos4-moderate-worker-rs-6cfb8fbfdf-7gbcv       1/1     Running   0             66s
+pod/rhcos4-openshift-compliance-pp-b466dfcbd-wr6f9   1/1     Running   0             18m
+[student@workstation ~]$ oc get csv 
+NAME                                   DISPLAY               VERSION               REPLACES   PHASE
+compliance-operator.v0.1.61            Compliance Operator   0.1.61                           Succeeded
+metallb-operator.4.12.0-202302061702   MetalLB Operator      4.12.0-202302061702              Succeeded
+[student@workstation ~]$ oc get compliancesuite,pod
+NAME                                                    PHASE     RESULT
+compliancesuite.compliance.openshift.io/nist-moderate   RUNNING   NOT-AVAILABLE
+
+NAME                                                 READY   STATUS     RESTARTS      AGE
+pod/compliance-operator-5c46659ffc-r8xlt             1/1     Running    5 (20m ago)   23m
+pod/ocp4-openshift-compliance-pp-5f975c6f4b-drc5x    1/1     Running    0             18m
+pod/rhcos4-moderate-master-master01-pod              1/2     NotReady   0             77s
+pod/rhcos4-moderate-master-rs-7845b5587c-rmsgq       1/1     Running    0             77s
+pod/rhcos4-moderate-worker-master01-pod              1/2     NotReady   0             76s
+pod/rhcos4-moderate-worker-rs-6cfb8fbfdf-7gbcv       1/1     Running    0             76s
+pod/rhcos4-openshift-compliance-pp-b466dfcbd-wr6f9   1/1     Running    0             18m
+[student@workstation ~]$ lab grade operators-review 
+PASS    The openshift-compliance namespace exists
+PASS    The compliance-operator operator group is correct
+PASS    The compliance-operator subscription is correct
+FAIL    The CSV succeeded
+        - No CSV found
+[student@workstation ~]$ ls -al .venv/labs/
+bin/                include/            lib/                lib64/              pip-selfcheck.json  requirements.txt/   share/
+[student@workstation ~]$ ls -al .venv/labs/
+bin/                include/            lib/                lib64/              pip-selfcheck.json  requirements.txt/   share/
+[student@workstation ~]$ ls -al .venv/labs/
+bin/                include/            lib/                lib64/              pip-selfcheck.json  requirements.txt/   share/
+[student@workstation ~]$ ls -al .venv/labs/bin/
+activate                                        pip3                                            rst2html5.py
+activate.csh                                    pip3.6                                          rst2html.py
+activate.fish                                   platform-python                                 rst2latex.py
+activate_this.py                                __pycache__/                                    rst2man.py
+ansible-runner                                  pyrsa-decrypt                                   rst2odt_prepstyles.py
+chardetect                                      pyrsa-encrypt                                   rst2odt.py
+debug-lab-connect-olm                           pyrsa-keygen                                    rst2pseudoxml.py
+debug-lab-delete-projects-disabling-finalizers  pyrsa-priv2pub                                  rst2s5.py
+debug-lab-disconnect-olm                        pyrsa-sign                                      rst2xetex.py
+debug-lab-mirror-images                         pyrsa-verify                                    rst2xml.py
+debug-lab-registry-mirror                       python                                          rstpep2html.py
+debug-lab-wait-cluster                          python3                                         wheel
+distro                                          python3.6                                       wsdump
+lab                                             python-config                                   
+pip                                             rst2html4.py                                    
+[student@workstation ~]$ ls -al .venv/labs/
+bin/                include/            lib/                lib64/              pip-selfcheck.json  requirements.txt/   share/
+[student@workstation ~]$ ls -al .venv/labs/
+bin/                include/            lib/                lib64/              pip-selfcheck.json  requirements.txt/   share/
+[student@workstation ~]$ ls -al .venv/labs/requirements.txt/requirements.txt 
+-rw-r--r--. 1 student student 114 Feb 24 14:00 .venv/labs/requirements.txt/requirements.txt
+[student@workstation ~]$ cat .venv/labs/requirements.txt/requirements.txt
+six
+pyyaml
+
+# paramiko is only required if ssh connections are required (e.g. use of client_host context)
+paramiko[student@workstatcat .venv/labs/^C
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ls .venv/
+labs
+[student@workstation ~]$ ls .venv/labs/
+bin  include  lib  lib64  pip-selfcheck.json  requirements.txt  share
+[student@workstation ~]$ ls .venv/labs/share/
+ansible-runner
+[student@workstation ~]$ ls .venv/labs/share/ansible-runner/a
+ls: cannot access '.venv/labs/share/ansible-runner/a': No such file or directory
+[student@workstation ~]$ ls .venv/labs/share/ansible-runner/
+utils
+[student@workstation ~]$ ls .venv/labs/share/ansible-runner/utils/
+entrypoint.sh
+[student@workstation ~]$ ls .venv/labs/include/python3.6m/
+Display all 102 possibilities? (y or n)
+[student@workstation ~]$ ls .venv/labs/include/python3.6m/
+abstract.h         codecs.h               fileutils.h     longobject.h       osdefs.h       pydebug.h      pystate.h       structseq.h
+accu.h             code.h                 floatobject.h   marshal.h          osmodule.h     pydtrace.h     pystrcmp.h      symtable.h
+asdl.h             compile.h              frameobject.h   memoryobject.h     parsetok.h     pyerrors.h     pystrhex.h      sysmodule.h
+ast.h              complexobject.h        funcobject.h    metagrammar.h      patchlevel.h   pyexpat.h      pystrtod.h      token.h
+bitset.h           datetime.h             genobject.h     methodobject.h     pgen.h         pyfpe.h        Python-ast.h    traceback.h
+bltinmodule.h      descrobject.h          graminit.h      modsupport.h       pgenheaders.h  pygetopt.h     Python.h        tupleobject.h
+boolobject.h       dictobject.h           grammar.h       moduleobject.h     pyarena.h      pyhash.h       pythonrun.h     typeslots.h
+bytearrayobject.h  dtoa.h                 _hashopenssl.h  namespaceobject.h  pyatomic.h     pylifecycle.h  pythread.h      ucnhash.h
+bytes_methods.h    dynamic_annotations.h  import.h        node.h             pycapsule.h    pymacconfig.h  pytime.h        unicodeobject.h
+bytesobject.h      enumobject.h           intrcheck.h     object.h           pyconfig-64.h  pymacro.h      rangeobject.h   warnings.h
+cellobject.h       errcode.h              iterobject.h    objimpl.h          pyconfig.h     pymath.h       setobject.h     weakrefobject.h
+ceval.h            eval.h                 listobject.h    odictobject.h      pyctype.h      pymem.h        sliceobject.h
+classobject.h      fileobject.h           longintrepr.h   opcode.h           py_curses.h    pyport.h       structmember.h
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ls .venv/labs/lib
+lib/   lib64/ 
+[student@workstation ~]$ ls .venv/labs/lib
+lib/   lib64/ 
+[student@workstation ~]$ ls .venv/labs/lib
+lib/   lib64/ 
+[student@workstation ~]$ ls .venv/labs/lib/python3.6/s
+shutil.py         site-packages/    site.py           sre_compile.py    sre_constants.py  sre_parse.py      stat.py           struct.py
+[student@workstation ~]$ ls .venv/labs/lib/python3.6/site-packages/
+Display all 118 possibilities? (y or n)
+ansible_runner/                                Jinja2-3.0.3.dist-info/                        PyYAML-6.0.dist-info/
+ansible_runner-2.2.0.dist-info/                labs/                                          README.md
+bcrypt/                                        LICENSE                                        requests/
+bcrypt-4.0.1.dist-info/                        lockfile/                                      requests-2.25.1.dist-info/
+cachetools/                                    lockfile-0.12.2.dist-info/                     requests_oauthlib/
+cachetools-4.2.4.dist-info/                    log_symbols/                                   requests_oauthlib-1.3.1.dist-info/
+certifi/                                       log_symbols-0.0.14.dist-info/                  rht_labs_core-4.5.3.dist-info/
+certifi-2021.10.8.dist-info/                   markupsafe/                                    rht_labs_do280-4.12.1.dev440.dist-info/
+cffi/                                          MarkupSafe-2.0.1.dist-info/                    rsa/
+cffi-1.15.1.dist-info/                         nacl/                                          rsa-4.8.dist-info/
+_cffi_backend.cpython-36m-x86_64-linux-gnu.so  oauthlib/                                      ruamel/
+CHANGELOG.md                                   oauthlib-3.2.0.dist-info/                      ruamel.yaml-0.17.21.dist-info/
+chardet/                                       openshift/                                     ruamel.yaml-0.17.21-py3.9-nspkg.pth
+chardet-3.0.4.dist-info/                       openshift_client-1.0.18.dist-info/             ruamel.yaml.clib-0.2.6.dist-info/
+click/                                         packaging/                                     _ruamel_yaml.cpython-36m-x86_64-linux-gnu.so
+click-8.0.4.dist-info/                         packaging-21.3.dist-info/                      selinux/
+colorama/                                      paramiko/                                      selinux-0.2.1.dist-info/
+colorama-0.4.5.dist-info/                      paramiko-3.0.0.dist-info/                      setuptools/
+core/                                          pexpect/                                       setuptools-59.6.0.dist-info/
+cryptography/                                  pexpect-4.8.0.dist-info/                       six-1.16.0.dist-info/
+cryptography-39.0.1.dist-info/                 pip/                                           six.py
+daemon/                                        pip-21.3.1.dist-info/                          spinners/
+dateutil/                                      pkg_resources/                                 spinners-0.0.24.dist-info/
+distro/                                        psutil/                                        string_utils/
+distro-1.7.0.dist-info/                        psutil-5.9.0.dist-info/                        termcolor-1.1.0.dist-info/
+_distutils_hack/                               ptyprocess/                                    termcolor.py
+distutils-precedence.pth                       ptyprocess-0.7.0.dist-info/                    typing_extensions-4.1.1.dist-info/
+do280/                                         pyasn1/                                        typing_extensions.py
+docutils/                                      pyasn1-0.4.8.dist-info/                        urllib3/
+docutils-0.18.1.dist-info/                     pyasn1_modules/                                urllib3-1.25.11.dist-info/
+google/                                        pyasn1_modules-0.2.8.dist-info/                websocket/
+google_auth-2.6.6.dist-info/                   __pycache__/                                   websocket_client-1.3.1.dist-info/
+google_auth-2.6.6-py3.10-nspkg.pth             pycparser/                                     wheel/
+halo/                                          pycparser-2.21.dist-info/                      wheel-0.37.1.dist-info/
+halo-0.0.31.dist-info/                         PyNaCl-1.5.0.dist-info/                        _yaml/
+idna/                                          pyparsing/                                     yaml/
+[student@workstation ~]$ ls .venv/labs/lib/python3.6/site-packages/do280/
+appsec-api.py      auth-review.py        console-review.py     network-policy.py    __pycache__                  updates-olm.py
+appsec-prune.py    common                console-workloads.py  network-review.py    selfservice-projtemplate.py  version.py
+appsec-review.py   compreview-apps.py    foo-bar.py            network-svccerts.py  selfservice-quotas.py
+appsec-scc.py      compreview-review.py  __init__.py           operators-cli.py     selfservice-ranges.py
+auth-providers.py  console-admin.py      materials             operators-review.py  selfservice-review.py
+auth-rbac.py       console-metrics.py    network-ingress.py    operators-web.py     updates-api.py
+[student@workstation ~]$ ls .venv/labs/lib/python3.6/site-packages/do280/operators-review.py 
+.venv/labs/lib/python3.6/site-packages/do280/operators-review.py
+[student@workstation ~]$ vim .venv/labs/lib/python3.6/site-packages/do280/operators-review.py
+[student@workstation ~]$ lab grade operators-review 
+PASS    The openshift-compliance namespace exists
+PASS    The compliance-operator operator group is correct
+PASS    The compliance-operator subscription is correct
+PASS    The CSV succeeded
+[student@workstation ~]$ lab finish operators-review 
+SUCCESS Remove compliance-operator operator
+
+
+
+^C
+Aborted!
+[student@workstation ~]$ lab finish operators-review 
+SUCCESS Remove compliance-operator operator
+
+
+
+
+^C
+Aborted!
+[student@workstation ~]$ oc whoami
+admin
+[student@workstation ~]$ oc get co | grep compliance
+[student@workstation ~]$ oc get all -n openshift-compliance
+No resources found in openshift-compliance namespace.
+[student@workstation ~]$ lab finish operators-review 
+SUCCESS Remove compliance-operator operator
+
+
+
+^C
+Aborted!
+[student@workstation ~]$ lab finish operators-review 
+SUCCESS Remove compliance-operator operator
+
+
