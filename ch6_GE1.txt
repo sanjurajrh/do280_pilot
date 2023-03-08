@@ -1,0 +1,421 @@
+[student@workstation ~]$ lab start appsec-scc
+   |    Waiting for cluster
+SUCCESS Waiting for cluster
+SUCCESS Remove appsec-scc project
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u developer -p developer https://api.ocp4.example.com:6443
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ oc whoami 
+developer
+[student@workstation ~]$ oc new-project appsec-scc
+Now using project "appsec-scc" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc new-app --name gitlab --image registry.ocp4.example.com:8443/redhattraining/gitlab-ce:8.4.3-ce.0
+--> Found container image 3290b2e (7 years old) from registry.ocp4.example.com:8443 for "registry.ocp4.example.com:8443/redhattraining/gitlab-ce:8.4.3-ce.0"
+
+    * An image stream tag will be created as "gitlab:8.4.3-ce.0" that will track this image
+
+--> Creating resources ...
+    imagestream.image.openshift.io "gitlab" created
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "gitlab" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "gitlab" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "gitlab" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "gitlab" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+    deployment.apps "gitlab" created
+    service "gitlab" created
+--> Success
+    Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
+     'oc expose service/gitlab' 
+    Run 'oc status' to view your app.
+[student@workstation ~]$ oc status 
+In project appsec-scc on server https://api.ocp4.example.com:6443
+
+svc/gitlab - 172.30.253.53 ports 22, 80, 443
+  deployment/gitlab deploys istag/gitlab:8.4.3-ce.0 
+    deployment #2 running for 3 seconds - 0/1 pods
+    deployment #1 deployed 6 seconds ago - 0/1 pods growing to 1
+
+
+1 info identified, use 'oc status --suggest' to see details.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods
+NAME                      READY   STATUS              RESTARTS   AGE
+gitlab-6fd4f89dbc-7htz9   0/1     ContainerCreating   0          7s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods
+NAME                      READY   STATUS              RESTARTS   AGE
+gitlab-6fd4f89dbc-7htz9   0/1     ContainerCreating   0          9s
+[student@workstation ~]$ watch oc get pods
+[student@workstation ~]$ oc get pods -w
+NAME                      READY   STATUS              RESTARTS   AGE
+gitlab-6fd4f89dbc-7htz9   0/1     ContainerCreating   0          41s
+[student@workstation ~]$ oc get pods 
+NAME                      READY   STATUS             RESTARTS      AGE
+gitlab-6fd4f89dbc-7htz9   0/1     CrashLoopBackOff   4 (43s ago)   4m18s
+[student@workstation ~]$ 
+[student@workstation ~]$ oc logs pod/gitlab-6fd4f89dbc-7htz9 
+Thank you for using GitLab Docker Image!
+Current version: gitlab-ce=8.4.3-ce.0
+
+Configure GitLab for your system by editing /etc/gitlab/gitlab.rb file
+And restart this container to reload settings.
+To do it use docker exec:
+
+  docker exec -it gitlab vim /etc/gitlab/gitlab.rb
+  docker restart gitlab
+
+For a comprehensive list of configuration options please see the Omnibus GitLab readme
+https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md
+
+If this container fails to start due to permission problems try to fix it by executing:
+
+  docker exec -it gitlab update-permissions
+  docker restart gitlab
+
+Preparing services...
+Starting services...
+Configuring GitLab...
+/opt/gitlab/embedded/bin/runsvdir-start: line 34: ulimit: max user processes: cannot modify limit: Operation not permitted
+/opt/gitlab/embedded/bin/runsvdir-start: line 37: /proc/sys/fs/file-max: Read-only file system
+[2023-03-08T12:37:35+00:00] WARN: Ohai::Config[:disabled_plugins] is set. Ohai::Config[:disabled_plugins] is deprecated and will be removed in future releases of ohai. Use ohai.disabled_plugins in your configuration file to configure :disabled_plugins for ohai.
+[2023-03-08T12:37:35+00:00] INFO: Started chef-zero at chefzero://localhost:8889 with repository at /opt/gitlab/embedded
+  One version per cookbook
+
+[2023-03-08T12:37:35+00:00] INFO: Forking chef instance to converge...
+[2023-03-08T12:37:35+00:00] INFO: *** Chef 12.5.1 ***
+[2023-03-08T12:37:35+00:00] INFO: Chef-client pid: 23
+[2023-03-08T12:37:36+00:00] INFO: HTTP Request Returned 404 Not Found: Object not found: chefzero://localhost:8889/nodes/gitlab-6fd4f89dbc-7htz9
+[2023-03-08T12:37:36+00:00] INFO: Setting the run_list to ["recipe[gitlab]"] from CLI options
+[2023-03-08T12:37:36+00:00] INFO: Run List is [recipe[gitlab]]
+[2023-03-08T12:37:36+00:00] INFO: Run List expands to [gitlab]
+[2023-03-08T12:37:36+00:00] INFO: Starting Chef Run for gitlab-6fd4f89dbc-7htz9
+[2023-03-08T12:37:36+00:00] INFO: Running start handlers
+[2023-03-08T12:37:36+00:00] INFO: Start handlers complete.
+[2023-03-08T12:37:36+00:00] INFO: HTTP Request Returned 404 Not Found: Object not found: 
+[2023-03-08T12:37:36+00:00] INFO: Loading cookbooks [gitlab@0.0.1, runit@0.14.2, package@0.0.0]
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/ci-redis_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/ci-sidekiq_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/ci-redis.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/bootstrap.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/bootstrap_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/gitlab-ci.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/ci-unicorn_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/ci-sidekiq.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/gitlab-ci_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/gitlab-workhorse.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/database_migrations.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/cron.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/gitlab-shell.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/logrotate_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/gitlab-workhorse_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/mailroom.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/mattermost_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/nginx.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/logrotate.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/gitlab-rails.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/redis.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/postgresql.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/postgresql_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/mattermost.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/redis_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/sidekiq.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/sidekiq_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/remote-syslog_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/mailroom_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/default.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/selinux.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/remote-syslog.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/remove_accounts.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/show_config.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/unicorn_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/unicorn.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/migrate_database.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/web-server.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/nginx_disable.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/unicorn_config.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/ci-unicorn.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/unicorn_service.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/sidekiq_service.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/env_dir.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/sysctl.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/libraries/helper.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/libraries/account_helper.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/libraries/gitlab.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/aws.yml.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/files/default/mail_room.yml in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/database.yml.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/config.json.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/recipes/users.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/redis_service.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/account.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/gitlab-shell-config.yml.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/definitions/template_symlink.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/gitconfig-system.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/gitlab.yml.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/gitconfig.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/mount_point_check.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/gitlab-rails-rc.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/application.yml.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/logrotate-service.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/nginx-gitlab-ci-http.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/attributes/default.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/nginx-gitlab-mattermost-http.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/nginx-gitlab-http.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/gitlab-rails-config.ru.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/nginx.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/postgresql-init.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/logrotate.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/redis.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/nginx-gitlab-pages-http.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/rack_attack.rb.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/pg_ident.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/pg_hba.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/resque.yml.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/gitlab-ci-rc.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-gitlab-workhorse-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-logrotate-control-t.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/secrets.yml.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-gitlab-workhorse-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/smtp_settings.rb.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-logrotate-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-logrotate-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/remote_syslog.yml.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-mailroom-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-mailroom-finish.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/postgresql.conf.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-logrotate-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-nginx-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-gitlab-workhorse-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-mailroom-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/secret_token.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-postgresql-control-t.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-mattermost-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-mattermost-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-nginx-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-mattermost-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-nginx-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-postgresql-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-postgresql-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-mailroom-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-redis-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-postgresql-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-redis-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-remote-syslog-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-sidekiq-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-redis-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-sidekiq-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-remote-syslog-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/recipes/default.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-sidekiq-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/unicorn.rb.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/metadata.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-unicorn-log-config.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-unicorn-control-t.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-remote-syslog-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-unicorn-log-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/gitlab/templates/default/sv-unicorn-run.erb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/recipes/systemd.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/recipes/sysvinit.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/files/default/gitlab-runsvdir.conf in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/attributes/default.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/recipes/upstart.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/files/default/gitlab-runsvdir.service in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/metadata.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/definitions/runit_service.rb in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/runit/README.md in the cache.
+[2023-03-08T12:37:36+00:00] INFO: Storing updated cookbooks/package/attributes/default.rb in the cache.
+
+================================================================================
+Error executing action `create` on resource 'directory[/etc/gitlab]'
+================================================================================
+
+Chef::Exceptions::InsufficientPermissions
+-----------------------------------------
+Cannot create directory[/etc/gitlab] at /etc/gitlab due to insufficient permissions
+
+Cookbook Trace:
+---------------
+/opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab/recipes/default.rb:31:in `from_file'
+
+Resource Declaration:
+---------------------
+# In /opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab/recipes/default.rb
+
+ 26: directory "/etc/gitlab" do
+ 27:   owner "root"
+ 28:   group "root"
+ 29:   mode "0775"
+ 30:   action :nothing
+ 31: end.run_action(:create)
+ 32: 
+ 33: Gitlab[:node] = node
+ 34: if File.exists?("/assets/gitlab.rb")
+ 35:   Gitlab.from_file("/assets/gitlab.rb")
+ 36: end
+ 37: node.consume_attributes(Gitlab.generate_config(node['fqdn']))
+
+Compiled Resource:
+------------------
+# Declared in /opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab/recipes/default.rb:26:in `from_file'
+
+directory("/etc/gitlab") do
+  action [:nothing]
+  retries 0
+  retry_delay 2
+  default_guard_interpreter :default
+  path "/etc/gitlab"
+  declared_type :directory
+  cookbook_name "gitlab"
+  recipe_name "default"
+  owner "root"
+  group "root"
+  mode "0775"
+end
+
+
+================================================================================
+Recipe Compile Error in /opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab/recipes/default.rb
+================================================================================
+
+Chef::Exceptions::InsufficientPermissions
+-----------------------------------------
+directory[/etc/gitlab] (gitlab::default line 26) had an error: Chef::Exceptions::InsufficientPermissions: Cannot create directory[/etc/gitlab] at /etc/gitlab due to insufficient permissions
+
+Cookbook Trace:
+---------------
+  /opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab/recipes/default.rb:31:in `from_file'
+
+Relevant File Content:
+----------------------
+/opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab/recipes/default.rb:
+
+ 24:  ENV['PATH'] = "#{install_dir}/bin:#{install_dir}/embedded/bin:#{ENV['PATH']}"
+ 25:  
+ 26:  directory "/etc/gitlab" do
+ 27:    owner "root"
+ 28:    group "root"
+ 29:    mode "0775"
+ 30:    action :nothing
+ 31>> end.run_action(:create)
+ 32:  
+ 33:  Gitlab[:node] = node
+ 34:  if File.exists?("/assets/gitlab.rb")
+ 35:    Gitlab.from_file("/assets/gitlab.rb")
+ 36:  end
+ 37:  node.consume_attributes(Gitlab.generate_config(node['fqdn']))
+ 38:  
+ 39:  if File.exists?("/var/opt/gitlab/bootstrapped")
+ 40:  	node.set['gitlab']['bootstrap']['enable'] = false
+
+[2023-03-08T12:37:36+00:00] ERROR: Running exception handlers
+[2023-03-08T12:37:36+00:00] ERROR: Exception handlers complete
+[2023-03-08T12:37:36+00:00] FATAL: Stacktrace dumped to /opt/gitlab/embedded/cookbooks/cache/chef-stacktrace.out
+[2023-03-08T12:37:36+00:00] ERROR: directory[/etc/gitlab] (gitlab::default line 26) had an error: Chef::Exceptions::InsufficientPermissions: Cannot create directory[/etc/gitlab] at /etc/gitlab due to insufficient permissions
+[2023-03-08T12:37:37+00:00] FATAL: Chef::Exceptions::ChildConvergeError: Chef run process exited unsuccessfully (exit code 1)
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 73 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "appsec-scc".
+[student@workstation ~]$ oc get pod/gitlab-6fd4f89dbc-7htz9 -o yaml | oc adm policy scc-subject-review -f - 
+RESOURCE                      ALLOWED BY      
+Pod/gitlab-6fd4f89dbc-7htz9   restricted-v2   
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get scc | grep restrict
+restricted                        false   <no value>             MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+restricted-v2                     false   ["NET_BIND_SERVICE"]   MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+[student@workstation ~]$ oc get scc -o name 
+securitycontextconstraints.security.openshift.io/anyuid
+securitycontextconstraints.security.openshift.io/hostaccess
+securitycontextconstraints.security.openshift.io/hostmount-anyuid
+securitycontextconstraints.security.openshift.io/hostnetwork
+securitycontextconstraints.security.openshift.io/hostnetwork-v2
+securitycontextconstraints.security.openshift.io/lvms-topolvm-node
+securitycontextconstraints.security.openshift.io/lvms-vgmanager
+securitycontextconstraints.security.openshift.io/machine-api-termination-handler
+securitycontextconstraints.security.openshift.io/node-exporter
+securitycontextconstraints.security.openshift.io/nonroot
+securitycontextconstraints.security.openshift.io/nonroot-v2
+securitycontextconstraints.security.openshift.io/privileged
+securitycontextconstraints.security.openshift.io/restricted
+securitycontextconstraints.security.openshift.io/restricted-v2
+[student@workstation ~]$ oc create sa gitlab-sa
+serviceaccount/gitlab-sa created
+[student@workstation ~]$ oc adm policy add-scc-to-user anyuid -z gitlab-sa
+clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "gitlab-sa"
+[student@workstation ~]$ oc login -u developer -p developer 
+Login successful.
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * appsec-scc
+    webconsole-apps
+
+Using project "appsec-scc".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc set serviceaccount deployment/gitlab gitlab-sa
+deployment.apps/gitlab serviceaccount updated
+[student@workstation ~]$ oc get pods 
+NAME                      READY   STATUS    RESTARTS   AGE
+gitlab-6dcb5457df-gjd22   1/1     Running   0          6s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get all
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/gitlab-6dcb5457df-gjd22   1/1     Running   0          21s
+
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                 AGE
+service/gitlab   ClusterIP   172.30.253.53   <none>        22/TCP,80/TCP,443/TCP   8m34s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/gitlab   1/1     1            1           8m34s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/gitlab-59b7dcfc67   0         0         0       8m34s
+replicaset.apps/gitlab-6dcb5457df   1         1         1       24s
+replicaset.apps/gitlab-6fd4f89dbc   0         0         0       8m31s
+
+NAME                                    IMAGE REPOSITORY                                                     TAGS         UPDATED
+imagestream.image.openshift.io/gitlab   image-registry.openshift-image-registry.svc:5000/appsec-scc/gitlab   8.4.3-ce.0   8 minutes ago
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc expose service/gitlab --port=80 --hostname gitlab.apps.ocp4.example.com
+route.route.openshift.io/gitlab exposed
+[student@workstation ~]$ oc get route 
+NAME     HOST/PORT                      PATH   SERVICES   PORT   TERMINATION   WILDCARD
+gitlab   gitlab.apps.ocp4.example.com          gitlab     80                   None
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ curl -sL http://gitlab.apps.ocp4.example.com/ | grep '<title>'
+<title>Sign in · GitLab</title>
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox http://gitlab.apps.ocp4.example.com & 
+[1] 68448
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=2.57581) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[student@workstation ~]$ 
+[student@workstation ~]$ oc delete project appsec-scc
+project.project.openshift.io "appsec-scc" deleted
+[student@workstation ~]$ lab finish appsec-scc
+SUCCESS Remove appsec-scc project
+[student@workstation ~]$ 
+

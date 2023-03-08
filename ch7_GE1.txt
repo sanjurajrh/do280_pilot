@@ -1,0 +1,325 @@
+[student@workstation ~]$ lab start updates-olm 
+SUCCESS Waiting for cluster
+FAIL    Install web-terminal operator
+        - An unexpected error ocurred: Timed out. 
+        - Check the logs for more details
+        - Cannot continue lab script
+An error has ocurred. Check the logs for more details
+[student@workstation ~]$ lab start updates-olm 
+SUCCESS Waiting for cluster
+[student@workstation ~]$ lab finish  updates-olm
+SUCCESS Remove web-terminal operator
+SUCCESS Removing web-terminal extra resources
+SUCCESS Remove devworkspace-operator-fast-do280-catalog-redhat-openshift-marketplace operator
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab start updates-olm 
+SUCCESS Waiting for cluster
+SUCCESS Install web-terminal operator
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation ~]$ oc whoami --show-console 
+https://console-openshift-console.apps.ocp4.example.com
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ firefox $(oc whoami --show-console) & 
+[1] 83816
+[student@workstation ~]$ Crash Annotation GraphicsCriticalError: |[0][GFX1-]: Unrecognized feature VIDEO_OVERLAY (t=3.73579) [GFX1-]: Unrecognized feature VIDEO_OVERLAY
+
+[student@workstation ~]$ 
+[student@workstation ~]$ oc project openshift-operator
+error: A project named "openshift-operator" does not exist on "https://api.ocp4.example.com:6443".
+Your projects are:
+* default
+* kube-node-lease
+* kube-public
+* kube-system
+* metallb-system
+* NFS Provisioner (nfs-client-provisioner)
+* openshift
+* openshift-apiserver
+* openshift-apiserver-operator
+* openshift-authentication
+* openshift-authentication-operator
+* openshift-cloud-controller-manager
+* openshift-cloud-controller-manager-operator
+* openshift-cloud-credential-operator
+* openshift-cloud-network-config-controller
+* openshift-cluster-csi-drivers
+* openshift-cluster-machine-approver
+* openshift-cluster-node-tuning-operator
+* openshift-cluster-samples-operator
+* openshift-cluster-storage-operator
+* openshift-cluster-version
+* openshift-compliance
+* openshift-config
+* openshift-config-managed
+* openshift-config-operator
+* openshift-console
+* openshift-console-operator
+* openshift-console-user-settings
+* openshift-controller-manager
+* openshift-controller-manager-operator
+* openshift-dns
+* openshift-dns-operator
+* openshift-etcd
+* openshift-etcd-operator
+* openshift-host-network
+* openshift-image-registry
+* openshift-infra
+* openshift-ingress
+* openshift-ingress-canary
+* openshift-ingress-operator
+* openshift-insights
+* openshift-kni-infra
+* openshift-kube-apiserver
+* openshift-kube-apiserver-operator
+* openshift-kube-controller-manager
+* openshift-kube-controller-manager-operator
+* openshift-kube-scheduler
+* openshift-kube-scheduler-operator
+* openshift-kube-storage-version-migrator
+* openshift-kube-storage-version-migrator-operator
+* openshift-machine-api
+* openshift-machine-config-operator
+* openshift-marketplace
+* openshift-monitoring
+* openshift-multus
+* openshift-network-diagnostics
+* openshift-network-operator
+* openshift-node
+* openshift-nutanix-infra
+* openshift-oauth-apiserver
+* openshift-openstack-infra
+* openshift-operator-lifecycle-manager
+* openshift-operators
+* openshift-ovirt-infra
+* openshift-ovn-kubernetes
+* openshift-route-controller-manager
+* openshift-service-ca
+* openshift-service-ca-operator
+* openshift-storage
+* openshift-user-workload-monitoring
+* openshift-vsphere-infra
+* Console chapter applications (webconsole-apps)
+[student@workstation ~]$ oc project openshift-operators
+Now using project "openshift-operators" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get installplan
+NAME            CSV                                            APPROVAL   APPROVED
+install-9jfj2   devworkspace-operator.v0.18.1-0.1675929565.p   Manual     true
+install-cgtwv   web-terminal.v1.6.0                            Manual     false
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get installplan install-cgtwv -o yaml 
+apiVersion: operators.coreos.com/v1alpha1
+kind: InstallPlan
+metadata:
+  creationTimestamp: "2023-03-08T15:39:30Z"
+  generateName: install-
+  generation: 1
+  labels:
+    operators.coreos.com/web-terminal.openshift-operators: ""
+  name: install-cgtwv
+  namespace: openshift-operators
+  ownerReferences:
+  - apiVersion: operators.coreos.com/v1alpha1
+    blockOwnerDeletion: false
+    controller: false
+    kind: Subscription
+    name: devworkspace-operator-fast-do280-catalog-redhat-openshift-marketplace
+    uid: c7a7e3e2-ebf0-412d-82af-40faaacb31b3
+  - apiVersion: operators.coreos.com/v1alpha1
+    blockOwnerDeletion: false
+    controller: false
+    kind: Subscription
+    name: web-terminal
+    uid: 92b80061-68ee-4010-ac6a-f629d6a5a91f
+  resourceVersion: "1246946"
+  uid: c814ffea-8140-491a-bb78-c0f389f51966
+spec:
+  approval: Manual
+  approved: false
+  clusterServiceVersionNames:
+  - web-terminal.v1.6.0
+  generation: 2
+status:
+  bundleLookups:
+  - catalogSourceRef:
+      name: do280-catalog-redhat
+      namespace: openshift-marketplace
+    identifier: web-terminal.v1.6.0
+    path: registry.redhat.io/web-terminal/web-terminal-operator-bundle@sha256:9f490edb289d0cbc18fb20c1edd99160c3fa1e3f81809f56c651436d8d66b868
+    properties: '{"properties":[{"type":"olm.gvk.required","value":{"group":"controller.devfile.io","kind":"DevWorkspaceRouting","version":"v1alpha1"}},{"type":"olm.gvk.required","value":{"group":"workspace.devfile.io","kind":"DevWorkspace","version":"v1alpha1"}},{"type":"olm.package","value":{"packageName":"web-terminal","version":"1.6.0"}},{"type":"olm.package.required","value":{"packageName":"devworkspace-operator","versionRange":"\u003e=0.6.0"}},{"type":"olm.gvk.required","value":{"group":"controller.devfile.io","version":"v1alpha1","kind":"DevWorkspaceRouting"}},{"type":"olm.gvk.required","value":{"group":"workspace.devfile.io","version":"v1alpha1","kind":"DevWorkspace"}},{"type":"olm.package.required","value":{"packageName":"devworkspace-operator","versionRange":"\u003e=0.6.0"}}]}'
+    replaces: web-terminal.v1.5.1
+  catalogSources: []
+  phase: RequiresApproval
+  plan:
+  - resolving: web-terminal.v1.6.0
+    resource:
+      group: operators.coreos.com
+      kind: ClusterServiceVersion
+      manifest: '{"kind":"ConfigMap","name":"c197cc3303c2a44d4dfd42c1ffc5f9a4a42abc5980293da34feb2195e973b0a","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"web-terminal.v1.5.1","properties":"{\"properties\":[{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"controller.devfile.io\",\"kind\":\"DevWorkspaceRouting\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"workspace.devfile.io\",\"kind\":\"DevWorkspace\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"web-terminal\",\"version\":\"1.6.0\"}},{\"type\":\"olm.package.required\",\"value\":{\"packageName\":\"devworkspace-operator\",\"versionRange\":\"\\u003e=0.6.0\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"controller.devfile.io\",\"version\":\"v1alpha1\",\"kind\":\"DevWorkspaceRouting\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"workspace.devfile.io\",\"version\":\"v1alpha1\",\"kind\":\"DevWorkspace\"}},{\"type\":\"olm.package.required\",\"value\":{\"packageName\":\"devworkspace-operator\",\"versionRange\":\"\\u003e=0.6.0\"}}]}"}'
+      name: web-terminal.v1.6.0
+      sourceName: do280-catalog-redhat
+      sourceNamespace: openshift-marketplace
+      version: v1alpha1
+    status: Unknown
+  - resolving: web-terminal.v1.6.0
+    resource:
+      group: ""
+      kind: ServiceAccount
+      manifest: '{"kind":"ConfigMap","name":"c197cc3303c2a44d4dfd42c1ffc5f9a4a42abc5980293da34feb2195e973b0a","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"web-terminal.v1.5.1","properties":"{\"properties\":[{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"controller.devfile.io\",\"kind\":\"DevWorkspaceRouting\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"workspace.devfile.io\",\"kind\":\"DevWorkspace\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"web-terminal\",\"version\":\"1.6.0\"}},{\"type\":\"olm.package.required\",\"value\":{\"packageName\":\"devworkspace-operator\",\"versionRange\":\"\\u003e=0.6.0\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"controller.devfile.io\",\"version\":\"v1alpha1\",\"kind\":\"DevWorkspaceRouting\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"workspace.devfile.io\",\"version\":\"v1alpha1\",\"kind\":\"DevWorkspace\"}},{\"type\":\"olm.package.required\",\"value\":{\"packageName\":\"devworkspace-operator\",\"versionRange\":\"\\u003e=0.6.0\"}}]}"}'
+      name: web-terminal-controller
+      sourceName: do280-catalog-redhat
+      sourceNamespace: openshift-marketplace
+      version: v1
+    status: Unknown
+  - resolving: web-terminal.v1.6.0
+    resource:
+      group: rbac.authorization.k8s.io
+      kind: Role
+      manifest: '{"kind":"ConfigMap","name":"c197cc3303c2a44d4dfd42c1ffc5f9a4a42abc5980293da34feb2195e973b0a","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"web-terminal.v1.5.1","properties":"{\"properties\":[{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"controller.devfile.io\",\"kind\":\"DevWorkspaceRouting\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"workspace.devfile.io\",\"kind\":\"DevWorkspace\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"web-terminal\",\"version\":\"1.6.0\"}},{\"type\":\"olm.package.required\",\"value\":{\"packageName\":\"devworkspace-operator\",\"versionRange\":\"\\u003e=0.6.0\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"controller.devfile.io\",\"version\":\"v1alpha1\",\"kind\":\"DevWorkspaceRouting\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"workspace.devfile.io\",\"version\":\"v1alpha1\",\"kind\":\"DevWorkspace\"}},{\"type\":\"olm.package.required\",\"value\":{\"packageName\":\"devworkspace-operator\",\"versionRange\":\"\\u003e=0.6.0\"}}]}"}'
+      name: web-terminal.v1.6.0-web-terminal-controller-596ff5ccc
+      sourceName: do280-catalog-redhat
+      sourceNamespace: openshift-marketplace
+      version: v1
+    status: Unknown
+  - resolving: web-terminal.v1.6.0
+    resource:
+      group: rbac.authorization.k8s.io
+      kind: RoleBinding
+      manifest: '{"kind":"ConfigMap","name":"c197cc3303c2a44d4dfd42c1ffc5f9a4a42abc5980293da34feb2195e973b0a","namespace":"openshift-marketplace","catalogSourceName":"do280-catalog-redhat","catalogSourceNamespace":"openshift-marketplace","replaces":"web-terminal.v1.5.1","properties":"{\"properties\":[{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"controller.devfile.io\",\"kind\":\"DevWorkspaceRouting\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"workspace.devfile.io\",\"kind\":\"DevWorkspace\",\"version\":\"v1alpha1\"}},{\"type\":\"olm.package\",\"value\":{\"packageName\":\"web-terminal\",\"version\":\"1.6.0\"}},{\"type\":\"olm.package.required\",\"value\":{\"packageName\":\"devworkspace-operator\",\"versionRange\":\"\\u003e=0.6.0\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"controller.devfile.io\",\"version\":\"v1alpha1\",\"kind\":\"DevWorkspaceRouting\"}},{\"type\":\"olm.gvk.required\",\"value\":{\"group\":\"workspace.devfile.io\",\"version\":\"v1alpha1\",\"kind\":\"DevWorkspace\"}},{\"type\":\"olm.package.required\",\"value\":{\"packageName\":\"devworkspace-operator\",\"versionRange\":\"\\u003e=0.6.0\"}}]}"}'
+      name: web-terminal.v1.6.0-web-terminal-controller-596ff5ccc
+      sourceName: do280-catalog-redhat
+      sourceNamespace: openshift-marketplace
+      version: v1
+    status: Unknown
+[student@workstation ~]$ # oc get installplan install-cgtwv -o yaml 
+[student@workstation ~]$ oc patch installplan install-cgtwv --type merge --patch '{"spec":{"approved":true}}'
+installplan.operators.coreos.com/install-cgtwv patched
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get csv 
+NAME                                           DISPLAY                 VERSION                 REPLACES                        PHASE
+devworkspace-operator.v0.18.1-0.1675929565.p   DevWorkspace Operator   0.18.1+0.1675929565.p   devworkspace-operator.v0.17.0   Succeeded
+metallb-operator.4.12.0-202302061702           MetalLB Operator        4.12.0-202302061702                                     Succeeded
+web-terminal.v1.5.1                            Web Terminal            1.5.1                                                   Replacing
+web-terminal.v1.6.0                            Web Terminal            1.6.0                   web-terminal.v1.5.1             Installing
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get csv 
+NAME                                           DISPLAY                 VERSION                 REPLACES                        PHASE
+devworkspace-operator.v0.18.1-0.1675929565.p   DevWorkspace Operator   0.18.1+0.1675929565.p   devworkspace-operator.v0.17.0   Succeeded
+metallb-operator.4.12.0-202302061702           MetalLB Operator        4.12.0-202302061702                                     Succeeded
+web-terminal.v1.6.0                            Web Terminal            1.6.0                   web-terminal.v1.5.1             Succeeded
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get installplan install-cgtwv -o yaml | grep approved
+  approved: true
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get sub 
+NAME                                                                    PACKAGE                 SOURCE                 CHANNEL
+devworkspace-operator-fast-do280-catalog-redhat-openshift-marketplace   devworkspace-operator   do280-catalog-redhat   fast
+web-terminal                                                            web-terminal            do280-catalog-redhat   fast
+[student@workstation ~]$ oc get subscription web-terminal -o yaml 
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  creationTimestamp: "2023-03-08T15:39:13Z"
+  generation: 1
+  labels:
+    operators.coreos.com/web-terminal.openshift-operators: ""
+  name: web-terminal
+  namespace: openshift-operators
+  resourceVersion: "1250381"
+  uid: 92b80061-68ee-4010-ac6a-f629d6a5a91f
+spec:
+  channel: fast
+  installPlanApproval: Manual
+  name: web-terminal
+  source: do280-catalog-redhat
+  sourceNamespace: openshift-marketplace
+  startingCSV: web-terminal.v1.5.1
+status:
+  catalogHealth:
+  - catalogSourceRef:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: CatalogSource
+      name: do280-catalog-community
+      namespace: openshift-marketplace
+      resourceVersion: "67530"
+      uid: 1140efba-6ed6-40e4-a578-8b208b1bcfcb
+    healthy: true
+    lastUpdated: "2023-03-08T15:39:13Z"
+  - catalogSourceRef:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: CatalogSource
+      name: do280-catalog-redhat
+      namespace: openshift-marketplace
+      resourceVersion: "67529"
+      uid: 5e215c1a-ac81-4329-82ac-4f7c80d641c1
+    healthy: true
+    lastUpdated: "2023-03-08T15:39:13Z"
+  conditions:
+  - lastTransitionTime: "2023-03-08T15:39:13Z"
+    message: all available catalogsources are healthy
+    reason: AllCatalogSourcesHealthy
+    status: "False"
+    type: CatalogSourcesUnhealthy
+  currentCSV: web-terminal.v1.6.0
+  installPlanGeneration: 2
+  installPlanRef:
+    apiVersion: operators.coreos.com/v1alpha1
+    kind: InstallPlan
+    name: install-cgtwv
+    namespace: openshift-operators
+    resourceVersion: "1246904"
+    uid: c814ffea-8140-491a-bb78-c0f389f51966
+  installedCSV: web-terminal.v1.6.0
+  installplan:
+    apiVersion: operators.coreos.com/v1alpha1
+    kind: InstallPlan
+    name: install-cgtwv
+    uuid: c814ffea-8140-491a-bb78-c0f389f51966
+  lastUpdated: "2023-03-08T15:44:52Z"
+  state: AtLatestKnown
+[student@workstation ~]$ oc delete subscription web-terminal
+subscription.operators.coreos.com "web-terminal" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get subscription
+NAME                                                                    PACKAGE                 SOURCE                 CHANNEL
+devworkspace-operator-fast-do280-catalog-redhat-openshift-marketplace   devworkspace-operator   do280-catalog-redhat   fast
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get csv 
+NAME                                           DISPLAY                 VERSION                 REPLACES                        PHASE
+devworkspace-operator.v0.18.1-0.1675929565.p   DevWorkspace Operator   0.18.1+0.1675929565.p   devworkspace-operator.v0.17.0   Succeeded
+metallb-operator.4.12.0-202302061702           MetalLB Operator        4.12.0-202302061702                                     Succeeded
+web-terminal.v1.6.0                            Web Terminal            1.6.0                   web-terminal.v1.5.1             Succeeded
+[student@workstation ~]$ oc delete csv web-terminal.v1.6.0
+clusterserviceversion.operators.coreos.com "web-terminal.v1.6.0" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish updates-olm
+SUCCESS Remove web-terminal operator
+SUCCESS Removing web-terminal extra resources
+SUCCESS Remove devworkspace-operator-fast-do280-catalog-redhat-openshift-marketplace operator
+[student@workstation ~]$ 
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+
+[1]+  Done                    firefox $(oc whoami --show-console)
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+

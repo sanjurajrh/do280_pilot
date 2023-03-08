@@ -1,0 +1,327 @@
+[student@workstation ~]$ lab start appsec-review
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+[student@workstation ~]$ oc login -u developer -p developer https://api.ocp4.example.com:6443 
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc new-project appsec-review
+Now using project "appsec-review" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create sa appsec-review-sa
+serviceaccount/appsec-review-sa created
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get sa
+NAME               SECRETS   AGE
+appsec-review-sa   1         4s
+builder            1         23s
+default            1         23s
+deployer           1         23s
+[student@workstation ~]$ cd DO280/labs/appsec-review/
+[student@workstation appsec-review]$ ls
+cluster-role.yaml  cron-job.yaml  generate-projects.sh  project-cleaner.yaml
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ cat project-cleaner.yaml 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: project-cleaner
+  namespace: appsec-review
+spec:
+  restartPolicy: Never
+  containers:
+    - name: project-cleaner
+      image: registry.ocp4.example.com:8443/redhattraining/do280-project-cleaner:v1.0
+      imagePullPolicy: Always
+      env:
+      - name: "PROJECT_TAG"
+        value: "appsec-review-cleaner"
+      - name: "EXPIRATION_SECONDS"
+        value: "10"
+  securityContext:
+    runAsUser: 1001
+
+[student@workstation appsec-review]$ vim project-cleaner.yaml
+[student@workstation appsec-review]$ cat project-cleaner.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: project-cleaner
+  namespace: appsec-review
+spec:
+  restartPolicy: Never
+  containers:
+    - name: project-cleaner
+      image: registry.ocp4.example.com:8443/redhattraining/do280-project-cleaner:v1.0
+      imagePullPolicy: Always
+      env:
+      - name: "PROJECT_TAG"
+        value: "appsec-review-cleaner"
+      - name: "EXPIRATION_SECONDS"
+        value: "10"
+  serviceAccountName: appsec-review-sa
+  securityContext:
+    runAsUser: 1001
+
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ oc create -f project-cleaner.yaml
+Error from server (Forbidden): error when creating "project-cleaner.yaml": pods "project-cleaner" is forbidden: unable to validate against any security context constraint: [provider "anyuid": Forbidden: not usable by user or serviceaccount, spec.containers[0].securityContext.runAsUser: Invalid value: 1001: must be in the ranges: [1000930000, 1000939999], provider "restricted": Forbidden: not usable by user or serviceaccount, provider "nonroot-v2": Forbidden: not usable by user or serviceaccount, provider "nonroot": Forbidden: not usable by user or serviceaccount, provider "hostmount-anyuid": Forbidden: not usable by user or serviceaccount, provider "machine-api-termination-handler": Forbidden: not usable by user or serviceaccount, provider "hostnetwork-v2": Forbidden: not usable by user or serviceaccount, provider "hostnetwork": Forbidden: not usable by user or serviceaccount, provider "hostaccess": Forbidden: not usable by user or serviceaccount, provider "lvms-vgmanager": Forbidden: not usable by user or serviceaccount, provider "lvms-topolvm-node": Forbidden: not usable by user or serviceaccount, provider "node-exporter": Forbidden: not usable by user or serviceaccount, provider "privileged": Forbidden: not usable by user or serviceaccount]
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ o clogin -u admin -p redhatocp https://api.ocp4.example.com:6443
+bash: o: command not found...
+[student@workstation appsec-review]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 73 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "appsec-review".
+[student@workstation appsec-review]$ oc get scc 
+NAME                              PRIV    CAPS                   SELINUX     RUNASUSER          FSGROUP     SUPGROUP    PRIORITY     READONLYROOTFS   VOLUMES
+anyuid                            false   <no value>             MustRunAs   RunAsAny           RunAsAny    RunAsAny    10           false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+hostaccess                        false   <no value>             MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","hostPath","persistentVolumeClaim","projected","secret"]
+hostmount-anyuid                  false   <no value>             MustRunAs   RunAsAny           RunAsAny    RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","hostPath","nfs","persistentVolumeClaim","projected","secret"]
+hostnetwork                       false   <no value>             MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+hostnetwork-v2                    false   ["NET_BIND_SERVICE"]   MustRunAs   MustRunAsRange     MustRunAs   MustRunAs   <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+lvms-topolvm-node                 true    <no value>             RunAsAny    RunAsAny           RunAsAny    RunAsAny    <no value>   false            ["configMap","emptyDir","hostPath","secret"]
+lvms-vgmanager                    true    <no value>             MustRunAs   RunAsAny           MustRunAs   RunAsAny    <no value>   false            ["configMap","emptyDir","hostPath","secret"]
+machine-api-termination-handler   false   <no value>             MustRunAs   RunAsAny           MustRunAs   MustRunAs   <no value>   false            ["downwardAPI","hostPath"]
+node-exporter                     true    <no value>             RunAsAny    RunAsAny           RunAsAny    RunAsAny    <no value>   false            ["*"]
+nonroot                           false   <no value>             MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+nonroot-v2                        false   ["NET_BIND_SERVICE"]   MustRunAs   MustRunAsNonRoot   RunAsAny    RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+privileged                        true    ["*"]                  RunAsAny    RunAsAny           RunAsAny    RunAsAny    <no value>   false            ["*"]
+restricted                        false   <no value>             MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+restricted-v2                     false   ["NET_BIND_SERVICE"]   MustRunAs   MustRunAsRange     MustRunAs   RunAsAny    <no value>   false            ["configMap","downwardAPI","emptyDir","ephemeral","persistentVolumeClaim","projected","secret"]
+[student@workstation appsec-review]$ oc adm policy add-scc-to-user anyuid -z appsec-review-sa
+clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "appsec-review-sa"
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ ls
+cluster-role.yaml  cron-job.yaml  generate-projects.sh  project-cleaner.yaml
+[student@workstation appsec-review]$ cat cluster-role.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: project-cleaner
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - delete
+
+[student@workstation appsec-review]$ oc apply -f cluster-role.yaml 
+clusterrole.rbac.authorization.k8s.io/project-cleaner created
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ oc adm policy add-cluster-role-to-user project-cleaner -z appsec-review-sa
+clusterrole.rbac.authorization.k8s.io/project-cleaner added: "appsec-review-sa"
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ cat cron-job.yaml 
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: appsec-review-cleaner
+  namespace: appsec-review
+spec:
+  schedule: CHANGE_ME
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          CHANGE_ME
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ vim cron-job.yaml
+[student@workstation appsec-review]$ cat ~/DO280/solutions/appsec-review/cron-job.yaml 
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: appsec-review-cleaner
+  namespace: appsec-review
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: project-cleaner
+              image: registry.ocp4.example.com:8443/redhattraining/do280-project-cleaner:v1.0
+              imagePullPolicy: Always
+              env:
+              - name: "PROJECT_TAG"
+                value: "appsec-review-cleaner"
+              - name: "EXPIRATION_SECONDS"
+                value: "10"
+          serviceAccountName: appsec-review-sa
+          securityContext:
+            runAsUser: 1001
+[student@workstation appsec-review]$ cat cron-job.yaml 
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: appsec-review-cleaner
+  namespace: appsec-review
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: project-cleaner
+              image: registry.ocp4.example.com:8443/redhattraining/do280-project-cleaner:v1.0
+              imagePullPolicy: Always
+              env:
+              - name: "PROJECT_TAG"
+                value: "appsec-review-cleaner"
+              - name: "EXPIRATION_SECONDS"
+                value: "10"
+          serviceAccountName: appsec-review-sa
+          securityContext:
+            runAsUser: 1001
+[student@workstation appsec-review]$ diff ~/DO280/solutions/appsec-review/cron-job.yaml cron-job.yaml
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ oc apply -f cron-job.yaml
+cronjob.batch/appsec-review-cleaner created
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ ls
+cluster-role.yaml  cron-job.yaml  generate-projects.sh  project-cleaner.yaml
+[student@workstation appsec-review]$ cat generate-projects.sh 
+#!/bin/bash
+
+curr_project="$(oc project --short)"
+label_name="appsec-review-cleaner"
+proj_base_name="obsolete-appsec-review"
+kubeconfig_file="/home/student/.auth/ocp4-kubeconfig"
+
+for i in {1..3}
+  do
+    proj_name="$proj_base_name-$i"
+    oc new-project $proj_name 2>&1 > /dev/null
+    echo "$proj_name project created at $(date +"%H:%M:%S")"
+  done
+
+for i in {1..3}
+ do
+   proj_name="$proj_base_name-$i"
+   KUBECONFIG=$kubeconfig_file oc label  ns $proj_name "$label_name="
+ done
+
+ echo "Last $label_name label applied at $(date +"%H:%M:%S")"
+ echo "Done"
+ oc project $curr_project;
+
+
+
+
+
+[student@workstation appsec-review]$ ./generate-projects.sh 
+obsolete-appsec-review-1 project created at 09:51:26
+obsolete-appsec-review-2 project created at 09:51:26
+obsolete-appsec-review-3 project created at 09:51:27
+namespace/obsolete-appsec-review-1 labeled
+namespace/obsolete-appsec-review-2 labeled
+namespace/obsolete-appsec-review-3 labeled
+Last appsec-review-cleaner label applied at 09:51:28
+Done
+Now using project "appsec-review" on server "https://api.ocp4.example.com:6443".
+[student@workstation appsec-review]$ oc get pods 
+No resources found in appsec-review namespace.
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ oc get pods 
+No resources found in appsec-review namespace.
+[student@workstation appsec-review]$ oc get pods 
+No resources found in appsec-review namespace.
+[student@workstation appsec-review]$ watch oc get pods 
+[student@workstation appsec-review]$ oc get pods 
+error: You must be logged in to the server (Unauthorized)
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ oc get pods 
+NAME                                   READY   STATUS      RESTARTS   AGE
+appsec-review-cleaner-27971452-f95ft   0/1     Completed   0          2m1s
+[student@workstation appsec-review]$ oc get pods 
+NAME                                   READY   STATUS      RESTARTS   AGE
+appsec-review-cleaner-27971452-f95ft   0/1     Completed   0          2m4s
+[student@workstation appsec-review]$ oc logs pod/appsec-review-cleaner-27971452-f95ft
+Listing namespaces with label appsec-review-cleaner:
+ - namespace: obsolete-appsec-review-1, created 98.886781 seconds ago (2023-03-08 14:51:25+00:00)
+ - namespace: obsolete-appsec-review-2, created 97.88684 seconds ago (2023-03-08 14:51:26+00:00)
+ - namespace: obsolete-appsec-review-3, created 96.886851 seconds ago (2023-03-08 14:51:27+00:00)
+Deleting namespaces: obsolete-appsec-review-1, obsolete-appsec-review-2, obsolete-appsec-review-3
+Namespace 'obsolete-appsec-review-1' deleted
+Namespace 'obsolete-appsec-review-2' deleted
+Namespace 'obsolete-appsec-review-3' deleted
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ 
+[student@workstation appsec-review]$ cd
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods 
+NAME                                   READY   STATUS      RESTARTS   AGE
+appsec-review-cleaner-27971452-f95ft   0/1     Completed   0          2m41s
+appsec-review-cleaner-27971454-kst85   0/1     Completed   0          26s
+[student@workstation ~]$ oc get pods 
+NAME                                   READY   STATUS      RESTARTS   AGE
+appsec-review-cleaner-27971452-f95ft   0/1     Completed   0          2m43s
+appsec-review-cleaner-27971454-kst85   0/1     Completed   0          28s
+[student@workstation ~]$ watch oc get pods 
+[student@workstation ~]$ oc get pods 
+NAME                                   READY   STATUS      RESTARTS   AGE
+appsec-review-cleaner-27971452-f95ft   0/1     Completed   0          3m58s
+appsec-review-cleaner-27971454-kst85   0/1     Completed   0          103s
+appsec-review-cleaner-27971455-gjfql   0/1     Completed   0          58s
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc logs pod/appsec-review-cleaner-27971455-gjfql
+Listing namespaces with label appsec-review-cleaner:
+Nothing to delete
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cd
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab grade appsec-review 
+SUCCESS The appsec-review project exists
+SUCCESS Verifying appsec-review-sa serviceaccount exists in appsec-review
+SUCCESS The appsec-review-sa service account has the system:openshift:scc:anyuid cluster role
+SUCCESS The appsec-review-sa service account has the project-cleaner cluster role
+SUCCESS Verifying appsec-review-cleaner cronjob exists in appsec-review
+SUCCESS Verifying appsec-review-cleaner cronjob configuration
+[student@workstation ~]$ lab finish appsec-review 
+SUCCESS Waiting for cluster
+SUCCESS Delete objects from manifest file cluster-role.yaml
+SUCCESS Removing appsec-review-sa service account from anyuid SCC
+SUCCESS Deleting project-cleaner cluster role binding
+SUCCESS Remove appsec-review project
+[student@workstation ~]$ 
+

@@ -1,0 +1,827 @@
+[student@workstation ~]$ lab start compreview-review 
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+SUCCESS Creating do280-admin in IdM
+SUCCESS Creating do280-presenter in IdM
+SUCCESS Creating do280-support in IdM
+SUCCESS Creating do280-attendee in IdM
+[student@workstation ~]$ ls DO280/labs/compreview-review/
+groups-role.yaml  limitrange.yaml  networkpolicy.yaml  quota.yaml
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cd DO280/labs/compreview-review/
+[student@workstation compreview-review]$ ls
+groups-role.yaml  limitrange.yaml  networkpolicy.yaml  quota.yaml
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "openshift-operators".
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc get groups
+NAME                USERS
+Default SMB Group   
+admins              Administrator
+developer           
+editors             
+ocpadmins           Administrator
+ocpdevs             . developer
+project-team        developer, tester
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc get group
+NAME                USERS
+Default SMB Group   
+admins              Administrator
+developer           
+editors             
+ocpadmins           Administrator
+ocpdevs             . developer
+project-team        developer, tester
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc adm groups new workshop-support
+group.user.openshift.io/workshop-support created
+[student@workstation compreview-review]$ oc get group workshop-support
+NAME               USERS
+workshop-support   
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc adm groups add-users workshop-support do280-support
+group.user.openshift.io/workshop-support added: "do280-support"
+[student@workstation compreview-review]$ oc get group workshop-support
+NAME               USERS
+workshop-support   do280-support
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc adm groups new presenters
+group.user.openshift.io/presenters created
+[student@workstation compreview-review]$ oc get groups presenters
+NAME         USERS
+presenters   
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc adm groups add-users presenters do280-presenter
+group.user.openshift.io/presenters added: "do280-presenter"
+[student@workstation compreview-review]$ oc get groups presenters
+NAME         USERS
+presenters   do280-presenter
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc adm groups new platform 
+group.user.openshift.io/platform created
+[student@workstation compreview-review]$ oc get groups platform
+NAME       USERS
+platform   
+[student@workstation compreview-review]$ oc adm groups add-users platform do280-platform
+group.user.openshift.io/platform added: "do280-platform"
+[student@workstation compreview-review]$ oc get groups platform
+NAME       USERS
+platform   do280-platform
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc get groups | grep do280
+platform            do280-platform
+presenters          do280-presenter
+workshop-support    do280-support
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc adm policy add-cluster-role-to-group admin workshop-support
+clusterrole.rbac.authorization.k8s.io/admin added: "workshop-support"
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ cat groups-role.yaml 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manage-groups
+rules:
+- apiGroups:
+  - user.openshift.io
+  resources:
+  - groups
+  verbs: ["*"]
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc create -f groups-role.yaml
+clusterrole.rbac.authorization.k8s.io/manage-groups created
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc adm policy add-cluster-role-to-group manage-groups workshop-support
+clusterrole.rbac.authorization.k8s.io/manage-groups added: "workshop-support"
+[student@workstation compreview-review]$ oc adm policy add-cluster-role-to-group cluster-admin platform 
+clusterrole.rbac.authorization.k8s.io/cluster-admin added: "platform"
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc edit clusterrolebinding self-provisioners
+clusterrolebinding.rbac.authorization.k8s.io/self-provisioners edited
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u do280-attendee -p redhat 
+Login successful.
+
+You don't have any projects. Contact your system administrator to request a project.
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc new-project template-test
+Error from server (Forbidden): You may not request a new project via this API.
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 72 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation compreview-review]$ oc new-project template-test
+Now using project "template-test" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ ls
+groups-role.yaml  limitrange.yaml  networkpolicy.yaml  quota.yaml
+[student@workstation compreview-review]$ cat quota.yaml 
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+ name: workshop
+ namespace: CHANGE_ME
+spec:
+  CHANGE_ME
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ vim quota.yaml
+[student@workstation compreview-review]$ cat quota.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+ name: workshop
+ namespace: template-test
+spec:
+  hard:
+    limits.cpu: 2
+    limits.memory: 1Gi
+    requests.cpu: 1500m
+    requents.memory: 750Mi
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc create -f quota.yaml
+The ResourceQuota "workshop" is invalid: 
+* spec.hard[requents.memory]: Invalid value: "requents.memory": must be a standard resource type or fully qualified
+* spec.hard[requents.memory]: Invalid value: "requents.memory": must be a standard resource for quota
+[student@workstation compreview-review]$ vim quota.yaml
+[student@workstation compreview-review]$ cat quota.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+ name: workshop
+ namespace: template-test
+spec:
+  hard:
+    limits.cpu: 2
+    limits.memory: 1Gi
+    requests.cpu: 1500m
+    requests.memory: 750Mi
+[student@workstation compreview-review]$ oc create -f quota.yaml
+resourcequota/workshop created
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ ls
+groups-role.yaml  limitrange.yaml  networkpolicy.yaml  quota.yaml
+[student@workstation compreview-review]$ cat limitrange.yaml 
+apiVersion: v1
+kind: LimitRange
+metadata:
+ name: workshop
+ namespace: CHANGE_ME
+spec:
+  CHANGE_ME
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ vim limitrange.yaml
+[student@workstation compreview-review]$ cat limitrange.yaml
+apiVersion: v1
+kind: LimitRange
+metadata:
+ name: workshop
+ namespace: template-test
+spec:
+  limits:
+    - max:
+        cpu: 750m
+        memory: 750Mi
+      default:
+        cpu: 500m
+        memory: 500Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 250Mi
+      type: Container
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc create -f limitrange.yaml
+limitrange/workshop created
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc label ns template-test workshop=template-test
+namespace/template-test labeled
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc describe ns template-test
+Name:         template-test
+Labels:       kubernetes.io/metadata.name=template-test
+              pod-security.kubernetes.io/audit=restricted
+              pod-security.kubernetes.io/audit-version=v1.24
+              pod-security.kubernetes.io/warn=restricted
+              pod-security.kubernetes.io/warn-version=v1.24
+              workshop=template-test
+Annotations:  openshift.io/description: 
+              openshift.io/display-name: 
+              openshift.io/requester: admin
+              openshift.io/sa.scc.mcs: s0:c31,c30
+              openshift.io/sa.scc.supplemental-groups: 1000990000/10000
+              openshift.io/sa.scc.uid-range: 1000990000/10000
+Status:       Active
+
+Resource Quotas
+  Name:            workshop
+  Resource         Used  Hard
+  --------         ---   ---
+  limits.cpu       0     2
+  limits.memory    0     1Gi
+  requests.cpu     0     1500m
+  requests.memory  0     750Mi
+
+Resource Limits
+ Type       Resource  Min  Max    Default Request  Default Limit  Max Limit/Request Ratio
+ ----       --------  ---  ---    ---------------  -------------  -----------------------
+ Container  memory    -    750Mi  250Mi            500Mi          -
+ Container  cpu       -    750m   100m             500m           -
+[student@workstation compreview-review]$ oc create deployment test-workload --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0 
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/test-workload created
+[student@workstation compreview-review]$ oc get pods -o wide 
+NAME                             READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+test-workload-7849cf5f7f-zhb2q   1/1     Running   0          20s   10.8.0.214   master01   <none>           <none>
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc debug --to-namespace="default" -- curl -s http://10.8.0.214:8080
+Warning: would violate PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "debug" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "debug" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "debug" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "debug" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+Starting pod/image-debug ...
+<html>
+  <body>
+    <h1>Hello, world from nginx!</h1>
+  </body>
+</html>
+
+Removing debug pod ...
+[student@workstation compreview-review]$ cat networkpolicy.yaml 
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: workshop
+  namespace: template-test
+spec:
+  podSelector: CHANGE_ME
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            CHANGE_ME
+      - namespaceSelector:
+          matchLabels:
+            CHANGE_ME
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ vim networkpolicy.yaml
+[student@workstation compreview-review]$ cat networkpolicy.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: workshop
+  namespace: template-test
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            workshop: template-test
+      - namespaceSelector:
+          matchLabels:
+            network.openshift.io/policy-group: ingress
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc create -f networkpolicy.yaml
+networkpolicy.networking.k8s.io/workshop created
+[student@workstation compreview-review]$ oc get netpol -n template-test 
+NAME       POD-SELECTOR   AGE
+workshop   <none>         11s
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ # oc debug --to-namespace="default" -- curl -s http://10.8.0.214:8080
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc debug --to-namespace="default" -- curl -sS --connect-timeout 5 http://10.8.0.214:8080
+Warning: would violate PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "debug" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "debug" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "debug" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "debug" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+Starting pod/image-debug ...
+curl: (28) Connection timed out after 5001 milliseconds
+
+Removing debug pod ...
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc debug --to-namespace="template-test" -- curl -sS http://10.8.0.214:8080
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "debug" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "debug" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "debug" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "debug" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+Starting pod/image-debug ...
+<html>
+  <body>
+    <h1>Hello, world from nginx!</h1>
+  </body>
+</html>
+
+Removing debug pod ...
+[student@workstation compreview-review]$ oc adm create-bootstrap-project-template -o yaml > project-template.yaml 
+[student@workstation compreview-review]$ cat project-template.yaml 
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+[student@workstation compreview-review]$ oc get resourcequotas/workshop limitrange/workshop networkpolicy/workshop -o yaml >> project-template.yaml 
+[student@workstation compreview-review]$ less project-template.yaml
+[student@workstation compreview-review]$ cat project-template.yaml
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    creationTimestamp: "2023-03-08T15:59:17Z"
+    name: workshop
+    namespace: template-test
+    resourceVersion: "1272127"
+    uid: f361a70e-0c81-4f62-9b3a-e60cc97f4b85
+  spec:
+    hard:
+      limits.cpu: "2"
+      limits.memory: 1Gi
+      requests.cpu: 1500m
+      requests.memory: 750Mi
+  status:
+    hard:
+      limits.cpu: "2"
+      limits.memory: 1Gi
+      requests.cpu: 1500m
+      requests.memory: 750Mi
+    used:
+      limits.cpu: 500m
+      limits.memory: 500Mi
+      requests.cpu: 100m
+      requests.memory: 250Mi
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    creationTimestamp: "2023-03-08T16:01:07Z"
+    name: workshop
+    namespace: template-test
+    resourceVersion: "1256290"
+    uid: 883b4042-fa6f-4353-bdeb-86d766f596cf
+  spec:
+    limits:
+    - default:
+        cpu: 500m
+        memory: 500Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 250Mi
+      max:
+        cpu: 750m
+        memory: 750Mi
+      type: Container
+- apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    creationTimestamp: "2023-03-08T16:49:37Z"
+    generation: 1
+    name: workshop
+    namespace: template-test
+    resourceVersion: "1271471"
+    uid: 2497d08c-6c6c-4d62-9c28-61e2a1f69d7e
+  spec:
+    ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            workshop: template-test
+      - namespaceSelector:
+          matchLabels:
+            network.openshift.io/policy-group: ingress
+    podSelector: {}
+    policyTypes:
+    - Ingress
+  status: {}
+kind: List
+metadata:
+  resourceVersion: ""
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ vim project-template.yaml
+[student@workstation compreview-review]$ cat project-template.yaml
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    name: ${PROJECT_NAME}
+    labels:
+      workshop: ${PROJECT_NAME}
+  spec: {}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    annotations:
+    name: workshop
+    namespace: template-test
+  spec:
+    hard:
+      limits.cpu: "2"
+      limits.memory: 1Gi
+      requests.cpu: 1500m
+      requests.memory: 750Mi
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    annotations:
+    name: workshop
+    namespace: template-test
+  spec:
+    limits:
+    - default:
+        cpu: 500m
+        memory: 500Mi
+      defaultRequest:
+        cpu: 100m
+        memory: 250Mi
+      max:
+        cpu: 750m
+        memory: 750Mi
+      type: Container
+- apiVersion: networking.k8s.io/v1
+  kind: NetworkPolicy
+  metadata:
+    annotations:
+    name: workshop
+    namespace: template-test
+  spec:
+    ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            workshop: template-test
+      - namespaceSelector:
+          matchLabels:
+            network.openshift.io/policy-group: ingress
+    podSelector: {}
+    policyTypes:
+    - Ingress
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
+[student@workstation compreview-review]$ oc create -f project-template.yaml -n openshift-config
+template.template.openshift.io/project-request created
+[student@workstation compreview-review]$ oc edit projects.config.openshift.io cluster
+project.config.openshift.io/cluster edited
+[student@workstation compreview-review]$ oc get pods -n openshift-apiserver
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-79cb9d4c6f-7zwnb   2/2     Running   0          24h
+[student@workstation compreview-review]$ watch oc get pods -n openshift-apiserver
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc get pods -n openshift-apiserver
+NAME                         READY   STATUS    RESTARTS   AGE
+apiserver-65bfbc988c-9bwhk   2/2     Running   0          95s
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u do280-presenter -p redhat
+
+
+Error from server (InternalError): Internal error occurred: unexpected response: 500
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u do280-presenter -p redhat
+Error from server (InternalError): Internal error occurred: unexpected response: 400
+[student@workstation compreview-review]$ oc login -u do280-presenter -p redhat
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc new-project do280
+Now using project "do280" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc get resourcequota/workshop limitranges/workshop networkpolicy/workshop
+NAME                     AGE   REQUEST                                           LIMIT
+resourcequota/workshop   23s   requests.cpu: 0/1500m, requests.memory: 0/750Mi   limits.cpu: 0/2, limits.memory: 0/1Gi
+
+NAME                  CREATED AT
+limitrange/workshop   2023-03-08T17:04:23Z
+
+NAME                                       POD-SELECTOR   AGE
+networkpolicy.networking.k8s.io/workshop   <none>         23s
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u do280-support -p redhat 
+Login successful.
+
+You have access to 74 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "do280".
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc get project do280 -o yaml 
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  annotations:
+    openshift.io/description: ""
+    openshift.io/display-name: ""
+    openshift.io/requester: do280-presenter
+    openshift.io/sa.scc.mcs: s0:c32,c9
+    openshift.io/sa.scc.supplemental-groups: 1001010000/10000
+    openshift.io/sa.scc.uid-range: 1001010000/10000
+  creationTimestamp: "2023-03-08T17:04:22Z"
+  labels:
+    kubernetes.io/metadata.name: do280
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/audit-version: v1.24
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/warn-version: v1.24
+    workshop: do280
+  name: do280
+  resourceVersion: "1276505"
+  uid: 8ba3ea42-a25e-47e2-9515-4efb8e3cfa7d
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
+[student@workstation compreview-review]$ oc adm groups new do280-attendees
+group.user.openshift.io/do280-attendees created
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 74 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "do280".
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc adm policy add-role-to-group edit do280-attendees -n do280
+clusterrole.rbac.authorization.k8s.io/edit added: "do280-attendees"
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u do280-attendee -p redhat 
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u do280-support -p redhat 
+Login successful.
+
+You have access to 74 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation compreview-review]$ oc adm groups add-users do280-attendees do280-attendee
+group.user.openshift.io/do280-attendees added: "do280-attendee"
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc login -u do280-attendee -p redhat 
+Login successful.
+
+You have one project on this server: "do280"
+
+Using project "do280".
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ oc create deployment attendee-workload --image registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0 
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "hello-world-nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "hello-world-nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "hello-world-nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "hello-world-nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/attendee-workload created
+[student@workstation compreview-review]$ oc get all
+NAME                                     READY   STATUS    RESTARTS   AGE
+pod/attendee-workload-56bf7dc6fc-8vq9s   1/1     Running   0          8s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/attendee-workload   1/1     1            1           8s
+
+NAME                                           DESIRED   CURRENT   READY   AGE
+replicaset.apps/attendee-workload-56bf7dc6fc   1         1         1       8s
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ 
+[student@workstation compreview-review]$ cd
+[student@workstation ~]$ # lab install -u --env test --version 4.12.1.dev0+pr.1289 do280
+[student@workstation ~]$ lab grade compreview-review
+The grade command is not supported for this lab.
+[student@workstation ~]$ lab install -u --env test --version 4.12.1.dev0+pr.1289 do280
+Version lock is >=4.12.*,<4.13.0
+Installed rht-labs-do280==4.12.1.dev0+pr.1289.
+[student@workstation ~]$ lab grade compreview-review
+SUCCESS Verify workshop-support group exists
+SUCCESS Verify presenters group exists
+SUCCESS Verify platform group exists
+SUCCESS The workshop-support group contains the do280-support user
+SUCCESS The presenters group contains the do280-presenter user
+FAIL    The platform group contains the do280-admin user
+        - The step has failed
+        - User do280-admin not found in platform
+SUCCESS Verify the workshop-support group has a cluster role binding with the admin role
+SUCCESS Verify the platform group has a cluster role binding with the cluster-admin role
+SUCCESS Validating project configuration
+SUCCESS Validating the project-request template exists
+SUCCESS Creating the compreview-review-grading-avhof test project using the template
+SUCCESS Validating that compreview-review-grading-avhof has the {'workshop': 'compreview-review-grading-avhof'} label
+SUCCESS Validating the quota in the compreview-review-grading-avhof project
+SUCCESS Validating the limit range in the compreview-review-grading-avhof project
+SUCCESS Deleting the compreview-review-grading-avhof test project
+[student@workstation ~]$ oc login -u admin -p redhatocp 
+Login successful.
+
+You have access to 74 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "do280".
+[student@workstation ~]$ oc get group platform
+NAME       USERS
+platform   do280-platform
+[student@workstation ~]$ oc adm groups add-users platform do280-admin 
+group.user.openshift.io/platform added: "do280-admin"
+[student@workstation ~]$ lab grade compreview-review
+SUCCESS Verify workshop-support group exists
+SUCCESS Verify presenters group exists
+SUCCESS Verify platform group exists
+SUCCESS The workshop-support group contains the do280-support user
+SUCCESS The presenters group contains the do280-presenter user
+SUCCESS The platform group contains the do280-admin user
+SUCCESS Verify the workshop-support group has a cluster role binding with the admin role
+SUCCESS Verify the platform group has a cluster role binding with the cluster-admin role
+SUCCESS Validating project configuration
+SUCCESS Validating the project-request template exists
+SUCCESS Creating the compreview-review-grading-tebwc test project using the template
+SUCCESS Validating that compreview-review-grading-tebwc has the {'workshop': 'compreview-review-grading-tebwc'} label
+SUCCESS Validating the quota in the compreview-review-grading-tebwc project
+SUCCESS Validating the limit range in the compreview-review-grading-tebwc project
+SUCCESS Deleting the compreview-review-grading-tebwc test project
+[student@workstation ~]$ lab grade compreview-review
+SUCCESS Verify workshop-support group exists
+SUCCESS Verify presenters group exists
+SUCCESS Verify platform group exists
+SUCCESS The workshop-support group contains the do280-support user
+SUCCESS The presenters group contains the do280-presenter user
+SUCCESS The platform group contains the do280-platform user
+SUCCESS Verify the workshop-support group has a cluster role binding with the admin role
+SUCCESS Verify the platform group has a cluster role binding with the cluster-admin role
+SUCCESS Validating project configuration
+SUCCESS Validating the project-request template exists
+SUCCESS Creating the compreview-review-grading-kpzrt test project using the template
+SUCCESS Validating that compreview-review-grading-kpzrt has the {'workshop': 'compreview-review-grading-kpzrt'} label
+SUCCESS Validating the quota in the compreview-review-grading-kpzrt project
+SUCCESS Validating the limit range in the compreview-review-grading-kpzrt project
+SUCCESS Deleting the compreview-review-grading-kpzrt test project
+[student@workstation ~]$ 
+
+
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish compreview-review
+SUCCESS Remove template-test project
+SUCCESS Remove do280 project
+SUCCESS Deleting do280-presenter in IdM
+SUCCESS Deleting do280-support in IdM
+SUCCESS Deleting do280-attendee in IdM
+SUCCESS Deleting group platform
+SUCCESS Deleting group presenters
+SUCCESS Deleting group workshop-support
+SUCCESS Restore project creation privileges
+[student@workstation ~]$ 
+
+
+
+~/.venv/labs/lib/python3.6/site-packages/do280/compreview-review.py
+
+class CompreviewReview(BaseLab):
+    __LAB__ = "compreview-review"
+    _admin_user = "do280-admin"             ## change the value from do280-admin to do280-platform
+    _presenter_user = "do280-presenter"
+    _support_user = "do280-support"
+    _attendee_user = "do280-attendee"
+    _template_project = "template-test"
+    _workshops_project = "do280"
+    _platform_group = "platform"
+    _presenters_group = "presenters"
+    _support_group = "workshop-support"
+

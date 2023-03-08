@@ -1,0 +1,1150 @@
+[student@workstation ~]$ vim sync-images.sh
+[student@workstation ~]$ chmod +x sync-images.sh
+[student@workstation ~]$ ./sync-images.sh 
+
+Setting the DynoLabs log level to 'debug'
+
+
+Waiting for the cluster to be ready
+
+Warning: Permanently added 'utility,172.25.250.253' (ECDSA) to the list of known hosts.
+API is up
+Cluster version is 4.12.0
+Router is up
+Authentication is ready
+The ingress operator is ready
+The kube-apiserver operator is ready
+Machine Config Operator changes applied
+
+Sync images for the offline registry
+You will be asked for your credentials to access the following registries:
+
+- quay.io
+- registry.redhat.io
+- registry.access.redhat.com
+
+Warning: Permanently added 'registry.ocp4.example.com,192.168.50.50' (ECDSA) to the list of known hosts.
+Login Succeeded!
+if prompted, input your customer portal credentials
+Username: lws_sanjuraj
+Password: 
+Error: error logging into "registry.redhat.io": invalid username/password
+Connection to registry.ocp4.example.com closed.
+Traceback (most recent call last):
+  File "/home/student/.venv/labs/bin/debug-lab-mirror-images", line 8, in <module>
+    sys.exit(mirror_images_main())
+  File "/home/student/.venv/labs/lib/python3.6/site-packages/do280/common/ocp/ocp_funcs.py", line 660, in mirror_images_main
+    login_to_registries()
+  File "/home/student/.venv/labs/lib/python3.6/site-packages/do280/common/ocp/ocp_funcs.py", line 517, in login_to_registries
+    check=True,
+  File "/usr/lib64/python3.6/subprocess.py", line 438, in run
+    output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['ssh', '-t', 'registry.ocp4.example.com', 'podman', 'login', 'registry.redhat.io']' returned non-zero exit status 125.
+[student@workstation ~]$ ./sync-images.sh 
+
+Setting the DynoLabs log level to 'debug'
+
+
+Waiting for the cluster to be ready
+
+API is up
+Cluster version is 4.12.0
+Router is up
+Authentication is ready
+The ingress operator is ready
+The kube-apiserver operator is ready
+Machine Config Operator changes applied
+
+Sync images for the offline registry
+You will be asked for your credentials to access the following registries:
+
+- quay.io
+- registry.redhat.io
+- registry.access.redhat.com
+
+Login Succeeded!
+if prompted, input your customer portal credentials
+Username: sanjuraj_rh
+Password: 
+Error: error logging into "registry.redhat.io": invalid username/password
+Connection to registry.ocp4.example.com closed.
+Traceback (most recent call last):
+  File "/home/student/.venv/labs/bin/debug-lab-mirror-images", line 8, in <module>
+    sys.exit(mirror_images_main())
+  File "/home/student/.venv/labs/lib/python3.6/site-packages/do280/common/ocp/ocp_funcs.py", line 660, in mirror_images_main
+    login_to_registries()
+  File "/home/student/.venv/labs/lib/python3.6/site-packages/do280/common/ocp/ocp_funcs.py", line 517, in login_to_registries
+    check=True,
+  File "/usr/lib64/python3.6/subprocess.py", line 438, in run
+    output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['ssh', '-t', 'registry.ocp4.example.com', 'podman', 'login', 'registry.redhat.io']' returned non-zero exit status 125.
+[student@workstation ~]$ ./sync-images.sh 
+
+Setting the DynoLabs log level to 'debug'
+
+
+Waiting for the cluster to be ready
+
+API is up
+Cluster version is 4.12.0
+Router is up
+Authentication is ready
+The ingress operator is ready
+The kube-apiserver operator is ready
+Machine Config Operator changes applied
+
+Sync images for the offline registry
+You will be asked for your credentials to access the following registries:
+
+- quay.io
+- registry.redhat.io
+- registry.access.redhat.com
+
+Login Succeeded!
+if prompted, input your customer portal credentials
+Username: lws_sanjuraj
+Password: 
+Login Succeeded!
+Connection to registry.ocp4.example.com closed.
+registry.ocp4.example.com:8443/
+  jkube/jkube-java-binary-s2i
+    manifests:
+      sha256:dd5c9f44a86e19438662d293e180acc8d864887cf19c165c1b24ae703b16c2d4 -> 0.0.9
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 jkube/jkube-java-binary-s2i blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 750ms
+sha256:dd5c9f44a86e19438662d293e180acc8d864887cf19c165c1b24ae703b16c2d4 registry.ocp4.example.com:8443/jkube/jkube-java-binary-s2i:0.0.9
+info: Mirroring completed in 1.09s (0B/s)
+registry.ocp4.example.com:8443/
+  openshift/origin-cli
+    blobs:
+      quay.io/openshift/origin-cli sha256:d8190195889efb5333eeec18af9b6c82313edd4db62989bd3a357caca4f13f0e 1.404KiB
+      quay.io/openshift/origin-cli sha256:ac721344484eca73a854ac6a9166155c1061ce12950dc7aa7c6eeef36af03a9a 23.03KiB
+      quay.io/openshift/origin-cli sha256:2e6ac3eaeb0fe9b49aec61723366cad75d25c0c2ca795844825c9d08281b668a 471.9KiB
+      quay.io/openshift/origin-cli sha256:b8c6fc8656cd47342f2c2df867d4c4cb4f0a9f2dee277f4505eebb1f62cb98f5 11.8MiB
+      quay.io/openshift/origin-cli sha256:57e3e9b4305aaee377022ef9bbfeda946dcac6dd7c7e1a0673ef404f98f74b5f 25.47MiB
+      quay.io/openshift/origin-cli sha256:d09ab2acef3d27d220c4972c15c8c9a76c66804da7d6210988aaa18cd7094fd9 51.99MiB
+      quay.io/openshift/origin-cli sha256:97da74cc6d8fa5d1634eb1760fd1da5c6048619c264c23e62d75f3bf6b8ef5c4 75.84MiB
+    manifests:
+      sha256:c79d8916f1a532feecbc3a3939744802bed07adc181564fbc842812e10a930eb -> 4.12
+  stats: shared=0 unique=7 size=165.6MiB ratio=1.00
+
+phase 0:
+  registry.ocp4.example.com:8443 openshift/origin-cli blobs=7 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 1.32s
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:57e3e9b4305aaee377022ef9bbfeda946dcac6dd7c7e1a0673ef404f98f74b5f 25.47MiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:b8c6fc8656cd47342f2c2df867d4c4cb4f0a9f2dee277f4505eebb1f62cb98f5 11.8MiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:97da74cc6d8fa5d1634eb1760fd1da5c6048619c264c23e62d75f3bf6b8ef5c4 75.84MiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:2e6ac3eaeb0fe9b49aec61723366cad75d25c0c2ca795844825c9d08281b668a 471.9KiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:d09ab2acef3d27d220c4972c15c8c9a76c66804da7d6210988aaa18cd7094fd9 51.99MiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:ac721344484eca73a854ac6a9166155c1061ce12950dc7aa7c6eeef36af03a9a 23.03KiB
+sha256:c79d8916f1a532feecbc3a3939744802bed07adc181564fbc842812e10a930eb registry.ocp4.example.com:8443/openshift/origin-cli:4.12
+info: Mirroring completed in 8.12s (21.38MB/s)
+registry.ocp4.example.com:8443/
+  redhattraining/books
+    blobs:
+      quay.io/redhattraining/books sha256:9dd2a0b0492d81d89af496d95a06a94bf3cce88b393ba128a308962f94fed6c0
+      quay.io/redhattraining/books sha256:a0d0b2cde3338eb98c17c3ab64ae13adba96d853e9cb2a8822e5c81b7f05cc9a
+      quay.io/redhattraining/books sha256:a55bf3031ff607a73662f81e07a3786f64ded29771605b5c59dda5e76489c6c9
+    manifests:
+      sha256:d129e1440a1041490d9a1aefed12e88f0ec5a90099970d567e81606efae24aea -> v1.4
+  stats: shared=0 unique=3 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/books blobs=3 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 680ms
+I0308 09:24:46.355612  427667 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:d06c83a8ca423580c7c157c66effb524428ab20e5d05178adf7d420cce97b2d5 registry.ocp4.example.com:8443/redhattraining/books:v1.4
+info: Mirroring completed in 2.5s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/builds-for-managers
+    blobs:
+      quay.io/redhattraining/builds-for-managers sha256:42a2a43bfd9d577d76154403e85fe9a3dd55eb4719b692cf6dca768f8ed731d1
+      quay.io/redhattraining/builds-for-managers sha256:8e9c117e90cf3da9c47323693792b481d80aae8565399c95a2750b84c896b35c
+      quay.io/redhattraining/builds-for-managers sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/builds-for-managers sha256:aa7f2fdf1906b70dfc9042ea06b8cc54f5463212743f5cbea1c480cadc0b70c4
+      quay.io/redhattraining/builds-for-managers sha256:af5525b1de9eccc4fe599a70cfe2e7b13ce1976f39a4f5636be5d7c1ba3f6e7d
+      quay.io/redhattraining/builds-for-managers sha256:c2c6ab91240ec9dd1e45afc40748adeb570ecfcf1505211c2189d29d2e315000
+      quay.io/redhattraining/builds-for-managers sha256:c3239a25ec73eaeb6852604b9f84c052602cc2867910f448d2dcc8e891d190c2
+      quay.io/redhattraining/builds-for-managers sha256:c324ac5dc816c7f57932b202c6e39a6e79d8e3e6bab9619ae573a7769123444e
+      quay.io/redhattraining/builds-for-managers sha256:d70dc43d6ce3d77df638cbba41f695bff2ffda02438ce8d0a3b2032fc66549aa
+    manifests:
+      sha256:079cd86fa81693a48595650099f9836c8d7fcf33dbb682427037a3f0d9b386a6 -> 0.3
+      sha256:616d1619d023b506ab37859b09be092ca8276f094a8f34df34233906361b4ef4 -> 0.4
+      sha256:663c5800517c3db594537ae7d0f9937ae9f2da1153c3593192a88f109c325c4e -> latest
+      sha256:8148ea9ee0be29561edde3c6153ccdc8f77cec2d1b0e3d08539bf623494d0c9a -> 0.5
+  stats: shared=0 unique=9 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/builds-for-managers blobs=9 mounts=0 manifests=4 shared=0
+
+info: Planning completed in 760ms
+I0308 09:24:58.838862  427706 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:3cc5846373f96e7aee24bf757ee899db7413a233d912ab72d168fc842d7cbca3 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:latest
+I0308 09:24:59.039121  427706 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+I0308 09:24:59.238445  427706 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:757e6773a073ba344c8304c413251018424afebefc440c3987efa136aea7a968 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.4
+I0308 09:24:59.433284  427706 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:9f5bc9cd603de83b2545b29312ed7bc29a4ed4038242014ab0eb0bc9be5d6fe2 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.5
+sha256:757e6773a073ba344c8304c413251018424afebefc440c3987efa136aea7a968 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.3
+info: Mirroring completed in 9.74s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/do280-beeper-api
+    manifests:
+      sha256:eb28a7e25de604cef6e64ccd1d2da9b3b104786fecdbd71c6c3354e7fc202305 -> 1.0
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/do280-beeper-api blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 720ms
+sha256:eb28a7e25de604cef6e64ccd1d2da9b3b104786fecdbd71c6c3354e7fc202305 registry.ocp4.example.com:8443/redhattraining/do280-beeper-api:1.0
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/do280-product-stock
+    manifests:
+      sha256:7da293adddf59e258727e4c0edc7f7c56cce64ba6df13414d4e520d718056d3a -> 1.0
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/do280-product-stock blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 720ms
+sha256:7da293adddf59e258727e4c0edc7f7c56cce64ba6df13414d4e520d718056d3a registry.ocp4.example.com:8443/redhattraining/do280-product-stock:1.0
+info: Mirroring completed in 60ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/do280-product
+    manifests:
+      sha256:d05a8623dc2fbb9769ecbef3083620bd73f989235b049cbdf728678276c49ac4 -> 1.0
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/do280-product blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 670ms
+sha256:d05a8623dc2fbb9769ecbef3083620bd73f989235b049cbdf728678276c49ac4 registry.ocp4.example.com:8443/redhattraining/do280-product:1.0
+info: Mirroring completed in 70ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/do280-project-cleaner
+    manifests:
+      sha256:c122d0872cef147651783b73479f0793ec8e0820967ac628e1476d4f8a5d0378 -> v1.0
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/do280-project-cleaner blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 710ms
+sha256:c122d0872cef147651783b73479f0793ec8e0820967ac628e1476d4f8a5d0378 registry.ocp4.example.com:8443/redhattraining/do280-project-cleaner:v1.0
+info: Mirroring completed in 970ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/do280-show-config-app
+    manifests:
+      sha256:132a649e6968097cdd7a3af3440600c57a9923fd58ad02de6f31c8a45d5d2ffe -> 1.0
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/do280-show-config-app blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 660ms
+sha256:132a649e6968097cdd7a3af3440600c57a9923fd58ad02de6f31c8a45d5d2ffe registry.ocp4.example.com:8443/redhattraining/do280-show-config-app:1.0
+info: Mirroring completed in 80ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/do280-stakater-reloader
+    manifests:
+      sha256:49160afd923f456936214604708bd17d7caf4c6ded3476a4ce8064d1740dbc7f -> v0.0.125
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/do280-stakater-reloader blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 700ms
+sha256:49160afd923f456936214604708bd17d7caf4c6ded3476a4ce8064d1740dbc7f registry.ocp4.example.com:8443/redhattraining/do280-stakater-reloader:v0.0.125
+info: Mirroring completed in 250ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/exoplanets
+    blobs:
+      quay.io/redhattraining/exoplanets sha256:9c0626ae66a45e6ea2bc1262a13a9c376b40c2bd4e49385fb22b704c0aa262fc
+      quay.io/redhattraining/exoplanets sha256:9dd2a0b0492d81d89af496d95a06a94bf3cce88b393ba128a308962f94fed6c0
+      quay.io/redhattraining/exoplanets sha256:a55bf3031ff607a73662f81e07a3786f64ded29771605b5c59dda5e76489c6c9
+    manifests:
+      sha256:6ab6a08b1eb9cc1b7a5eb8dd2c0cb2ccfa9fa30569e9ffd2f8a5a0219c33684c -> v1.0
+  stats: shared=0 unique=3 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/exoplanets blobs=3 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 680ms
+I0308 09:25:08.862172  427969 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:e857f269cf1d8d93cd98e5d8cfa41db05935f6667b340c78186ecfaa1f87108d registry.ocp4.example.com:8443/redhattraining/exoplanets:v1.0
+info: Mirroring completed in 700ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/famous-quotes
+    blobs:
+      quay.io/redhattraining/famous-quotes sha256:1f1ffada47c255d81e50bf95f27584eff9099bff789327224f6b3035e2672d0d
+      quay.io/redhattraining/famous-quotes sha256:37bb8dd3fd9088e869d5e22c218fc9e1576e18e5b1828466456fdb3fb41b957d
+      quay.io/redhattraining/famous-quotes sha256:5385a7a7f620cd8d41d131bc6797afa7e30b051c167a0a2ef3f965399b5b9746
+      quay.io/redhattraining/famous-quotes sha256:8c31521d9b29e8402ba9f4b8925ec422ed38618d7eeea449cb225a076a50ade9
+      quay.io/redhattraining/famous-quotes sha256:9f99dc2fa215a144681b1f8722ebe55c5f665a113a10cb1c6c99a3d13101b238
+      quay.io/redhattraining/famous-quotes sha256:a3a915229e631e77ef28ca26916b3e61cfdd9dd2827c7721e222814493bee241
+      quay.io/redhattraining/famous-quotes sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/famous-quotes sha256:b9c96577a39ca3d6a6b41dae97cd6b3a14e10d44572196f1ae0bea009c21f783
+      quay.io/redhattraining/famous-quotes sha256:be4b1b191014a5ef42d88dae05ec7e52c03a06b636c0398654a117d606d7a469
+      quay.io/redhattraining/famous-quotes sha256:ce42a4c33cdad0ac8126663c87d62e4a45fff67fc46022d9729f89861d228286
+      quay.io/redhattraining/famous-quotes sha256:e85ee68746da108801cc70c023d4a86db7f0bc74842d6ad3d361892ec2528acb
+    manifests:
+      sha256:0e2c3ba499420b774a20f78fa95859076a044468ec66350d92d6868e4d98be6d -> 2.1
+  stats: shared=0 unique=11 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/famous-quotes blobs=11 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 680ms
+I0308 09:25:15.800707  428002 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:e9f7a1388166615b54c7e032f742924a19fa8bac61af1b03bb75c4b03aaa1e92 registry.ocp4.example.com:8443/redhattraining/famous-quotes:2.1
+info: Mirroring completed in 5.67s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/famous-quotes
+    blobs:
+      quay.io/redhattraining/famous-quotes sha256:1f1ffada47c255d81e50bf95f27584eff9099bff789327224f6b3035e2672d0d
+      quay.io/redhattraining/famous-quotes sha256:37bb8dd3fd9088e869d5e22c218fc9e1576e18e5b1828466456fdb3fb41b957d
+      quay.io/redhattraining/famous-quotes sha256:5385a7a7f620cd8d41d131bc6797afa7e30b051c167a0a2ef3f965399b5b9746
+      quay.io/redhattraining/famous-quotes sha256:8c31521d9b29e8402ba9f4b8925ec422ed38618d7eeea449cb225a076a50ade9
+      quay.io/redhattraining/famous-quotes sha256:9f99dc2fa215a144681b1f8722ebe55c5f665a113a10cb1c6c99a3d13101b238
+      quay.io/redhattraining/famous-quotes sha256:a3a915229e631e77ef28ca26916b3e61cfdd9dd2827c7721e222814493bee241
+      quay.io/redhattraining/famous-quotes sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/famous-quotes sha256:b9c96577a39ca3d6a6b41dae97cd6b3a14e10d44572196f1ae0bea009c21f783
+      quay.io/redhattraining/famous-quotes sha256:be4b1b191014a5ef42d88dae05ec7e52c03a06b636c0398654a117d606d7a469
+      quay.io/redhattraining/famous-quotes sha256:ce42a4c33cdad0ac8126663c87d62e4a45fff67fc46022d9729f89861d228286
+      quay.io/redhattraining/famous-quotes sha256:e85ee68746da108801cc70c023d4a86db7f0bc74842d6ad3d361892ec2528acb
+    manifests:
+      sha256:11644d8db7f1ccc4697267f97421aa0550d01267dfa0ff68bbf62c1ed6654027 -> latest
+  stats: shared=0 unique=11 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/famous-quotes blobs=11 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 690ms
+I0308 09:25:22.509792  428052 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:e9f7a1388166615b54c7e032f742924a19fa8bac61af1b03bb75c4b03aaa1e92 registry.ocp4.example.com:8443/redhattraining/famous-quotes:latest
+info: Mirroring completed in 5.67s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/gitlab-ce
+    blobs:
+      quay.io/redhattraining/gitlab-ce sha256:0950aa6f21ca2b168eca09c0231aca694fce08fcf1b0a5ebf0750c6ab038bd12
+      quay.io/redhattraining/gitlab-ce sha256:3b52deaaf0edb8a0282a08dd9c9e25da2050a75739b832ecc6e29941394933a6
+      quay.io/redhattraining/gitlab-ce sha256:4bd501fad6defc3af5638b82f7d760f0dc2f2c5f1bcd2cbfd59607b1631bc679
+      quay.io/redhattraining/gitlab-ce sha256:8387d9ff0016d004777e511a55e21672e4b6de49e32db2544b8ac0e2ee01d5ed
+      quay.io/redhattraining/gitlab-ce sha256:903e24fa485173c23eb6266396de4bfe8686f9072a023828c0072b988fccdda5
+      quay.io/redhattraining/gitlab-ce sha256:97990e465687f365f58892813035b207b726cfbd174cd4cc18ab3889970288d5
+      quay.io/redhattraining/gitlab-ce sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/gitlab-ce sha256:d3779b74db242454516bf13ab284aef807fd57c5629cf49841dc36aaa478eb42
+    manifests:
+      sha256:edd9a8f20a3761b29a1b059dd5f1e9100639500b68fcbb75d25d3c159482c5e5 -> 8.4.3-ce.0
+  stats: shared=0 unique=8 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/gitlab-ce blobs=8 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 710ms
+I0308 09:25:27.258521  428098 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:a06fc48f8a727b610c53ee0105ec4d955a410cfc43923037faedef5a72d9818c registry.ocp4.example.com:8443/redhattraining/gitlab-ce:8.4.3-ce.0
+info: Mirroring completed in 4.38s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/hello-world-nginx
+    blobs:
+      quay.io/redhattraining/hello-world-nginx sha256:022387ff318fa4807100c9a29391ed805521e379c096d6a50c25babb31b33656
+      quay.io/redhattraining/hello-world-nginx sha256:3ed712ae45281838f7104b88e2766f4418f50b7a465417e528f71b55523bc042
+      quay.io/redhattraining/hello-world-nginx sha256:48d8385919594bc1fd07def5b73759bc2b89a5a9c06e62a6aa3bdbedec76b653
+      quay.io/redhattraining/hello-world-nginx sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+      quay.io/redhattraining/hello-world-nginx sha256:69fc56a2ba109a3fe3286efebc6d8afd7d058f9f13355bbf225accf90bd969e7
+      quay.io/redhattraining/hello-world-nginx sha256:6a5240d60dc4e1ade0d103badb2a897e8103ebf0ebe08350cd582bbc9671cc7a
+      quay.io/redhattraining/hello-world-nginx sha256:787f47dbeaac926cc8c927a48e8a84fc97e05fbd1c08a4c9c4ddcaddfd87e2f7
+      quay.io/redhattraining/hello-world-nginx sha256:9d7cc8aba8af884688c4a7cb6432915d9208f92d0b068da628484d674b0da6d4
+    manifests:
+      sha256:7f99ece5f39bf8d5d76a43cd9104a8d0a39f7135821b94bc1ebdc39cdc6dd63b -> latest
+  stats: shared=0 unique=8 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/hello-world-nginx blobs=8 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 650ms
+I0308 09:25:31.818891  428145 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:9c045f80e5572399957e499e0df1b8625fb8d0d20a3e7d312642f132292ce849 registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:latest
+info: Mirroring completed in 2.86s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/hello-world-nginx
+    blobs:
+      quay.io/redhattraining/hello-world-nginx sha256:022387ff318fa4807100c9a29391ed805521e379c096d6a50c25babb31b33656
+      quay.io/redhattraining/hello-world-nginx sha256:3ed712ae45281838f7104b88e2766f4418f50b7a465417e528f71b55523bc042
+      quay.io/redhattraining/hello-world-nginx sha256:48d8385919594bc1fd07def5b73759bc2b89a5a9c06e62a6aa3bdbedec76b653
+      quay.io/redhattraining/hello-world-nginx sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+      quay.io/redhattraining/hello-world-nginx sha256:69fc56a2ba109a3fe3286efebc6d8afd7d058f9f13355bbf225accf90bd969e7
+      quay.io/redhattraining/hello-world-nginx sha256:6a5240d60dc4e1ade0d103badb2a897e8103ebf0ebe08350cd582bbc9671cc7a
+      quay.io/redhattraining/hello-world-nginx sha256:787f47dbeaac926cc8c927a48e8a84fc97e05fbd1c08a4c9c4ddcaddfd87e2f7
+      quay.io/redhattraining/hello-world-nginx sha256:9d7cc8aba8af884688c4a7cb6432915d9208f92d0b068da628484d674b0da6d4
+    manifests:
+      sha256:941928d702a2f08c986017b1eed3417d83952f05de55d657787512e82714dd89 -> v1.0
+  stats: shared=0 unique=8 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/hello-world-nginx blobs=8 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 730ms
+I0308 09:25:35.759923  428182 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:9c045f80e5572399957e499e0df1b8625fb8d0d20a3e7d312642f132292ce849 registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0
+info: Mirroring completed in 2.92s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/loadtest
+    blobs:
+      quay.io/redhattraining/loadtest sha256:903ef888101b61fe08220a9a204f41f5aa38dfff59dc814d48b581dc41e8a029
+      quay.io/redhattraining/loadtest sha256:9476bcbd9193577451ef343bec3ba760b6332c463d3b6082d7a250a0f1db7e41
+      quay.io/redhattraining/loadtest sha256:9db93adcb136de9e61f620e3133d3fa3b3344d0496bd1ae4830ddb9cba905ee0
+      quay.io/redhattraining/loadtest sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/loadtest sha256:c24754c879ea254eb7e283cf6f736a54f37bf78bdf781982836202ea6a88402c
+      quay.io/redhattraining/loadtest sha256:ddfca15479303da6b08cccbf2604496c06b7e150338a1c8db86f57a06ac9db66
+      quay.io/redhattraining/loadtest sha256:f59fe1b21cfc8dab7897167a18fe01fefd2832acf9863b01b53f7623d147f8b1
+    manifests:
+      sha256:14038e28490705cd0e89a0d67b85a260aea332d281977a8930d5a67f24b6fd34 -> v1.0
+  stats: shared=0 unique=7 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/loadtest blobs=7 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 770ms
+I0308 09:25:40.196021  428222 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:240accc722c8e41ff3c0e941f9d8cb2e7be3cb82433824d3308d6115fb66e082 registry.ocp4.example.com:8443/redhattraining/loadtest:v1.0
+info: Mirroring completed in 3.3s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/php-hello-dockerfile
+    blobs:
+      quay.io/redhattraining/php-hello-dockerfile sha256:112c011f26c4b5af5612c167165de7369d7b7e690a63ad0bb0ab6c3cf5c54f43
+      quay.io/redhattraining/php-hello-dockerfile sha256:4237a9c40767ab6b4c6d59a051f1fe43e2bbfcf438023b4bf0ef79c2a0de4054
+      quay.io/redhattraining/php-hello-dockerfile sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+      quay.io/redhattraining/php-hello-dockerfile sha256:6a5240d60dc4e1ade0d103badb2a897e8103ebf0ebe08350cd582bbc9671cc7a
+      quay.io/redhattraining/php-hello-dockerfile sha256:787f47dbeaac926cc8c927a48e8a84fc97e05fbd1c08a4c9c4ddcaddfd87e2f7
+      quay.io/redhattraining/php-hello-dockerfile sha256:9a2248075f215effb81563d5e248101bbe924128940731bc9a8bba399de3ae81
+    manifests:
+      sha256:44d2f2c285569b4a3108226bab79a085885fe6846ba20f2d846a54d9921fdf2f -> latest
+  stats: shared=0 unique=6 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/php-hello-dockerfile blobs=6 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 540ms
+I0308 09:25:43.418441  428262 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:9fbaa90d2f2dd7eadaffe549a38d89dce00c7b9d566c9b874e186333b1f2b21b registry.ocp4.example.com:8443/redhattraining/php-hello-dockerfile:latest
+info: Mirroring completed in 2.06s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/php-ssl
+    blobs:
+      quay.io/redhattraining/php-ssl sha256:1244fe5e7dd4de7d6e9e0daee7ee6252d9be9e228d7e1e49ef5a372fcbf2aae9
+      quay.io/redhattraining/php-ssl sha256:1e6c5f7270237a821b75e0a17e017636b2723c22a5d21fdbb0070e2812e1636a
+      quay.io/redhattraining/php-ssl sha256:641d7cc5cbc48a13c68806cf25d5bcf76ea2157c3181e1db4f5d0edae34954ac
+      quay.io/redhattraining/php-ssl sha256:6a67e8a96c64f0e8f1901e2cf584e323b79a1620a1460c9923a8f9db0d76e9a4
+      quay.io/redhattraining/php-ssl sha256:6c43a9f309b8c433401b04df0f9984394e436dc3f3263496e4769a50f12e1963
+      quay.io/redhattraining/php-ssl sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/php-ssl sha256:c65691897a4d140d441e2024ce086de996b1c4620832b90c973db81329577274
+      quay.io/redhattraining/php-ssl sha256:f67b020d928a7022f9984e02c6c00d6f9959efe2cbc0b8e16c99579fec95dd30
+    manifests:
+      sha256:03edec1aff8435e96d8200317e2956e4aae1b2a9565bc4fa520ce6d342acf132 -> v1.0
+  stats: shared=0 unique=8 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/php-ssl blobs=8 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 680ms
+I0308 09:25:47.495117  428305 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:f57e694a973045c6e2ada48e2e3f9b37e8f6603ef5cee0d8271e8eebd0203f6c registry.ocp4.example.com:8443/redhattraining/php-ssl:v1.0
+info: Mirroring completed in 3.08s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/php-ssl
+    blobs:
+      quay.io/redhattraining/php-ssl sha256:0a7485b7ad3a66305f0b221b123cf0fde6bdb5998fe7782167c82ab46723fbbd
+      quay.io/redhattraining/php-ssl sha256:21a7faa7d610b5ab3a116fea84dad1d3495a4837941f0db418c3227c2c86a8d7
+      quay.io/redhattraining/php-ssl sha256:26b2d1a08f1e6379e1f1ce8e8fb9a0a5d4fb8618a01723e9384b749f05e55f61
+      quay.io/redhattraining/php-ssl sha256:641d7cc5cbc48a13c68806cf25d5bcf76ea2157c3181e1db4f5d0edae34954ac
+      quay.io/redhattraining/php-ssl sha256:8b9ec843aa80a05bbc17c5f5e07d9dff43734200ae78d7117e0910525316b214
+      quay.io/redhattraining/php-ssl sha256:93cc3e1a5af069c4388b5df1d9b6c3c18a3e80d0abf9db5a16caedd99efd1155
+      quay.io/redhattraining/php-ssl sha256:9e1f1166f0e3b4015d2b876ebc1b035e15f9b7d1ded9ca5ba88dde173dd01302
+      quay.io/redhattraining/php-ssl sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/php-ssl sha256:c65691897a4d140d441e2024ce086de996b1c4620832b90c973db81329577274
+    manifests:
+      sha256:0e49a30084b6f5bf9dc4365666907e17598b5825583bcdd85de433ca2d671ff3 -> v1.1
+  stats: shared=0 unique=9 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/php-ssl blobs=9 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 660ms
+I0308 09:25:51.943049  428342 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:f4b9a29a8e6d971d5fbb823a076a3c8e9de1f0b4ca64368a8f5bcf0fcf70d9ed registry.ocp4.example.com:8443/redhattraining/php-ssl:v1.1
+info: Mirroring completed in 3.46s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/scaling
+    blobs:
+      quay.io/redhattraining/scaling sha256:51c34d9f4a06748ce83aa640252c851c3b2ff95c49babffa8c1e21aacfb29a0e
+      quay.io/redhattraining/scaling sha256:903ef888101b61fe08220a9a204f41f5aa38dfff59dc814d48b581dc41e8a029
+      quay.io/redhattraining/scaling sha256:9476bcbd9193577451ef343bec3ba760b6332c463d3b6082d7a250a0f1db7e41
+      quay.io/redhattraining/scaling sha256:9db93adcb136de9e61f620e3133d3fa3b3344d0496bd1ae4830ddb9cba905ee0
+      quay.io/redhattraining/scaling sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/scaling sha256:b222ef0c917227c51c89bc12956e79195632891b7f9cfdc735859c61f0ed182b
+      quay.io/redhattraining/scaling sha256:c24754c879ea254eb7e283cf6f736a54f37bf78bdf781982836202ea6a88402c
+    manifests:
+      sha256:ee6c045ac032b19c814bc0a3b78b0599bdd6f633d45af45c39d4d674d1ae7042 -> v1.0
+  stats: shared=0 unique=7 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/scaling blobs=7 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 690ms
+I0308 09:25:56.266087  428384 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:a5b9ad95e12d916346219d07d4c3a59e58aa7a0d0d3af5cd78d458cec8cfda81 registry.ocp4.example.com:8443/redhattraining/scaling:v1.0
+info: Mirroring completed in 3.26s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/todo-angular
+    blobs:
+      quay.io/redhattraining/todo-angular sha256:1ee508970c1b2c6497f5a27410b34a2f7abc98af8aa934cf6b852ea8ea9a048a
+      quay.io/redhattraining/todo-angular sha256:39396b6129f833196afe68f6efa971c8cc8ea8e8f290e0e68630959eba070e8b
+      quay.io/redhattraining/todo-angular sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/todo-angular sha256:ac3530f1967030d00335c13d633fee27bf64c1bf3e354bc21c2eadd3b1c50040
+      quay.io/redhattraining/todo-angular sha256:aef286fe8cef98d7ba18713bbb16c4cb50ea7c4c66111d06ebf3aeb0449769da
+      quay.io/redhattraining/todo-angular sha256:cf83d1d0320315a9bd5705fd5eb427ba74dfe6590aa19b071853b5d2c3567bd0
+      quay.io/redhattraining/todo-angular sha256:dc53bdd4f1cabbf3fbb2451b5b802adcffe8619ba2662d7126a85150893fcfe9
+      quay.io/redhattraining/todo-angular sha256:f85f70a8c044b94cee95bf4e5c9eec12f9a1db5f6701f9b294753ecd5b4ff9a9
+      quay.io/redhattraining/todo-angular sha256:fbd0a435feff104b71e50964640287b337a47ac8b63097cf9c77f50f8b68455d
+    manifests:
+      sha256:85a6d143977e80a274b31839d477e529339545b97832f45318cd9ae8d3049899 -> v1.1
+  stats: shared=0 unique=9 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/todo-angular blobs=9 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 650ms
+I0308 09:26:00.742811  428423 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:b6fd78795ea45596f1b6a8ad0ae0e914d4183c70eb4e59afc3272296b30f10aa registry.ocp4.example.com:8443/redhattraining/todo-angular:v1.1
+info: Mirroring completed in 3.46s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/todo-angular
+    blobs:
+      quay.io/redhattraining/todo-angular sha256:1a658bbe163dcc55df9c869d0ae07bc2c44bc5bfd76c0285c76aace1c2062038
+      quay.io/redhattraining/todo-angular sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/todo-angular sha256:ac3530f1967030d00335c13d633fee27bf64c1bf3e354bc21c2eadd3b1c50040
+      quay.io/redhattraining/todo-angular sha256:aef286fe8cef98d7ba18713bbb16c4cb50ea7c4c66111d06ebf3aeb0449769da
+      quay.io/redhattraining/todo-angular sha256:ba9c49b4a27686d62c95c90818767637413c963c90ae7c62f529bf524959b264
+      quay.io/redhattraining/todo-angular sha256:c1a37766746d4db040bd09af0f6a0329ab9b614bb4627441b7932f23c57f1572
+      quay.io/redhattraining/todo-angular sha256:e0ac02edec7b9d64449709b81bc9d135f678dc95012492e8678c9e14a223a036
+      quay.io/redhattraining/todo-angular sha256:fbd0a435feff104b71e50964640287b337a47ac8b63097cf9c77f50f8b68455d
+      quay.io/redhattraining/todo-angular sha256:fd332f8fe8ac14ca7820dc6f7509802df329c51da280d6aa9e652697fb5ff644
+    manifests:
+      sha256:4da0657631ea97c3c93d14592500e129eb61efafa4a60ac13939f8e615a8a0d0 -> v1.2
+  stats: shared=0 unique=9 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/todo-angular blobs=9 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 680ms
+I0308 09:26:05.250703  428461 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:43b05d9edfe81909255282ca802d80aa3869f7d7c772905ad3707bfb2e08618c registry.ocp4.example.com:8443/redhattraining/todo-angular:v1.2
+info: Mirroring completed in 3.62s (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/todo-backend
+    manifests:
+      sha256:991912603cf40cef48d559590515a09abc60cfede6a757ee1c386e40bd212797 -> release-46
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/todo-backend blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 700ms
+sha256:991912603cf40cef48d559590515a09abc60cfede6a757ee1c386e40bd212797 registry.ocp4.example.com:8443/redhattraining/todo-backend:release-46
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhattraining/wordpress
+    blobs:
+      quay.io/redhattraining/wordpress sha256:1188d95d4fdbeaf7edd4c09874d29aa035d2f2769d3053173a9e91ddfc9e8079
+      quay.io/redhattraining/wordpress sha256:1c234ea3b224dfb9c7184bba904bec6be8a39553bf8805211a914fa35092c55b
+      quay.io/redhattraining/wordpress sha256:28a28611b8e4860b7edd29e33078b5850a049854109c23a0b1db666fa07bf87f
+      quay.io/redhattraining/wordpress sha256:292f75dc1d6ffd3b2bee67f722bee380badec9fe4786f6641c09386176618883
+      quay.io/redhattraining/wordpress sha256:30d77166dda0665f79cc1c02a60d992a3d7b61f03548440f913953992382ca7e
+      quay.io/redhattraining/wordpress sha256:427cdc11b70e85205d40c2badf902b5917912089bbf5cd17633fb16ae2721d52
+      quay.io/redhattraining/wordpress sha256:464bc27c997d8af255d7ccb47bad878c3ccd8652e8ae1acc1b228fa4f9da5541
+      quay.io/redhattraining/wordpress sha256:4c4607ad3f367477fdf5f4b5c52703770a028c14e53cea57955b97316d1416a0
+      quay.io/redhattraining/wordpress sha256:51eb325d3d0148354b5d96effcb58c6f135c795cdf70dab08aa96d1b0f76d25c
+      quay.io/redhattraining/wordpress sha256:65a95f56d144cb7ad5b1f9136af4de31be2009d07c167189c062b5794b966e96
+      quay.io/redhattraining/wordpress sha256:68968ec698d9b8cf78d3beef3b81224dc7c618ff275759cf7c5afe200b6231f5
+      quay.io/redhattraining/wordpress sha256:6ee00b89c8b05bd739703a8fc3cbbca96631f90e4fdd6cc9d740e2531cb070bd
+      quay.io/redhattraining/wordpress sha256:801901a55b68810968a7f3c02907f3edca7c9e9ce5d44e47be59dd0421b2250a
+      quay.io/redhattraining/wordpress sha256:96997b8ceda187663e420a1d339e549e3268a4b977105237f044e955043ec174
+      quay.io/redhattraining/wordpress sha256:96b77b7c60e157ed21f1ed02e5b92424eafd6b03df9fdebd8c5ad2e61b64b1b3
+      quay.io/redhattraining/wordpress sha256:98729ec1aafcf2919414c066f68b3b256292744b0a60696247aedb43576657e0
+      quay.io/redhattraining/wordpress sha256:9a1c2a696abeb0c28d160b126f6f7825c095fa023eefe263db2057d9ae1ac431
+      quay.io/redhattraining/wordpress sha256:9bcaf89ad44c2fe8e668c8a567a114ff832d46e3eb6b8bd4742ad15a7c05f4a9
+      quay.io/redhattraining/wordpress sha256:9d816ce90911bd39c56292c0d195a28702975d8f8129e099ea9042e8943335dd
+      quay.io/redhattraining/wordpress sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4
+      quay.io/redhattraining/wordpress sha256:abfcca90ed0d8d2d10addb435d61f7f3b70e4ba0eb5e931d13ee8243302bbc0b
+      quay.io/redhattraining/wordpress sha256:b12657fc275830d8d55d4d00fc003bd809f937f9d31055b771932980f1b34987
+      quay.io/redhattraining/wordpress sha256:bdb195db70e3b67c8ee464ab2c4f8ea760d39a606f81b0872324fa8acca8c2da
+      quay.io/redhattraining/wordpress sha256:dc3df7dbf6b2760eb0903dc00bfb4afa94d16f2e3515f108b6ce9b2e37948f5b
+      quay.io/redhattraining/wordpress sha256:ea403056fc14af9adef0854ff8353d2dec7aba94917b0ee7f23fb7f215a81423
+      quay.io/redhattraining/wordpress sha256:f4053756b2ba076de37dc66318284f5d491c8aae3bea3f6e279df98403988e6b
+      quay.io/redhattraining/wordpress sha256:f6a86091225b3c491567c9df06389befaa86c19fe603cdd8e126ee9c3d584ac2
+      quay.io/redhattraining/wordpress sha256:ff6685c96df4a9a99cff542ce46f3a569ff1f763190ec44a851a2f78f3a5dac6
+    manifests:
+      sha256:0cf952b01efd71e94c82c7e4d1c4d4daf9276fb60a9696b2113a9f701c1ecc6b -> 5.7-php7.4-apache
+  stats: shared=0 unique=28 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhattraining/wordpress blobs=28 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 740ms
+I0308 09:26:23.435929  428537 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:e8b17883a6ddaf9156d897e147eaac030ade58c298b58bdc23f9840ff062433a registry.ocp4.example.com:8443/redhattraining/wordpress:5.7-php7.4-apache
+info: Mirroring completed in 15.93s (0B/s)
+registry.ocp4.example.com:8443/
+  rhscl/httpd-24-rhel7
+    blobs:
+      registry.access.redhat.com/rhscl/httpd-24-rhel7 sha256:c791c3cdf4a2662dad5f8e8172a6ed9c6525f873e74d3dccdaae4e2174dcb336 19.73KiB
+      registry.access.redhat.com/rhscl/httpd-24-rhel7 sha256:d789b43a9dbf719caf953f7d057d4a5e7d48d4bbaec512bb18d88eec08e435db 7.17MiB
+      registry.access.redhat.com/rhscl/httpd-24-rhel7 sha256:566e49e9dbf107f10ef75a3352ac847c1775023861b7bc21c53aea7688b20208 37.19MiB
+      registry.access.redhat.com/rhscl/httpd-24-rhel7 sha256:b99a188bf2ff7cfdda0b6bb018ce3a7dc7d1c44aafac0d8bef4d4d850612aba3 76.15MiB
+    manifests:
+      sha256:ad8b309bfbabb0eefcd0bf0a2aa1142b1aacc8e89d073ab77b46b363dc15b71c -> latest
+  stats: shared=0 unique=4 size=120.5MiB ratio=1.00
+
+phase 0:
+  registry.ocp4.example.com:8443 rhscl/httpd-24-rhel7 blobs=4 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 1.23s
+uploading: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7 sha256:566e49e9dbf107f10ef75a3352ac847c1775023861b7bc21c53aea7688b20208 37.19MiB
+uploading: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7 sha256:b99a188bf2ff7cfdda0b6bb018ce3a7dc7d1c44aafac0d8bef4d4d850612aba3 76.15MiB
+uploading: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7 sha256:c791c3cdf4a2662dad5f8e8172a6ed9c6525f873e74d3dccdaae4e2174dcb336 19.73KiB
+uploading: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7 sha256:d789b43a9dbf719caf953f7d057d4a5e7d48d4bbaec512bb18d88eec08e435db 7.17MiB
+sha256:ad8b309bfbabb0eefcd0bf0a2aa1142b1aacc8e89d073ab77b46b363dc15b71c registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7:latest
+info: Mirroring completed in 3.4s (37.17MB/s)
+registry.ocp4.example.com:8443/
+  rhscl/mysql-57-rhel7
+    manifests:
+      sha256:9a781abe7581cc141e14a7e404ec34125b3e89c008b14f4e7b41e094fd3049fe -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 rhscl/mysql-57-rhel7 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 800ms
+sha256:9a781abe7581cc141e14a7e404ec34125b3e89c008b14f4e7b41e094fd3049fe registry.ocp4.example.com:8443/rhscl/mysql-57-rhel7:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  rhscl/nginx-18-rhel7
+    manifests:
+      sha256:7d560b5b3c52190118ccc48c3f3a525041c04b360031ed882221a16a321be755 -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 rhscl/nginx-18-rhel7 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 930ms
+sha256:7d560b5b3c52190118ccc48c3f3a525041c04b360031ed882221a16a321be755 registry.ocp4.example.com:8443/rhscl/nginx-18-rhel7:latest
+info: Mirroring completed in 60ms (0B/s)
+registry.ocp4.example.com:8443/
+  rhscl/nodejs-6-rhel7
+    manifests:
+      sha256:9d1f8adf5d4465df75d904ec67162efa5de7d51b9418a2462a249666390de35a -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 rhscl/nodejs-6-rhel7 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 2.49s
+sha256:9d1f8adf5d4465df75d904ec67162efa5de7d51b9418a2462a249666390de35a registry.ocp4.example.com:8443/rhscl/nodejs-6-rhel7:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  rhscl/php-72-rhel7
+    manifests:
+      sha256:cee55e4fa48f3536b478789018d466eb417ddb8360d0608f3d48cb5b72a77fca -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 rhscl/php-72-rhel7 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 660ms
+sha256:cee55e4fa48f3536b478789018d466eb417ddb8360d0608f3d48cb5b72a77fca registry.ocp4.example.com:8443/rhscl/php-72-rhel7:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi7/nginx-118
+    manifests:
+      sha256:c45c861f9d8f112a179e7633817b4d7491953541010d12eadf73559cd2e121ab -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi7/nginx-118 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 680ms
+sha256:c45c861f9d8f112a179e7633817b4d7491953541010d12eadf73559cd2e121ab registry.ocp4.example.com:8443/ubi7/nginx-118:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/httpd-24
+    manifests:
+      sha256:6e325b86566fafd3c4683a05a219c30c421fbccbf8d87ab9d20d4ec1131c3451 -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/httpd-24 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 570ms
+sha256:6e325b86566fafd3c4683a05a219c30c421fbccbf8d87ab9d20d4ec1131c3451 registry.ocp4.example.com:8443/ubi8/httpd-24:latest
+info: Mirroring completed in 70ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/nginx-118
+    manifests:
+      sha256:5c4e271959e01c79cfc6a9bb965378a0d1a0fbe3dc6819df11c4db294332c916 -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/nginx-118 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 770ms
+sha256:5c4e271959e01c79cfc6a9bb965378a0d1a0fbe3dc6819df11c4db294332c916 registry.ocp4.example.com:8443/ubi8/nginx-118:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/nodejs-10
+    manifests:
+      sha256:4b8d60103eebcbe838b9ddcc8425f9d1a08ce562cc65c96feebbb9160e6e8cfb -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/nodejs-10 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 980ms
+sha256:4b8d60103eebcbe838b9ddcc8425f9d1a08ce562cc65c96feebbb9160e6e8cfb registry.ocp4.example.com:8443/ubi8/nodejs-10:latest
+info: Mirroring completed in 230ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/nodejs-16
+    manifests:
+      sha256:805f40d4425002d009514e66eb606d41ef143761a4ffe5bf04d6f45183d3f825 -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/nodejs-16 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 550ms
+sha256:805f40d4425002d009514e66eb606d41ef143761a4ffe5bf04d6f45183d3f825 registry.ocp4.example.com:8443/ubi8/nodejs-16:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/php-72
+    manifests:
+      sha256:daac7c37c508ca93c3d47a78d408025df0b997401251110f86123a73472bd8d0 -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/php-72 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 1.21s
+sha256:daac7c37c508ca93c3d47a78d408025df0b997401251110f86123a73472bd8d0 registry.ocp4.example.com:8443/ubi8/php-72:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/php-73
+    manifests:
+      sha256:b08209b2506392333b075c03f9be260de7b3ebda8315f44b89218c5ba074562d -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/php-73 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 990ms
+sha256:b08209b2506392333b075c03f9be260de7b3ebda8315f44b89218c5ba074562d registry.ocp4.example.com:8443/ubi8/php-73:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/ubi
+    manifests:
+      sha256:8275e2ad7f458e329bdc8c0e7543cff1729998fe515a281d49638246de8e39ee -> 8.0
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/ubi blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 690ms
+sha256:8275e2ad7f458e329bdc8c0e7543cff1729998fe515a281d49638246de8e39ee registry.ocp4.example.com:8443/ubi8/ubi:8.0
+info: Mirroring completed in 100ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/ubi
+    manifests:
+      sha256:53d3a0837cf04ba4c687ddb39b487dc86efdbc14bd528778a7fa522637b1a3a0 -> 8.4
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/ubi blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 580ms
+sha256:53d3a0837cf04ba4c687ddb39b487dc86efdbc14bd528778a7fa522637b1a3a0 registry.ocp4.example.com:8443/ubi8/ubi:8.4
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/ubi
+    manifests:
+      sha256:b7e686e30346e9ace664fa09c0275262f8b9a443ed56d22165a0e201f6488c13 -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/ubi blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 540ms
+sha256:b7e686e30346e9ace664fa09c0275262f8b9a443ed56d22165a0e201f6488c13 registry.ocp4.example.com:8443/ubi8/ubi:latest
+info: Mirroring completed in 80ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8
+    manifests:
+      sha256:b7e686e30346e9ace664fa09c0275262f8b9a443ed56d22165a0e201f6488c13 -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 640ms
+sha256:b7e686e30346e9ace664fa09c0275262f8b9a443ed56d22165a0e201f6488c13 registry.ocp4.example.com:8443/ubi8:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi9/httpd-24
+    blobs:
+      registry.access.redhat.com/ubi9/httpd-24 sha256:870a5c4ea287c94603765476aaacde12242265c92a3e4c63ef51b58ecac32967 18.83KiB
+      registry.access.redhat.com/ubi9/httpd-24 sha256:4a13c0e9217d70e608f2d5f5d3c5ffa6d9cd16908b3f83a7a97492d355d25a09 16.54MiB
+      registry.access.redhat.com/ubi9/httpd-24 sha256:e4f880d62b8911db0421633fd2d46d28f07e05be07eb2410dbc5b27b44aab98b 32.81MiB
+      registry.access.redhat.com/ubi9/httpd-24 sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
+    manifests:
+      sha256:31888568001525ed54071e3a63f32fc1559ad7ca4034beeceb516aaf948b0c94 -> latest
+  stats: shared=0 unique=4 size=124.9MiB ratio=1.00
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi9/httpd-24 blobs=4 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 560ms
+uploading: registry.ocp4.example.com:8443/ubi9/httpd-24 sha256:e4f880d62b8911db0421633fd2d46d28f07e05be07eb2410dbc5b27b44aab98b 32.81MiB
+uploading: registry.ocp4.example.com:8443/ubi9/httpd-24 sha256:870a5c4ea287c94603765476aaacde12242265c92a3e4c63ef51b58ecac32967 18.83KiB
+uploading: registry.ocp4.example.com:8443/ubi9/httpd-24 sha256:4a13c0e9217d70e608f2d5f5d3c5ffa6d9cd16908b3f83a7a97492d355d25a09 16.54MiB
+uploading: registry.ocp4.example.com:8443/ubi9/httpd-24 sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
+sha256:31888568001525ed54071e3a63f32fc1559ad7ca4034beeceb516aaf948b0c94 registry.ocp4.example.com:8443/ubi9/httpd-24:latest
+info: Mirroring completed in 4.43s (29.55MB/s)
+registry.ocp4.example.com:8443/
+  ubi9/nginx-120
+    blobs:
+      registry.access.redhat.com/ubi9/nginx-120 sha256:5dc81e84b6d0a9e36489e4c8c4c200a279047299c59d8ccd2cdbef3ece9e6978 19.93KiB
+      registry.access.redhat.com/ubi9/nginx-120 sha256:4a13c0e9217d70e608f2d5f5d3c5ffa6d9cd16908b3f83a7a97492d355d25a09 16.54MiB
+      registry.access.redhat.com/ubi9/nginx-120 sha256:2b4740fdead1d7c27ed849ed28fc70785774593aa8c1eaccd2c0cd820475dc18 29.46MiB
+      registry.access.redhat.com/ubi9/nginx-120 sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
+    manifests:
+      sha256:29fdb07584260a4886c85c92c95e178e187296d1e63e046f4996d6d3f73b052a -> latest
+  stats: shared=0 unique=4 size=121.5MiB ratio=1.00
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi9/nginx-120 blobs=4 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 600ms
+uploading: registry.ocp4.example.com:8443/ubi9/nginx-120 sha256:2b4740fdead1d7c27ed849ed28fc70785774593aa8c1eaccd2c0cd820475dc18 29.46MiB
+uploading: registry.ocp4.example.com:8443/ubi9/nginx-120 sha256:5dc81e84b6d0a9e36489e4c8c4c200a279047299c59d8ccd2cdbef3ece9e6978 19.93KiB
+uploading: registry.ocp4.example.com:8443/ubi9/nginx-120 sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
+uploading: registry.ocp4.example.com:8443/ubi9/nginx-120 sha256:4a13c0e9217d70e608f2d5f5d3c5ffa6d9cd16908b3f83a7a97492d355d25a09 16.54MiB
+sha256:29fdb07584260a4886c85c92c95e178e187296d1e63e046f4996d6d3f73b052a registry.ocp4.example.com:8443/ubi9/nginx-120:latest
+info: Mirroring completed in 3.7s (34.36MB/s)
+registry.ocp4.example.com:8443/
+  ubi9/ubi
+    blobs:
+      registry.access.redhat.com/ubi9/ubi sha256:9877f06ecc6f0d76ab8bfba1495a6dd1fd00aa3df13b1c1434c9ae65443f0feb 6.291KiB
+      registry.access.redhat.com/ubi9/ubi sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
+    manifests:
+      sha256:d03c30dddefc59229303f49a94105d537ac324c86df9177ec5be37d30d44672d -> latest
+  stats: shared=0 unique=2 size=75.51MiB ratio=1.00
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi9/ubi blobs=2 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 570ms
+uploading: registry.ocp4.example.com:8443/ubi9/ubi sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
+sha256:d03c30dddefc59229303f49a94105d537ac324c86df9177ec5be37d30d44672d registry.ocp4.example.com:8443/ubi9/ubi:latest
+info: Mirroring completed in 2.67s (29.59MB/s)
+registry.ocp4.example.com:8443/
+  redhat-openjdk-18/openjdk18-openshift
+    manifests:
+      sha256:dbe9905fe2b20ed30b0e2d64543016fa9c145eeb5a678f720ba9d2055f0c9f88 -> 1.8
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhat-openjdk-18/openjdk18-openshift blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 1.09s
+sha256:dbe9905fe2b20ed30b0e2d64543016fa9c145eeb5a678f720ba9d2055f0c9f88 registry.ocp4.example.com:8443/redhat-openjdk-18/openjdk18-openshift:1.8
+info: Mirroring completed in 70ms (0B/s)
+registry.ocp4.example.com:8443/
+  redhat-openjdk-18/openjdk18-openshift
+    manifests:
+      sha256:85fe81337314f90a52929d98360cd34f97dc1e779510ca99b0750e8686288f79 -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 redhat-openjdk-18/openjdk18-openshift blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 1.2s
+sha256:85fe81337314f90a52929d98360cd34f97dc1e779510ca99b0750e8686288f79 registry.ocp4.example.com:8443/redhat-openjdk-18/openjdk18-openshift:latest
+info: Mirroring completed in 50ms (0B/s)
+registry.ocp4.example.com:8443/
+  rhel8/mysql-80
+    manifests:
+      sha256:50a77a8edb71e426907af10700376f2c4fd9bb01f26a90df6032d013a4189e44 -> 1-211.1664898586
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 rhel8/mysql-80 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 1.37s
+sha256:50a77a8edb71e426907af10700376f2c4fd9bb01f26a90df6032d013a4189e44 registry.ocp4.example.com:8443/rhel8/mysql-80:1-211.1664898586
+info: Mirroring completed in 60ms (0B/s)
+registry.ocp4.example.com:8443/
+  rhel8/mysql-80
+    manifests:
+      sha256:e2c4296aa3854c474a1cf1131f2f43cd19a1340bef510c180261a175bd58d58d -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 rhel8/mysql-80 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 920ms
+sha256:e2c4296aa3854c474a1cf1131f2f43cd19a1340bef510c180261a175bd58d58d registry.ocp4.example.com:8443/rhel8/mysql-80:latest
+info: Mirroring completed in 80ms (0B/s)
+registry.ocp4.example.com:8443/
+  rhel8/postgresql-13
+    manifests:
+      sha256:ec32eeed9136de4fae07c7580209afe2879174420ad9bf29655681882b7c22a1 -> 1-7
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 rhel8/postgresql-13 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 1.44s
+sha256:ec32eeed9136de4fae07c7580209afe2879174420ad9bf29655681882b7c22a1 registry.ocp4.example.com:8443/rhel8/postgresql-13:1-7
+info: Mirroring completed in 40ms (0B/s)
+registry.ocp4.example.com:8443/
+  rhel8/postgresql-13
+    manifests:
+      sha256:e225dadf268247a65251330e45dfab655c89a338da31504dc218f67a377e5dcd -> latest
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 rhel8/postgresql-13 blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 720ms
+sha256:e225dadf268247a65251330e45dfab655c89a338da31504dc218f67a377e5dcd registry.ocp4.example.com:8443/rhel8/postgresql-13:latest
+info: Mirroring completed in 390ms (0B/s)
+registry.ocp4.example.com:8443/
+  ubi8/ubi
+    manifests:
+      sha256:7977a31c6829d4629698ae5f3dcd5691e90f83bed1b336bff16d2afafa12cba4 -> 8.6-943
+  stats: shared=0 unique=0 size=0B
+
+phase 0:
+  registry.ocp4.example.com:8443 ubi8/ubi blobs=0 mounts=0 manifests=1 shared=0
+
+info: Planning completed in 1.16s
+sha256:7977a31c6829d4629698ae5f3dcd5691e90f83bed1b336bff16d2afafa12cba4 registry.ocp4.example.com:8443/ubi8/ubi:8.6-943
+info: Mirroring completed in 50ms (0B/s)
+[student@workstation ~]$ cd DO280/labs/appsec-prune/
+[student@workstation appsec-prune]$ watch oc get cronjobs,job,pods
+[student@workstation appsec-prune]$ oc get cronjobs,job,pods
+NAME                         SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/image-pruner   */4 * * * *   False     1        4s              23m
+
+NAME                              COMPLETIONS   DURATION   AGE
+job.batch/image-pruner-27971416   1/1           11m        12m
+job.batch/image-pruner-27971420   1/1           6m55s      8m4s
+job.batch/image-pruner-27971424   1/1           2m46s      4m4s
+job.batch/image-pruner-27971428   0/1           4s         4s
+
+NAME                              READY   STATUS      RESTARTS   AGE
+pod/image-pruner-27971416-dtdkm   0/1     Completed   0          12m
+pod/image-pruner-27971420-l7f92   0/1     Completed   0          8m4s
+pod/image-pruner-27971424-dbmhr   0/1     Completed   0          4m4s
+pod/image-pruner-27971428-76b2f   1/1     Running     0          4s
+[student@workstation appsec-prune]$ 
+[student@workstation appsec-prune]$ oc logs pod/image-pruner-27971428-76b2f | tail
+registry.redhat.io/openshift4/ose-csi-livenessprobe                             <none>              e00c8045676e7       349MB
+registry.redhat.io/openshift4/ose-csi-node-driver-registrar                     <none>              96126ea68fc98       351MB
+registry.redhat.io/openshift4/ose-kube-rbac-proxy                               <none>              e3b3b2a0d627c       406MB
+registry.redhat.io/openshift4/ose-kube-rbac-proxy                               <none>              5fedf22b30a57       376MB
++ crictl rmi --prune
+E0308 14:28:05.083172 3583573 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = Unknown desc = image used by 4db9c837f514b9dff995a6bc0621364f327f84f86f17d5f54db71a08f552f58a: image is in use by a container" image="6ef837352bb5161bb55b4fd8eff4b3de72f5600f43f2d3adbfa8f1d9786379ce"
+E0308 14:28:07.084729 3583573 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = DeadlineExceeded desc = context deadline exceeded" image="b755d285423eca80a4e5d07a96c36925bab169e0cab6315c8145f22bb743f16a"
+
+Removing debug pod ...
+Temporary namespace openshift-debug-zn29f was removed.
+[student@workstation appsec-prune]$ oc logs pod/image-pruner-27971428-76b2f | grep nginx
+[student@workstation appsec-prune]$ oc logs pod/image-pruner-27971428-76b2f
+node/master01
+Temporary namespace openshift-debug-zn29f is created for debugging node...
+Starting pod/master01-debug ...
+To use host binaries, run `chroot /host`
++ crictl images
+IMAGE                                                                           TAG                 IMAGE ID            SIZE
+quay.io/openshift-release-dev/ocp-release                                       <none>              f13e690a19bda       418MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              74cfc0c7610b9       427MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              fd146d7e43d8d       432MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              66a05d57a1a1a       378MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              6912a0e846a21       453MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              c59611c07789c       427MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              ac15f90c4d838       476MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              71e4a2c91112e       481MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              6ef837352bb51       350MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              e0216c844cca7       317MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              9ef7098b791ba       424MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              f0710c35fdf9d       1.36GB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              af345ea6b7379       428MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              4f86cfd78487d       638MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              6e507d1e389e9       398MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              3b1984b4cee57       388MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              502f139e74b80       432MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              85d9d84865e9d       385MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              95dc6178fa4da       406MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              d06e849538aa7       479MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              4fce04d936c1c       766MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              2d029a3688e13       497MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              ee75bd49aa00e       397MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              646be36ce5bc2       430MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              e6d3d58ab94b8       416MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              42c367e78d4bf       512MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              0a7f15a8dfa44       431MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              67c245c8dfdd4       400MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              3dbfc7bb68771       838MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              de20261c1199f       325MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              c198fe063ea07       426MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              c6f099f0e9dc1       367MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              62805c7631bd7       445MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              c8c73f8fee81c       416MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              eb07f58999dc9       375MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              07393e2bf07f0       333MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              13da15fe6e032       432MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              e9831099ed8a5       433MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              81b1794ad8624       467MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              45e6f58e2808f       602MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              5a5b69e303481       428MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              b08b26f504944       433MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              6bfa52d7e9b64       353MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              bd1c97d64b398       436MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              a3b0b4bc90036       436MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              87ea137bfcd0a       402MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              ab568b022edfd       432MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              93e04c4f29dc0       449MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              9ec008568b0a6       488MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              1e6ae3e7576d6       396MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              12b1481af5e70       426MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              83e896edec1eb       406MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              9edc1f04475e7       408MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              a1141020a50fe       1.1GB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              dd658985e7377       439MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              780ab0dfeff2a       423MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              d9517d056d9d6       574MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              94283fdbb3b3b       359MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              fc2918e42bf48       780MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              2b6e7aefba694       398MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              5f74d4471bb31       433MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              1a088397e1327       418MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              390461144476b       429MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              2713b51902e99       506MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              55fa06cf600e3       388MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              1bdd18aabe32e       538MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              a4f902bcb49b3       407MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              99c112287aef5       700MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              9404eefb49f22       385MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              a063d9bcd44ad       428MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              cc19e55a97f3e       391MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              4d1c5cbb96fa2       384MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              9f1e53f37e7b7       353MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              9b655023534be       460MB
+registry.ocp4.example.com:8443/openshift/origin-cli                             4.12                ac721344484ec       481MB
+registry.ocp4.example.com:8443/redhat/community-operator-index                  v4.12               a85523f68a2f3       1.02GB
+registry.ocp4.example.com:8443/redhat/redhat-operator-index                     v4.12               c300aafc658e0       1.24GB
+registry.ocp4.example.com:8443/redhattraining/nfs-subdir-external-provisioner   v4.0.2              932b0bface75b       45.1MB
+registry.redhat.io/compliance/openshift-compliance-operator-bundle              <none>              dd4cae1e952c0       195kB
+registry.redhat.io/compliance/openshift-file-integrity-operator-bundle          <none>              51d3ada654b27       61.9kB
+registry.redhat.io/compliance/openshift-file-integrity-rhel8-operator           <none>              b755d285423ec       331MB
+registry.redhat.io/lvms4/lvms-rhel8-operator                                    <none>              89e006aadab63       249MB
+registry.redhat.io/lvms4/topolvm-rhel8                                          <none>              2fb98da907141       196MB
+registry.redhat.io/openshift4/frr-rhel8                                         <none>              9474c35171825       412MB
+registry.redhat.io/openshift4/metallb-rhel8-operator                            <none>              eb3953cb83935       375MB
+registry.redhat.io/openshift4/metallb-rhel8                                     <none>              9874c40438255       465MB
+registry.redhat.io/openshift4/ose-csi-external-provisioner                      <none>              b86b65c9601ad       390MB
+registry.redhat.io/openshift4/ose-csi-external-resizer                          <none>              19f1e0c909f3a       387MB
+registry.redhat.io/openshift4/ose-csi-external-snapshotter-rhel8                <none>              9d396e3bd0b55       387MB
+registry.redhat.io/openshift4/ose-csi-livenessprobe                             <none>              e00c8045676e7       349MB
+registry.redhat.io/openshift4/ose-csi-node-driver-registrar                     <none>              96126ea68fc98       351MB
+registry.redhat.io/openshift4/ose-kube-rbac-proxy                               <none>              e3b3b2a0d627c       406MB
+registry.redhat.io/openshift4/ose-kube-rbac-proxy                               <none>              5fedf22b30a57       376MB
++ crictl rmi --prune
+E0308 14:28:05.083172 3583573 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = Unknown desc = image used by 4db9c837f514b9dff995a6bc0621364f327f84f86f17d5f54db71a08f552f58a: image is in use by a container" image="6ef837352bb5161bb55b4fd8eff4b3de72f5600f43f2d3adbfa8f1d9786379ce"
+E0308 14:28:07.084729 3583573 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = DeadlineExceeded desc = context deadline exceeded" image="b755d285423eca80a4e5d07a96c36925bab169e0cab6315c8145f22bb743f16a"
+
+Removing debug pod ...
+Temporary namespace openshift-debug-zn29f was removed.
+[student@workstation appsec-prune]$ oc get cronjobs,job,pods
+NAME                         SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/image-pruner   */4 * * * *   False     0        85s             24m
+
+NAME                              COMPLETIONS   DURATION   AGE
+job.batch/image-pruner-27971420   1/1           6m55s      9m25s
+job.batch/image-pruner-27971424   1/1           2m46s      5m25s
+job.batch/image-pruner-27971428   1/1           13s        85s
+
+NAME                              READY   STATUS      RESTARTS   AGE
+pod/image-pruner-27971420-l7f92   0/1     Completed   0          9m25s
+pod/image-pruner-27971424-dbmhr   0/1     Completed   0          5m25s
+pod/image-pruner-27971428-76b2f   0/1     Completed   0          85s
+[student@workstation appsec-prune]$ 
+[student@workstation appsec-prune]$ 
+[student@workstation appsec-prune]$ cd
+[student@workstation ~]$ oc project 
+Using project "appsec-prune" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc delete cronjob.batch/image-pruner configmap/maintenance
+cronjob.batch "image-pruner" deleted
+configmap "maintenance" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm policy remove-scc-from-user -z default privileged
+clusterrole.rbac.authorization.k8s.io/system:openshift:scc:privileged removed: "default"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm policy remove-cluster-role-from-user cluster-admin -z default
+clusterrole.rbac.authorization.k8s.io/cluster-admin removed: "default"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc delete project appsec-prune prune-apps
+project.project.openshift.io "appsec-prune" deleted
+project.project.openshift.io "prune-apps" deleted
+
+
+
+
+
+
+
+
+
+
+
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish  appsec-prune
+SUCCESS Waiting for cluster
+SUCCESS Remove prune-apps project
+SUCCESS Remove appsec-prune project
+[student@workstation ~]$ 
+

@@ -1,0 +1,490 @@
+[student@workstation ~]$ lab start appsec-api 
+SUCCESS Waiting for cluster
+SUCCESS Copy exercise files
+SUCCESS Creating configmap-reloader project
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ cd DO280/labs/appsec-api/
+[student@workstation appsec-api]$ ls
+config-app  reloader-deployment.yaml
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 73 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "default".
+[student@workstation appsec-api]$ o cproject configmap-reloadere
+bash: o: command not found...
+[student@workstation appsec-api]$ oc project configmap-reloader
+Now using project "configmap-reloader" on server "https://api.ocp4.example.com:6443".
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc create sa configmap-reloader
+serviceaccount/configmap-reloader created
+[student@workstation appsec-api]$ cat reloader-deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: configmap-reloader
+  name: configmap-reloader
+  namespace: configmap-reloader
+spec:
+  selector:
+    matchLabels:
+      app: configmap-reloader
+  template:
+    metadata:
+      labels:
+        app: configmap-reloader
+    spec:
+      containers:
+        - image: "registry.ocp4.example.com:8443/redhattraining/do280-stakater-reloader:v0.0.125"
+          imagePullPolicy: IfNotPresent
+          name: configmap-reloader
+          env:
+            - name: KUBERNETES_NAMESPACE
+              value: appsec-api
+          ports:
+            - name: http
+              containerPort: 9091
+            - name: metrics
+              containerPort: 9090
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http
+            timeoutSeconds: 5
+            failureThreshold: 5
+            periodSeconds: 10
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            timeoutSeconds: 5
+            failureThreshold: 5
+            periodSeconds: 10
+            successThreshold: 1
+      securityContext:
+        runAsNonRoot: true
+[student@workstation appsec-api]$ vim reloader-deployment.yaml
+[student@workstation appsec-api]$ cat reloader-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: configmap-reloader
+  name: configmap-reloader
+  namespace: configmap-reloader
+spec:
+  selector:
+    matchLabels:
+      app: configmap-reloader
+  template:
+    metadata:
+      labels:
+        app: configmap-reloader
+    spec:
+      serviceAccountName: configmap-reloader
+      containers:
+        - image: "registry.ocp4.example.com:8443/redhattraining/do280-stakater-reloader:v0.0.125"
+          imagePullPolicy: IfNotPresent
+          name: configmap-reloader
+          env:
+            - name: KUBERNETES_NAMESPACE
+              value: appsec-api
+          ports:
+            - name: http
+              containerPort: 9091
+            - name: metrics
+              containerPort: 9090
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http
+            timeoutSeconds: 5
+            failureThreshold: 5
+            periodSeconds: 10
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            timeoutSeconds: 5
+            failureThreshold: 5
+            periodSeconds: 10
+            successThreshold: 1
+      securityContext:
+        runAsNonRoot: true
+[student@workstation appsec-api]$ oc apply -f reloader-deployment.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "configmap-reloader" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "configmap-reloader" must set securityContext.capabilities.drop=["ALL"]), seccompProfile (pod or container "configmap-reloader" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/configmap-reloader created
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc login -u developer -p developer https://api.ocp4.example.com:6443
+Login successful.
+
+You have one project on this server: "webconsole-apps"
+
+Using project "webconsole-apps".
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc new-project appsec-api 
+Now using project "appsec-api" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
+
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to 74 projects, the list has been suppressed. You can list all projects with 'oc projects'
+
+Using project "appsec-api".
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc adm policy add-role-to-user edit system:serviceaccount:configmap-reloader:configmap-reloader --rolebinding-name=appsec-api-binding -n appsec-api 
+clusterrole.rbac.authorization.k8s.io/edit added: "system:serviceaccount:configmap-reloader:configmap-reloader"
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc login -u developer -p developer https://api.ocp4.example.com:6443
+Login successful.
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * appsec-api
+    webconsole-apps
+
+Using project "appsec-api".
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ ls
+config-app  reloader-deployment.yaml
+[student@workstation appsec-api]$ ls config-app/
+configmap.yaml  deployment.yaml  route.yaml  service.yaml
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ cat config-app/configmap.yaml 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-app
+  namespace: appsec-api
+data:
+  config.yaml: |
+    application:
+      name: "config-app"
+      description: "config-app"
+[student@workstation appsec-api]$ cat config-app/deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-app
+  namespace: appsec-api
+spec:
+  selector:
+    matchLabels:
+      app: config-app
+  template:
+    metadata:
+      labels:
+        app: config-app
+    spec:
+      containers:
+        - name: config-app
+          image: registry.ocp4.example.com:8443/redhattraining/do280-show-config-app:1.0
+          resources: { }
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              port: 8000
+              path: /readyz
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              port: 8000
+              path: /livez
+              scheme: HTTP
+          env:
+            - name: CONFIG_FILE
+              value: /etc/show-config/config.yaml
+          volumeMounts:
+            - name: config-file
+              mountPath: /etc/show-config
+
+      volumes:
+        - name: config-file
+          configMap:
+            name: config-app
+
+[student@workstation appsec-api]$ ls
+config-app  reloader-deployment.yaml
+[student@workstation appsec-api]$ ls config-app/
+configmap.yaml  deployment.yaml  route.yaml  service.yaml
+[student@workstation appsec-api]$ cat config-app/route.yaml 
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: config-app
+  namespace: appsec-api
+spec:
+  host: config-app-appsec-api.apps.ocp4.example.com
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+  to:
+    kind: Service
+    name: config-app
+    weight: 100
+
+[student@workstation appsec-api]$ cat config-app/service.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-app
+  namespace: appsec-api
+spec:
+  selector:
+    app: config-app
+  ports:
+    - port: 80
+      targetPort: 8000
+      name: http
+
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc apply -f ./config-app
+configmap/config-app created
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "config-app" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "config-app" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "config-app" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "config-app" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/config-app created
+route.route.openshift.io/config-app created
+service/config-app created
+[student@workstation appsec-api]$ oc get configmap config-app --output="jsonpath={.data.config\.yaml}"
+application:
+  name: "config-app"
+  description: "config-app"
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc get route
+NAME         HOST/PORT                                     PATH   SERVICES     PORT   TERMINATION   WILDCARD
+config-app   config-app-appsec-api.apps.ocp4.example.com          config-app   http   edge          None
+[student@workstation appsec-api]$ curl -s https://config-app-appsec-api.apps.ocp4.example.com/config | jq 
+{
+  "application": {
+    "description": "config-app",
+    "name": "config-app"
+  }
+}
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ cat config-app/deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-app
+  namespace: appsec-api
+spec:
+  selector:
+    matchLabels:
+      app: config-app
+  template:
+    metadata:
+      labels:
+        app: config-app
+    spec:
+      containers:
+        - name: config-app
+          image: registry.ocp4.example.com:8443/redhattraining/do280-show-config-app:1.0
+          resources: { }
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              port: 8000
+              path: /readyz
+              scheme: HTTP
+          livenessProbe:
+            httpGet:
+              port: 8000
+              path: /livez
+              scheme: HTTP
+          env:
+            - name: CONFIG_FILE
+              value: /etc/show-config/config.yaml
+          volumeMounts:
+            - name: config-file
+              mountPath: /etc/show-config
+
+      volumes:
+        - name: config-file
+          configMap:
+            name: config-app
+
+[student@workstation appsec-api]$ vim config-app/deployment.yaml
+[student@workstation appsec-api]$ head config-app/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-app
+  namespace: appsec-api
+  annotations:
+    configmap.reloader.stakater.com/reload: "config-app"
+spec:
+  selector:
+    matchLabels:
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc apply -f config-app/deployment.yaml
+Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "config-app" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "config-app" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "config-app" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "config-app" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+deployment.apps/config-app configured
+[student@workstation appsec-api]$ oc get deployment config-app -o yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    configmap.reloader.stakater.com/reload: config-app
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"configmap.reloader.stakater.com/reload":"config-app"},"name":"config-app","namespace":"appsec-api"},"spec":{"selector":{"matchLabels":{"app":"config-app"}},"template":{"metadata":{"labels":{"app":"config-app"}},"spec":{"containers":[{"env":[{"name":"CONFIG_FILE","value":"/etc/show-config/config.yaml"}],"image":"registry.ocp4.example.com:8443/redhattraining/do280-show-config-app:1.0","livenessProbe":{"httpGet":{"path":"/livez","port":8000,"scheme":"HTTP"}},"name":"config-app","ports":[{"containerPort":8000}],"readinessProbe":{"httpGet":{"path":"/readyz","port":8000,"scheme":"HTTP"}},"resources":{},"volumeMounts":[{"mountPath":"/etc/show-config","name":"config-file"}]}],"volumes":[{"configMap":{"name":"config-app"},"name":"config-file"}]}}}}
+  creationTimestamp: "2023-03-08T12:52:00Z"
+  generation: 2
+  name: config-app
+  namespace: appsec-api
+  resourceVersion: "1190552"
+  uid: 95cb5057-9e9a-4f73-bcb6-f849a472b6fb
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: config-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: config-app
+    spec:
+      containers:
+      - env:
+        - name: CONFIG_FILE
+          value: /etc/show-config/config.yaml
+        image: registry.ocp4.example.com:8443/redhattraining/do280-show-config-app:1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /livez
+            port: 8000
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: config-app
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readyz
+            port: 8000
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/show-config
+          name: config-file
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: config-app
+        name: config-file
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2023-03-08T12:52:40Z"
+    lastUpdateTime: "2023-03-08T12:52:40Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2023-03-08T12:52:00Z"
+    lastUpdateTime: "2023-03-08T12:52:40Z"
+    message: ReplicaSet "config-app-6c6c7db96" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ cat config-app/configmap.yaml 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-app
+  namespace: appsec-api
+data:
+  config.yaml: |
+    application:
+      name: "config-app"
+      description: "config-app"
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ vim config-app/configmap.yaml
+[student@workstation appsec-api]$ cat config-app/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-app
+  namespace: appsec-api
+data:
+  config.yaml: |
+    application:
+      name: "config-app"
+      description: "API that exposes its configuration"
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ oc apply -f config-app/configmap.yaml
+configmap/config-app configured
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ 
+[student@workstation appsec-api]$ watch "curl -s https://config-app-appsec-api.apps.ocp4.example.com/config | jq "
+[student@workstation appsec-api]$ cd
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish appsec-api
+SUCCESS Waiting for cluster
+SUCCESS Remove appsec-api project
+SUCCESS Remove configmap-reloader project
+[student@workstation ~]$ 
+
