@@ -1,13 +1,83 @@
-[student@workstation ~]$ lab start appsec-prune
-SUCCESS Waiting for cluster
-SUCCESS Remove appsec-prune project
-SUCCESS Remove prune-apps project
-SUCCESS Creating prune-apps project
-SUCCESS Creating resources
-SUCCESS Pull images
-SUCCESS Copy exercise files
-[student@workstation ~]$ 
-[student@workstation ~]$ 
+[student@workstation ~]$ vim sync-images.sh
+[student@workstation ~]$ chmod +x sync-images.sh
+[student@workstation ~]$ ./sync-images.sh 
+
+Setting the DynoLabs log level to 'debug'
+
+
+Waiting for the cluster to be ready
+
+Warning: Permanently added 'utility,172.25.250.253' (ECDSA) to the list of known hosts.
+API is up
+Cluster version is 4.12.0
+Router is up
+Authentication is ready
+The ingress operator is ready
+The kube-apiserver operator is ready
+Machine Config Operator changes applied
+
+Sync images for the offline registry
+You will be asked for your credentials to access the following registries:
+
+- quay.io
+- registry.redhat.io
+- registry.access.redhat.com
+
+Warning: Permanently added 'registry.ocp4.example.com,192.168.50.50' (ECDSA) to the list of known hosts.
+Login Succeeded!
+if prompted, input your customer portal credentials
+Username: lws_sanjuraj
+Password: 
+Error: error logging into "registry.redhat.io": invalid username/password
+Connection to registry.ocp4.example.com closed.
+Traceback (most recent call last):
+  File "/home/student/.venv/labs/bin/debug-lab-mirror-images", line 8, in <module>
+    sys.exit(mirror_images_main())
+  File "/home/student/.venv/labs/lib/python3.6/site-packages/do280/common/ocp/ocp_funcs.py", line 660, in mirror_images_main
+    login_to_registries()
+  File "/home/student/.venv/labs/lib/python3.6/site-packages/do280/common/ocp/ocp_funcs.py", line 517, in login_to_registries
+    check=True,
+  File "/usr/lib64/python3.6/subprocess.py", line 438, in run
+    output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['ssh', '-t', 'registry.ocp4.example.com', 'podman', 'login', 'registry.redhat.io']' returned non-zero exit status 125.
+[student@workstation ~]$ ./sync-images.sh 
+
+Setting the DynoLabs log level to 'debug'
+
+
+Waiting for the cluster to be ready
+
+API is up
+Cluster version is 4.12.0
+Router is up
+Authentication is ready
+The ingress operator is ready
+The kube-apiserver operator is ready
+Machine Config Operator changes applied
+
+Sync images for the offline registry
+You will be asked for your credentials to access the following registries:
+
+- quay.io
+- registry.redhat.io
+- registry.access.redhat.com
+
+Login Succeeded!
+if prompted, input your customer portal credentials
+Username: sanjuraj_rh
+Password: 
+Error: error logging into "registry.redhat.io": invalid username/password
+Connection to registry.ocp4.example.com closed.
+Traceback (most recent call last):
+  File "/home/student/.venv/labs/bin/debug-lab-mirror-images", line 8, in <module>
+    sys.exit(mirror_images_main())
+  File "/home/student/.venv/labs/lib/python3.6/site-packages/do280/common/ocp/ocp_funcs.py", line 660, in mirror_images_main
+    login_to_registries()
+  File "/home/student/.venv/labs/lib/python3.6/site-packages/do280/common/ocp/ocp_funcs.py", line 517, in login_to_registries
+    check=True,
+  File "/usr/lib64/python3.6/subprocess.py", line 438, in run
+    output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['ssh', '-t', 'registry.ocp4.example.com', 'podman', 'login', 'registry.redhat.io']' returned non-zero exit status 125.
 [student@workstation ~]$ ./sync-images.sh 
 
 Setting the DynoLabs log level to 'debug'
@@ -45,21 +115,35 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 jkube/jkube-java-binary-s2i blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 950ms
+info: Planning completed in 750ms
 sha256:dd5c9f44a86e19438662d293e180acc8d864887cf19c165c1b24ae703b16c2d4 registry.ocp4.example.com:8443/jkube/jkube-java-binary-s2i:0.0.9
-info: Mirroring completed in 120ms (0B/s)
+info: Mirroring completed in 1.09s (0B/s)
 registry.ocp4.example.com:8443/
   openshift/origin-cli
+    blobs:
+      quay.io/openshift/origin-cli sha256:d8190195889efb5333eeec18af9b6c82313edd4db62989bd3a357caca4f13f0e 1.404KiB
+      quay.io/openshift/origin-cli sha256:ac721344484eca73a854ac6a9166155c1061ce12950dc7aa7c6eeef36af03a9a 23.03KiB
+      quay.io/openshift/origin-cli sha256:2e6ac3eaeb0fe9b49aec61723366cad75d25c0c2ca795844825c9d08281b668a 471.9KiB
+      quay.io/openshift/origin-cli sha256:b8c6fc8656cd47342f2c2df867d4c4cb4f0a9f2dee277f4505eebb1f62cb98f5 11.8MiB
+      quay.io/openshift/origin-cli sha256:57e3e9b4305aaee377022ef9bbfeda946dcac6dd7c7e1a0673ef404f98f74b5f 25.47MiB
+      quay.io/openshift/origin-cli sha256:d09ab2acef3d27d220c4972c15c8c9a76c66804da7d6210988aaa18cd7094fd9 51.99MiB
+      quay.io/openshift/origin-cli sha256:97da74cc6d8fa5d1634eb1760fd1da5c6048619c264c23e62d75f3bf6b8ef5c4 75.84MiB
     manifests:
       sha256:c79d8916f1a532feecbc3a3939744802bed07adc181564fbc842812e10a930eb -> 4.12
-  stats: shared=0 unique=0 size=0B
+  stats: shared=0 unique=7 size=165.6MiB ratio=1.00
 
 phase 0:
-  registry.ocp4.example.com:8443 openshift/origin-cli blobs=0 mounts=0 manifests=1 shared=0
+  registry.ocp4.example.com:8443 openshift/origin-cli blobs=7 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1s
+info: Planning completed in 1.32s
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:57e3e9b4305aaee377022ef9bbfeda946dcac6dd7c7e1a0673ef404f98f74b5f 25.47MiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:b8c6fc8656cd47342f2c2df867d4c4cb4f0a9f2dee277f4505eebb1f62cb98f5 11.8MiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:97da74cc6d8fa5d1634eb1760fd1da5c6048619c264c23e62d75f3bf6b8ef5c4 75.84MiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:2e6ac3eaeb0fe9b49aec61723366cad75d25c0c2ca795844825c9d08281b668a 471.9KiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:d09ab2acef3d27d220c4972c15c8c9a76c66804da7d6210988aaa18cd7094fd9 51.99MiB
+uploading: registry.ocp4.example.com:8443/openshift/origin-cli sha256:ac721344484eca73a854ac6a9166155c1061ce12950dc7aa7c6eeef36af03a9a 23.03KiB
 sha256:c79d8916f1a532feecbc3a3939744802bed07adc181564fbc842812e10a930eb registry.ocp4.example.com:8443/openshift/origin-cli:4.12
-info: Mirroring completed in 40ms (0B/s)
+info: Mirroring completed in 8.12s (21.38MB/s)
 registry.ocp4.example.com:8443/
   redhattraining/books
     blobs:
@@ -73,10 +157,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/books blobs=3 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.12s
-I0309 05:17:32.628139    3451 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 680ms
+I0308 09:24:46.355612  427667 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:d06c83a8ca423580c7c157c66effb524428ab20e5d05178adf7d420cce97b2d5 registry.ocp4.example.com:8443/redhattraining/books:v1.4
-info: Mirroring completed in 440ms (0B/s)
+info: Mirroring completed in 2.5s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/builds-for-managers
     blobs:
@@ -99,16 +183,16 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/builds-for-managers blobs=9 mounts=0 manifests=4 shared=0
 
-info: Planning completed in 860ms
-I0309 05:17:43.334385    3488 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
-sha256:757e6773a073ba344c8304c413251018424afebefc440c3987efa136aea7a968 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.4
-I0309 05:17:43.534532    3488 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
-sha256:9f5bc9cd603de83b2545b29312ed7bc29a4ed4038242014ab0eb0bc9be5d6fe2 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.5
-I0309 05:17:43.728719    3488 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
-sha256:757e6773a073ba344c8304c413251018424afebefc440c3987efa136aea7a968 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.3
-I0309 05:17:43.935318    3488 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 760ms
+I0308 09:24:58.838862  427706 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:3cc5846373f96e7aee24bf757ee899db7413a233d912ab72d168fc842d7cbca3 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:latest
-info: Mirroring completed in 9.64s (0B/s)
+I0308 09:24:59.039121  427706 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+I0308 09:24:59.238445  427706 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:757e6773a073ba344c8304c413251018424afebefc440c3987efa136aea7a968 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.4
+I0308 09:24:59.433284  427706 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+sha256:9f5bc9cd603de83b2545b29312ed7bc29a4ed4038242014ab0eb0bc9be5d6fe2 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.5
+sha256:757e6773a073ba344c8304c413251018424afebefc440c3987efa136aea7a968 registry.ocp4.example.com:8443/redhattraining/builds-for-managers:0.3
+info: Mirroring completed in 9.74s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/do280-beeper-api
     manifests:
@@ -118,9 +202,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/do280-beeper-api blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 860ms
+info: Planning completed in 720ms
 sha256:eb28a7e25de604cef6e64ccd1d2da9b3b104786fecdbd71c6c3354e7fc202305 registry.ocp4.example.com:8443/redhattraining/do280-beeper-api:1.0
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/do280-product-stock
     manifests:
@@ -130,9 +214,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/do280-product-stock blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.71s
+info: Planning completed in 720ms
 sha256:7da293adddf59e258727e4c0edc7f7c56cce64ba6df13414d4e520d718056d3a registry.ocp4.example.com:8443/redhattraining/do280-product-stock:1.0
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 60ms (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/do280-product
     manifests:
@@ -142,9 +226,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/do280-product blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 830ms
+info: Planning completed in 670ms
 sha256:d05a8623dc2fbb9769ecbef3083620bd73f989235b049cbdf728678276c49ac4 registry.ocp4.example.com:8443/redhattraining/do280-product:1.0
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 70ms (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/do280-project-cleaner
     manifests:
@@ -154,9 +238,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/do280-project-cleaner blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 2s
+info: Planning completed in 710ms
 sha256:c122d0872cef147651783b73479f0793ec8e0820967ac628e1476d4f8a5d0378 registry.ocp4.example.com:8443/redhattraining/do280-project-cleaner:v1.0
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 970ms (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/do280-show-config-app
     manifests:
@@ -166,9 +250,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/do280-show-config-app blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.02s
+info: Planning completed in 660ms
 sha256:132a649e6968097cdd7a3af3440600c57a9923fd58ad02de6f31c8a45d5d2ffe registry.ocp4.example.com:8443/redhattraining/do280-show-config-app:1.0
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 80ms (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/do280-stakater-reloader
     manifests:
@@ -178,9 +262,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/do280-stakater-reloader blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 940ms
+info: Planning completed in 700ms
 sha256:49160afd923f456936214604708bd17d7caf4c6ded3476a4ce8064d1740dbc7f registry.ocp4.example.com:8443/redhattraining/do280-stakater-reloader:v0.0.125
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 250ms (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/exoplanets
     blobs:
@@ -194,10 +278,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/exoplanets blobs=3 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.55s
-I0309 05:17:55.928005    3762 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 680ms
+I0308 09:25:08.862172  427969 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:e857f269cf1d8d93cd98e5d8cfa41db05935f6667b340c78186ecfaa1f87108d registry.ocp4.example.com:8443/redhattraining/exoplanets:v1.0
-info: Mirroring completed in 450ms (0B/s)
+info: Mirroring completed in 700ms (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/famous-quotes
     blobs:
@@ -219,10 +303,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/famous-quotes blobs=11 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 720ms
-I0309 05:18:02.659912    3801 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 680ms
+I0308 09:25:15.800707  428002 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:e9f7a1388166615b54c7e032f742924a19fa8bac61af1b03bb75c4b03aaa1e92 registry.ocp4.example.com:8443/redhattraining/famous-quotes:2.1
-info: Mirroring completed in 5.64s (0B/s)
+info: Mirroring completed in 5.67s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/famous-quotes
     blobs:
@@ -244,10 +328,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/famous-quotes blobs=11 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.02s
-I0309 05:18:09.698922    3842 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 690ms
+I0308 09:25:22.509792  428052 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:e9f7a1388166615b54c7e032f742924a19fa8bac61af1b03bb75c4b03aaa1e92 registry.ocp4.example.com:8443/redhattraining/famous-quotes:latest
-info: Mirroring completed in 5.64s (0B/s)
+info: Mirroring completed in 5.67s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/gitlab-ce
     blobs:
@@ -266,10 +350,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/gitlab-ce blobs=8 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.39s
-I0309 05:18:15.116220    3887 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 710ms
+I0308 09:25:27.258521  428098 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:a06fc48f8a727b610c53ee0105ec4d955a410cfc43923037faedef5a72d9818c registry.ocp4.example.com:8443/redhattraining/gitlab-ce:8.4.3-ce.0
-info: Mirroring completed in 3.64s (0B/s)
+info: Mirroring completed in 4.38s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/hello-world-nginx
     blobs:
@@ -288,10 +372,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/hello-world-nginx blobs=8 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 740ms
-I0309 05:18:19.067816    3932 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 650ms
+I0308 09:25:31.818891  428145 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:9c045f80e5572399957e499e0df1b8625fb8d0d20a3e7d312642f132292ce849 registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:latest
-info: Mirroring completed in 2.84s (0B/s)
+info: Mirroring completed in 2.86s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/hello-world-nginx
     blobs:
@@ -310,10 +394,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/hello-world-nginx blobs=8 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 890ms
-I0309 05:18:23.121301    3970 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 730ms
+I0308 09:25:35.759923  428182 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:9c045f80e5572399957e499e0df1b8625fb8d0d20a3e7d312642f132292ce849 registry.ocp4.example.com:8443/redhattraining/hello-world-nginx:v1.0
-info: Mirroring completed in 2.83s (0B/s)
+info: Mirroring completed in 2.92s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/loadtest
     blobs:
@@ -331,10 +415,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/loadtest blobs=7 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.18s
-I0309 05:18:27.928483    4013 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 770ms
+I0308 09:25:40.196021  428222 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:240accc722c8e41ff3c0e941f9d8cb2e7be3cb82433824d3308d6115fb66e082 registry.ocp4.example.com:8443/redhattraining/loadtest:v1.0
-info: Mirroring completed in 3.24s (0B/s)
+info: Mirroring completed in 3.3s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/php-hello-dockerfile
     blobs:
@@ -351,10 +435,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/php-hello-dockerfile blobs=6 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 610ms
-I0309 05:18:31.400953    4054 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 540ms
+I0308 09:25:43.418441  428262 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:9fbaa90d2f2dd7eadaffe549a38d89dce00c7b9d566c9b874e186333b1f2b21b registry.ocp4.example.com:8443/redhattraining/php-hello-dockerfile:latest
-info: Mirroring completed in 2.04s (0B/s)
+info: Mirroring completed in 2.06s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/php-ssl
     blobs:
@@ -373,10 +457,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/php-ssl blobs=8 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.03s
-I0309 05:18:35.796602    4094 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 680ms
+I0308 09:25:47.495117  428305 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:f57e694a973045c6e2ada48e2e3f9b37e8f6603ef5cee0d8271e8eebd0203f6c registry.ocp4.example.com:8443/redhattraining/php-ssl:v1.0
-info: Mirroring completed in 3.04s (0B/s)
+info: Mirroring completed in 3.08s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/php-ssl
     blobs:
@@ -396,10 +480,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/php-ssl blobs=9 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 730ms
-I0309 05:18:40.312376    4134 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 660ms
+I0308 09:25:51.943049  428342 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:f4b9a29a8e6d971d5fbb823a076a3c8e9de1f0b4ca64368a8f5bcf0fcf70d9ed registry.ocp4.example.com:8443/redhattraining/php-ssl:v1.1
-info: Mirroring completed in 3.44s (0B/s)
+info: Mirroring completed in 3.46s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/scaling
     blobs:
@@ -417,10 +501,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/scaling blobs=7 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 710ms
-I0309 05:18:44.587797    4178 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 690ms
+I0308 09:25:56.266087  428384 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:a5b9ad95e12d916346219d07d4c3a59e58aa7a0d0d3af5cd78d458cec8cfda81 registry.ocp4.example.com:8443/redhattraining/scaling:v1.0
-info: Mirroring completed in 3.24s (0B/s)
+info: Mirroring completed in 3.26s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/todo-angular
     blobs:
@@ -440,10 +524,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/todo-angular blobs=9 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 870ms
-I0309 05:18:49.312175    4220 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 650ms
+I0308 09:26:00.742811  428423 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:b6fd78795ea45596f1b6a8ad0ae0e914d4183c70eb4e59afc3272296b30f10aa registry.ocp4.example.com:8443/redhattraining/todo-angular:v1.1
-info: Mirroring completed in 3.44s (0B/s)
+info: Mirroring completed in 3.46s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/todo-angular
     blobs:
@@ -463,10 +547,10 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/todo-angular blobs=9 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 760ms
-I0309 05:18:53.934407    4263 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 680ms
+I0308 09:26:05.250703  428461 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:43b05d9edfe81909255282ca802d80aa3869f7d7c772905ad3707bfb2e08618c registry.ocp4.example.com:8443/redhattraining/todo-angular:v1.2
-info: Mirroring completed in 3.44s (0B/s)
+info: Mirroring completed in 3.62s (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/todo-backend
     manifests:
@@ -476,9 +560,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/todo-backend blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 780ms
+info: Planning completed in 700ms
 sha256:991912603cf40cef48d559590515a09abc60cfede6a757ee1c386e40bd212797 registry.ocp4.example.com:8443/redhattraining/todo-backend:release-46
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   redhattraining/wordpress
     blobs:
@@ -517,22 +601,31 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhattraining/wordpress blobs=28 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 810ms
-I0309 05:19:12.090171    4337 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
+info: Planning completed in 740ms
+I0308 09:26:23.435929  428537 manifest.go:510] warning: Digests are not preserved with schema version 1 images. Support for schema version 1 images will be removed in a future release
 sha256:e8b17883a6ddaf9156d897e147eaac030ade58c298b58bdc23f9840ff062433a registry.ocp4.example.com:8443/redhattraining/wordpress:5.7-php7.4-apache
-info: Mirroring completed in 15.84s (0B/s)
+info: Mirroring completed in 15.93s (0B/s)
 registry.ocp4.example.com:8443/
   rhscl/httpd-24-rhel7
+    blobs:
+      registry.access.redhat.com/rhscl/httpd-24-rhel7 sha256:c791c3cdf4a2662dad5f8e8172a6ed9c6525f873e74d3dccdaae4e2174dcb336 19.73KiB
+      registry.access.redhat.com/rhscl/httpd-24-rhel7 sha256:d789b43a9dbf719caf953f7d057d4a5e7d48d4bbaec512bb18d88eec08e435db 7.17MiB
+      registry.access.redhat.com/rhscl/httpd-24-rhel7 sha256:566e49e9dbf107f10ef75a3352ac847c1775023861b7bc21c53aea7688b20208 37.19MiB
+      registry.access.redhat.com/rhscl/httpd-24-rhel7 sha256:b99a188bf2ff7cfdda0b6bb018ce3a7dc7d1c44aafac0d8bef4d4d850612aba3 76.15MiB
     manifests:
       sha256:ad8b309bfbabb0eefcd0bf0a2aa1142b1aacc8e89d073ab77b46b363dc15b71c -> latest
-  stats: shared=0 unique=0 size=0B
+  stats: shared=0 unique=4 size=120.5MiB ratio=1.00
 
 phase 0:
-  registry.ocp4.example.com:8443 rhscl/httpd-24-rhel7 blobs=0 mounts=0 manifests=1 shared=0
+  registry.ocp4.example.com:8443 rhscl/httpd-24-rhel7 blobs=4 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.69s
+info: Planning completed in 1.23s
+uploading: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7 sha256:566e49e9dbf107f10ef75a3352ac847c1775023861b7bc21c53aea7688b20208 37.19MiB
+uploading: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7 sha256:b99a188bf2ff7cfdda0b6bb018ce3a7dc7d1c44aafac0d8bef4d4d850612aba3 76.15MiB
+uploading: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7 sha256:c791c3cdf4a2662dad5f8e8172a6ed9c6525f873e74d3dccdaae4e2174dcb336 19.73KiB
+uploading: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7 sha256:d789b43a9dbf719caf953f7d057d4a5e7d48d4bbaec512bb18d88eec08e435db 7.17MiB
 sha256:ad8b309bfbabb0eefcd0bf0a2aa1142b1aacc8e89d073ab77b46b363dc15b71c registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 3.4s (37.17MB/s)
 registry.ocp4.example.com:8443/
   rhscl/mysql-57-rhel7
     manifests:
@@ -542,9 +635,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 rhscl/mysql-57-rhel7 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 2.44s
+info: Planning completed in 800ms
 sha256:9a781abe7581cc141e14a7e404ec34125b3e89c008b14f4e7b41e094fd3049fe registry.ocp4.example.com:8443/rhscl/mysql-57-rhel7:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   rhscl/nginx-18-rhel7
     manifests:
@@ -554,9 +647,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 rhscl/nginx-18-rhel7 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.9s
+info: Planning completed in 930ms
 sha256:7d560b5b3c52190118ccc48c3f3a525041c04b360031ed882221a16a321be755 registry.ocp4.example.com:8443/rhscl/nginx-18-rhel7:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 60ms (0B/s)
 registry.ocp4.example.com:8443/
   rhscl/nodejs-6-rhel7
     manifests:
@@ -566,9 +659,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 rhscl/nodejs-6-rhel7 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.49s
+info: Planning completed in 2.49s
 sha256:9d1f8adf5d4465df75d904ec67162efa5de7d51b9418a2462a249666390de35a registry.ocp4.example.com:8443/rhscl/nodejs-6-rhel7:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   rhscl/php-72-rhel7
     manifests:
@@ -578,9 +671,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 rhscl/php-72-rhel7 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.26s
+info: Planning completed in 660ms
 sha256:cee55e4fa48f3536b478789018d466eb417ddb8360d0608f3d48cb5b72a77fca registry.ocp4.example.com:8443/rhscl/php-72-rhel7:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi7/nginx-118
     manifests:
@@ -590,9 +683,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi7/nginx-118 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.41s
+info: Planning completed in 680ms
 sha256:c45c861f9d8f112a179e7633817b4d7491953541010d12eadf73559cd2e121ab registry.ocp4.example.com:8443/ubi7/nginx-118:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/httpd-24
     manifests:
@@ -602,9 +695,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/httpd-24 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.06s
+info: Planning completed in 570ms
 sha256:6e325b86566fafd3c4683a05a219c30c421fbccbf8d87ab9d20d4ec1131c3451 registry.ocp4.example.com:8443/ubi8/httpd-24:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 70ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/nginx-118
     manifests:
@@ -614,9 +707,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/nginx-118 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.13s
+info: Planning completed in 770ms
 sha256:5c4e271959e01c79cfc6a9bb965378a0d1a0fbe3dc6819df11c4db294332c916 registry.ocp4.example.com:8443/ubi8/nginx-118:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/nodejs-10
     manifests:
@@ -626,9 +719,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/nodejs-10 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.34s
+info: Planning completed in 980ms
 sha256:4b8d60103eebcbe838b9ddcc8425f9d1a08ce562cc65c96feebbb9160e6e8cfb registry.ocp4.example.com:8443/ubi8/nodejs-10:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 230ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/nodejs-16
     manifests:
@@ -638,9 +731,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/nodejs-16 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.26s
+info: Planning completed in 550ms
 sha256:805f40d4425002d009514e66eb606d41ef143761a4ffe5bf04d6f45183d3f825 registry.ocp4.example.com:8443/ubi8/nodejs-16:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/php-72
     manifests:
@@ -650,9 +743,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/php-72 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.36s
+info: Planning completed in 1.21s
 sha256:daac7c37c508ca93c3d47a78d408025df0b997401251110f86123a73472bd8d0 registry.ocp4.example.com:8443/ubi8/php-72:latest
-info: Mirroring completed in 40ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/php-73
     manifests:
@@ -662,9 +755,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/php-73 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 670ms
+info: Planning completed in 990ms
 sha256:b08209b2506392333b075c03f9be260de7b3ebda8315f44b89218c5ba074562d registry.ocp4.example.com:8443/ubi8/php-73:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/ubi
     manifests:
@@ -674,9 +767,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/ubi blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.54s
+info: Planning completed in 690ms
 sha256:8275e2ad7f458e329bdc8c0e7543cff1729998fe515a281d49638246de8e39ee registry.ocp4.example.com:8443/ubi8/ubi:8.0
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 100ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/ubi
     manifests:
@@ -686,9 +779,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/ubi blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.17s
+info: Planning completed in 580ms
 sha256:53d3a0837cf04ba4c687ddb39b487dc86efdbc14bd528778a7fa522637b1a3a0 registry.ocp4.example.com:8443/ubi8/ubi:8.4
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/ubi
     manifests:
@@ -698,9 +791,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/ubi blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 510ms
+info: Planning completed in 540ms
 sha256:b7e686e30346e9ace664fa09c0275262f8b9a443ed56d22165a0e201f6488c13 registry.ocp4.example.com:8443/ubi8/ubi:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 80ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8
     manifests:
@@ -710,45 +803,67 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 510ms
+info: Planning completed in 640ms
 sha256:b7e686e30346e9ace664fa09c0275262f8b9a443ed56d22165a0e201f6488c13 registry.ocp4.example.com:8443/ubi8:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi9/httpd-24
+    blobs:
+      registry.access.redhat.com/ubi9/httpd-24 sha256:870a5c4ea287c94603765476aaacde12242265c92a3e4c63ef51b58ecac32967 18.83KiB
+      registry.access.redhat.com/ubi9/httpd-24 sha256:4a13c0e9217d70e608f2d5f5d3c5ffa6d9cd16908b3f83a7a97492d355d25a09 16.54MiB
+      registry.access.redhat.com/ubi9/httpd-24 sha256:e4f880d62b8911db0421633fd2d46d28f07e05be07eb2410dbc5b27b44aab98b 32.81MiB
+      registry.access.redhat.com/ubi9/httpd-24 sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
     manifests:
       sha256:31888568001525ed54071e3a63f32fc1559ad7ca4034beeceb516aaf948b0c94 -> latest
-  stats: shared=0 unique=0 size=0B
+  stats: shared=0 unique=4 size=124.9MiB ratio=1.00
 
 phase 0:
-  registry.ocp4.example.com:8443 ubi9/httpd-24 blobs=0 mounts=0 manifests=1 shared=0
+  registry.ocp4.example.com:8443 ubi9/httpd-24 blobs=4 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 540ms
+info: Planning completed in 560ms
+uploading: registry.ocp4.example.com:8443/ubi9/httpd-24 sha256:e4f880d62b8911db0421633fd2d46d28f07e05be07eb2410dbc5b27b44aab98b 32.81MiB
+uploading: registry.ocp4.example.com:8443/ubi9/httpd-24 sha256:870a5c4ea287c94603765476aaacde12242265c92a3e4c63ef51b58ecac32967 18.83KiB
+uploading: registry.ocp4.example.com:8443/ubi9/httpd-24 sha256:4a13c0e9217d70e608f2d5f5d3c5ffa6d9cd16908b3f83a7a97492d355d25a09 16.54MiB
+uploading: registry.ocp4.example.com:8443/ubi9/httpd-24 sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
 sha256:31888568001525ed54071e3a63f32fc1559ad7ca4034beeceb516aaf948b0c94 registry.ocp4.example.com:8443/ubi9/httpd-24:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 4.43s (29.55MB/s)
 registry.ocp4.example.com:8443/
   ubi9/nginx-120
+    blobs:
+      registry.access.redhat.com/ubi9/nginx-120 sha256:5dc81e84b6d0a9e36489e4c8c4c200a279047299c59d8ccd2cdbef3ece9e6978 19.93KiB
+      registry.access.redhat.com/ubi9/nginx-120 sha256:4a13c0e9217d70e608f2d5f5d3c5ffa6d9cd16908b3f83a7a97492d355d25a09 16.54MiB
+      registry.access.redhat.com/ubi9/nginx-120 sha256:2b4740fdead1d7c27ed849ed28fc70785774593aa8c1eaccd2c0cd820475dc18 29.46MiB
+      registry.access.redhat.com/ubi9/nginx-120 sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
     manifests:
       sha256:29fdb07584260a4886c85c92c95e178e187296d1e63e046f4996d6d3f73b052a -> latest
-  stats: shared=0 unique=0 size=0B
+  stats: shared=0 unique=4 size=121.5MiB ratio=1.00
 
 phase 0:
-  registry.ocp4.example.com:8443 ubi9/nginx-120 blobs=0 mounts=0 manifests=1 shared=0
+  registry.ocp4.example.com:8443 ubi9/nginx-120 blobs=4 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 480ms
+info: Planning completed in 600ms
+uploading: registry.ocp4.example.com:8443/ubi9/nginx-120 sha256:2b4740fdead1d7c27ed849ed28fc70785774593aa8c1eaccd2c0cd820475dc18 29.46MiB
+uploading: registry.ocp4.example.com:8443/ubi9/nginx-120 sha256:5dc81e84b6d0a9e36489e4c8c4c200a279047299c59d8ccd2cdbef3ece9e6978 19.93KiB
+uploading: registry.ocp4.example.com:8443/ubi9/nginx-120 sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
+uploading: registry.ocp4.example.com:8443/ubi9/nginx-120 sha256:4a13c0e9217d70e608f2d5f5d3c5ffa6d9cd16908b3f83a7a97492d355d25a09 16.54MiB
 sha256:29fdb07584260a4886c85c92c95e178e187296d1e63e046f4996d6d3f73b052a registry.ocp4.example.com:8443/ubi9/nginx-120:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 3.7s (34.36MB/s)
 registry.ocp4.example.com:8443/
   ubi9/ubi
+    blobs:
+      registry.access.redhat.com/ubi9/ubi sha256:9877f06ecc6f0d76ab8bfba1495a6dd1fd00aa3df13b1c1434c9ae65443f0feb 6.291KiB
+      registry.access.redhat.com/ubi9/ubi sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
     manifests:
       sha256:d03c30dddefc59229303f49a94105d537ac324c86df9177ec5be37d30d44672d -> latest
-  stats: shared=0 unique=0 size=0B
+  stats: shared=0 unique=2 size=75.51MiB ratio=1.00
 
 phase 0:
-  registry.ocp4.example.com:8443 ubi9/ubi blobs=0 mounts=0 manifests=1 shared=0
+  registry.ocp4.example.com:8443 ubi9/ubi blobs=2 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.35s
+info: Planning completed in 570ms
+uploading: registry.ocp4.example.com:8443/ubi9/ubi sha256:2a625e4afab51b49edb0e5f4ff37d8afbb20ec644ed1e68641358a6305557de3 75.5MiB
 sha256:d03c30dddefc59229303f49a94105d537ac324c86df9177ec5be37d30d44672d registry.ocp4.example.com:8443/ubi9/ubi:latest
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 2.67s (29.59MB/s)
 registry.ocp4.example.com:8443/
   redhat-openjdk-18/openjdk18-openshift
     manifests:
@@ -758,9 +873,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhat-openjdk-18/openjdk18-openshift blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.22s
+info: Planning completed in 1.09s
 sha256:dbe9905fe2b20ed30b0e2d64543016fa9c145eeb5a678f720ba9d2055f0c9f88 registry.ocp4.example.com:8443/redhat-openjdk-18/openjdk18-openshift:1.8
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 70ms (0B/s)
 registry.ocp4.example.com:8443/
   redhat-openjdk-18/openjdk18-openshift
     manifests:
@@ -770,9 +885,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 redhat-openjdk-18/openjdk18-openshift blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 860ms
+info: Planning completed in 1.2s
 sha256:85fe81337314f90a52929d98360cd34f97dc1e779510ca99b0750e8686288f79 registry.ocp4.example.com:8443/redhat-openjdk-18/openjdk18-openshift:latest
-info: Mirroring completed in 100ms (0B/s)
+info: Mirroring completed in 50ms (0B/s)
 registry.ocp4.example.com:8443/
   rhel8/mysql-80
     manifests:
@@ -782,9 +897,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 rhel8/mysql-80 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.73s
+info: Planning completed in 1.37s
 sha256:50a77a8edb71e426907af10700376f2c4fd9bb01f26a90df6032d013a4189e44 registry.ocp4.example.com:8443/rhel8/mysql-80:1-211.1664898586
-info: Mirroring completed in 20ms (0B/s)
+info: Mirroring completed in 60ms (0B/s)
 registry.ocp4.example.com:8443/
   rhel8/mysql-80
     manifests:
@@ -794,9 +909,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 rhel8/mysql-80 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.58s
+info: Planning completed in 920ms
 sha256:e2c4296aa3854c474a1cf1131f2f43cd19a1340bef510c180261a175bd58d58d registry.ocp4.example.com:8443/rhel8/mysql-80:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 80ms (0B/s)
 registry.ocp4.example.com:8443/
   rhel8/postgresql-13
     manifests:
@@ -806,9 +921,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 rhel8/postgresql-13 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.56s
+info: Planning completed in 1.44s
 sha256:ec32eeed9136de4fae07c7580209afe2879174420ad9bf29655681882b7c22a1 registry.ocp4.example.com:8443/rhel8/postgresql-13:1-7
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 40ms (0B/s)
 registry.ocp4.example.com:8443/
   rhel8/postgresql-13
     manifests:
@@ -818,9 +933,9 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 rhel8/postgresql-13 blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.33s
+info: Planning completed in 720ms
 sha256:e225dadf268247a65251330e45dfab655c89a338da31504dc218f67a377e5dcd registry.ocp4.example.com:8443/rhel8/postgresql-13:latest
-info: Mirroring completed in 30ms (0B/s)
+info: Mirroring completed in 390ms (0B/s)
 registry.ocp4.example.com:8443/
   ubi8/ubi
     manifests:
@@ -830,418 +945,42 @@ registry.ocp4.example.com:8443/
 phase 0:
   registry.ocp4.example.com:8443 ubi8/ubi blobs=0 mounts=0 manifests=1 shared=0
 
-info: Planning completed in 1.82s
+info: Planning completed in 1.16s
 sha256:7977a31c6829d4629698ae5f3dcd5691e90f83bed1b336bff16d2afafa12cba4 registry.ocp4.example.com:8443/ubi8/ubi:8.6-943
-info: Mirroring completed in 20ms (0B/s)
-[student@workstation ~]$ 
-[student@workstation ~]$ 
-[student@workstation ~]$ 
-[student@workstation ~]$ oc login -u admin -p redhatocp https://api.ocp4.example.com:6443
-Login successful.
-
-You have access to 73 projects, the list has been suppressed. You can list all projects with 'oc projects'
-
-Using project "default".
-[student@workstation ~]$ 
-[student@workstation ~]$ oc new-project appsec-prune
-Now using project "appsec-prune" on server "https://api.ocp4.example.com:6443".
-
-You can add applications to this project with the 'new-app' command. For example, try:
-
-    oc new-app rails-postgresql-example
-
-to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
-
-    kubectl create deployment hello-node --image=k8s.gcr.io/e2e-test-images/agnhost:2.33 -- /agnhost serve-hostname
-
-[student@workstation ~]$ 
-[student@workstation ~]$ 
+info: Mirroring completed in 50ms (0B/s)
 [student@workstation ~]$ cd DO280/labs/appsec-prune/
-[student@workstation appsec-prune]$ ls
-configmap-prune.yaml  cronjob-prune.yaml
-[student@workstation appsec-prune]$ oc get deployments -n prune-apps -o wide 
-NAME         READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                                 SELECTOR
-nginx-ubi7   1/1     1            1           5m31s   nginx-ubi7   registry.ocp4.example.com:8443/ubi7/nginx-118:latest   app=nginx-ubi7,ge=appsec-prune
-nginx-ubi8   1/1     1            1           5m30s   nginx-ubi8   registry.ocp4.example.com:8443/ubi8/nginx-118:latest   app=nginx-ubi8,ge=appsec-prune
-nginx-ubi9   0/1     0            0           5m29s   nginx-ubi9   registry.ocp4.example.com:8443/ubi9/nginx-120:latest   app=nginx-ubi9,ge=appsec-prune
-[student@workstation appsec-prune]$ oc get pods -n prune-apps 
-NAME                          READY   STATUS    RESTARTS   AGE
-nginx-ubi7-79c74cbc-xpvg4     1/1     Running   0          5m44s
-nginx-ubi8-66b8444f98-z46fp   1/1     Running   0          5m44s
-[student@workstation appsec-prune]$ oc get pods -n prune-apps 
-NAME                          READY   STATUS    RESTARTS   AGE
-nginx-ubi7-79c74cbc-xpvg4     1/1     Running   0          5m51s
-nginx-ubi8-66b8444f98-z46fp   1/1     Running   0          5m51s
-[student@workstation appsec-prune]$ oc get pods -n prune-apps 
-NAME                          READY   STATUS    RESTARTS   AGE
-nginx-ubi7-79c74cbc-xpvg4     1/1     Running   0          5m58s
-nginx-ubi8-66b8444f98-z46fp   1/1     Running   0          5m58s
-[student@workstation appsec-prune]$ oc get pods -n prune-apps 
-NAME                          READY   STATUS    RESTARTS   AGE
-nginx-ubi7-79c74cbc-xpvg4     1/1     Running   0          6m4s
-nginx-ubi8-66b8444f98-z46fp   1/1     Running   0          6m4s
-[student@workstation appsec-prune]$ oc get deployments -n prune-apps -o wide 
-NAME         READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                                 SELECTOR
-nginx-ubi7   1/1     1            1           6m12s   nginx-ubi7   registry.ocp4.example.com:8443/ubi7/nginx-118:latest   app=nginx-ubi7,ge=appsec-prune
-nginx-ubi8   1/1     1            1           6m11s   nginx-ubi8   registry.ocp4.example.com:8443/ubi8/nginx-118:latest   app=nginx-ubi8,ge=appsec-prune
-nginx-ubi9   0/1     0            0           6m10s   nginx-ubi9   registry.ocp4.example.com:8443/ubi9/nginx-120:latest   app=nginx-ubi9,ge=appsec-prune
-[student@workstation appsec-prune]$ oc get netpol -n prune-apps
-NAME       POD-SELECTOR   AGE
-workshop   <none>         6m26s
-[student@workstation appsec-prune]$ oc delete netpol/workshop -n prune-apps
-networkpolicy.networking.k8s.io "workshop" deleted
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc get limitranges -n prune-apps
-NAME       CREATED AT
-workshop   2023-03-09T10:15:41Z
-[student@workstation appsec-prune]$ oc delete limitranges/workshop -n prune-apps
-limitrange "workshop" deleted
-[student@workstation appsec-prune]$ oc get resourcequotas -n prune-apps
-NAME       AGE    REQUEST                                                  LIMIT
-workshop   7m9s   requests.cpu: 200m/1500m, requests.memory: 500Mi/750Mi   limits.cpu: 1/2, limits.memory: 1000Mi/1Gi
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc delete resourcequotas/workshop -n prune-apps
-resourcequota "workshop" deleted
-[student@workstation appsec-prune]$ oc get deployments -n prune-apps -o wide 
-NAME         READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                                 SELECTOR
-nginx-ubi7   1/1     1            1           7m28s   nginx-ubi7   registry.ocp4.example.com:8443/ubi7/nginx-118:latest   app=nginx-ubi7,ge=appsec-prune
-nginx-ubi8   1/1     1            1           7m27s   nginx-ubi8   registry.ocp4.example.com:8443/ubi8/nginx-118:latest   app=nginx-ubi8,ge=appsec-prune
-nginx-ubi9   1/1     1            1           7m26s   nginx-ubi9   registry.ocp4.example.com:8443/ubi9/nginx-120:latest   app=nginx-ubi9,ge=appsec-prune
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc get pods -n prune-apps 
-NAME                          READY   STATUS    RESTARTS   AGE
-nginx-ubi7-79c74cbc-xpvg4     1/1     Running   0          7m33s
-nginx-ubi8-66b8444f98-z46fp   1/1     Running   0          7m33s
-nginx-ubi9-648d8f56cb-pdkbb   1/1     Running   0          12s
-[student@workstation appsec-prune]$ oc debug node/master01 -- chroot /host crictl images | egrep '^IMAGE|httpd|nginx'
-Temporary namespace openshift-debug-9cbnh is created for debugging node...
-Starting pod/master01-debug ...
-To use host binaries, run `chroot /host`
-IMAGE                                                                           TAG                 IMAGE ID            SIZE
-registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7                             latest              c791c3cdf4a26       330MB
-registry.ocp4.example.com:8443/ubi7/nginx-118                                   latest              b13520efdb0d5       342MB
-registry.ocp4.example.com:8443/ubi8/httpd-24                                    latest              ddd20b7c621b4       452MB
-registry.ocp4.example.com:8443/ubi8/nginx-118                                   latest              2f7ec0facc7fa       443MB
-registry.ocp4.example.com:8443/ubi9/httpd-24                                    latest              870a5c4ea287c       379MB
-registry.ocp4.example.com:8443/ubi9/nginx-120                                   latest              5dc81e84b6d0a       369MB
-
-Removing debug pod ...
-Temporary namespace openshift-debug-9cbnh was removed.
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc debug node/master01 -- chroot /host crictl rmi --prune
-Temporary namespace openshift-debug-7xcs6 is created for debugging node...
-Starting pod/master01-debug ...
-To use host binaries, run `chroot /host`
-Deleted: registry.ocp4.example.com:8443/ubi8/httpd-24:latest
-Deleted: registry.ocp4.example.com:8443/ubi9/httpd-24:latest
-E0309 10:24:22.786879   42945 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = Unknown desc = image used by 17fbffadc2994c4ea5a8159901c102993cd6823d1b325a3189ac1b02c81f82be: image is in use by a container" image="6ef837352bb5161bb55b4fd8eff4b3de72f5600f43f2d3adbfa8f1d9786379ce"
-Deleted: registry.ocp4.example.com:8443/openshift/origin-cli:4.12
-Deleted: registry.ocp4.example.com:8443/rhscl/httpd-24-rhel7:latest
-
-Removing debug pod ...
-Temporary namespace openshift-debug-7xcs6 was removed.
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc delete deployment nginx-ubi{7,8,9} -n prune-apps 
-deployment.apps "nginx-ubi7" deleted
-deployment.apps "nginx-ubi8" deleted
-deployment.apps "nginx-ubi9" deleted
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ cat configmap-prune.yaml 
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: CHANGE_ME
-  labels:
-    ge: appsec-prune
-    app: crictl
-data:
-  maintenance.sh: |
-    #!/bin/bash -eu
-    NODES=$(CHANGE_ME)
-    for NODE in ${NODES}
-    do
-      echo ${NODE}
-      oc debug ${NODE} -- \
-        chroot /host \
-          /bin/bash -euxc 'CHANGE_ME'
-    done
-[student@workstation appsec-prune]$ vim configmap-prune.yaml
-[student@workstation appsec-prune]$ cat configmap-prune.yaml
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: maintenance
-  labels:
-    ge: appsec-prune
-    app: crictl
-data:
-  maintenance.sh: |
-    #!/bin/bash -eu
-    NODES=$(oc get nodes -o=name)
-    for NODE in ${NODES}
-    do
-      echo ${NODE}
-      oc debug ${NODE} -- \
-        chroot /host \
-          /bin/bash -euxc 'crictl images ; crictl rmi --prune'
-    done
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ cat ~/DO280/solutions/appsec-prune/cronjob-prune.yaml 
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: image-pruner
-  labels:
-    ge: appsec-prune
-    app: crictl
-spec:
-  schedule: '*/4 * * * *'
-  startingDeadlineSeconds: 3600
-  successfulJobsHistoryLimit: 3
-  suspend: false
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  jobTemplate:
-    metadata:
-      labels:
-        ge: appsec-prune
-        app: crictl
-    spec:
-      backoffLimit: 0
-      template:
-        metadata:
-          labels:
-            ge: appsec-prune
-            app: crictl
-        spec:
-          dnsPolicy: ClusterFirst
-          restartPolicy: Never
-          containers:
-          - name: crictl
-            image: registry.ocp4.example.com:8443/openshift/origin-cli:4.12
-            command:
-            - /opt/maintenance.sh
-            resources: {}
-            volumeMounts:
-            - name: scripts
-              mountPath: /opt
-          volumes:
-          - name: scripts
-            configMap:
-              name: maintenance
-              defaultMode: 0555
-[student@workstation appsec-prune]$ cat ~/DO280/solutions/appsec-prune/configmap-prune.yaml 
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: maintenance
-  labels:
-    ge: appsec-prune
-    app: crictl
-data:
-  maintenance.sh: |
-    #!/bin/bash -eu
-    NODES=$(oc get nodes -o=name)
-    for NODE in ${NODES}
-    do
-      echo ${NODE}
-      oc debug ${NODE} -- \
-        chroot /host \
-          /bin/bash -euxc 'crictl images ; crictl rmi --prune'
-    done
-[student@workstation appsec-prune]$ cat configmap-prune.yaml 
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: maintenance
-  labels:
-    ge: appsec-prune
-    app: crictl
-data:
-  maintenance.sh: |
-    #!/bin/bash -eu
-    NODES=$(oc get nodes -o=name)
-    for NODE in ${NODES}
-    do
-      echo ${NODE}
-      oc debug ${NODE} -- \
-        chroot /host \
-          /bin/bash -euxc 'crictl images ; crictl rmi --prune'
-    done
-[student@workstation appsec-prune]$ diff ~/DO280/solutions/appsec-prune/configmap-prune.yaml configmap-prune.yaml 
-[student@workstation appsec-prune]$ oc apply -f configmap-prune.yaml
-configmap/maintenance created
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ cat cronjob-prune.yaml 
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: CHANGE_ME
-  labels:
-    ge: appsec-prune
-    app: crictl
-spec:
-  schedule: 'CHANGE_ME'
-  startingDeadlineSeconds: 3600
-  successfulJobsHistoryLimit: 3
-  suspend: false
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  jobTemplate:
-    metadata:
-      labels:
-        ge: appsec-prune
-        app: crictl
-    spec:
-      backoffLimit: 0
-      template:
-        metadata:
-          labels:
-            ge: appsec-prune
-            app: crictl
-        spec:
-          dnsPolicy: ClusterFirst
-          restartPolicy: Never
-          containers:
-          - name: crictl
-            image: CHANGE_ME
-            command:
-            - CHANGE_ME
-            resources: {}
-            volumeMounts:
-            - name: scripts
-              mountPath: /opt
-          volumes:
-          - name: scripts
-            configMap:
-              name: maintenance
-              defaultMode: 0555
-[student@workstation appsec-prune]$ vim cronjob-prune.yaml
-[student@workstation appsec-prune]$ cat cronjob-prune.yaml 
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: image-pruner
-  labels:
-    ge: appsec-prune
-    app: crictl
-spec:
-  schedule: '*/4 * * * *'
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          dnsPolicy: ClusterFirst
-          restartPolicy: Never
-          containers:
-          - name: crictl
-            image: registry.ocp4.example.com:8443/openshift/origin-cli:4.12
-            command:
-            - /opt/maintenance.sh
-            resources: {}
-            volumeMounts:
-            - name: scripts
-              mountPath: /opt
-          volumes:
-          - name: scripts
-            configMap:
-              name: maintenance
-              defaultMode: 0555
-[student@workstation appsec-prune]$ diff ~/DO280/solutions/appsec-prune/cronjob-prune.yaml cronjob-prune.yaml 
-11,15d10
-<   startingDeadlineSeconds: 3600
-<   successfulJobsHistoryLimit: 3
-<   suspend: false
-<   concurrencyPolicy: Forbid
-<   failedJobsHistoryLimit: 3
-17,20d11
-<     metadata:
-<       labels:
-<         ge: appsec-prune
-<         app: crictl
-22d12
-<       backoffLimit: 0
-24,27d13
-<         metadata:
-<           labels:
-<             ge: appsec-prune
-<             app: crictl
-[student@workstation appsec-prune]$ oc apply -f cronjob-prune.yaml 
-Warning: would violate PodSecurity "restricted:v1.24": allowPrivilegeEscalation != false (container "crictl" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "crictl" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "crictl" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "crictl" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
-cronjob.batch/image-pruner created
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ watch oc get cronjobs,jobs,pods
-[student@workstation appsec-prune]$ oc get cronjobs,jobs,pods
+[student@workstation appsec-prune]$ watch oc get cronjobs,job,pods
+[student@workstation appsec-prune]$ oc get cronjobs,job,pods
 NAME                         SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-cronjob.batch/image-pruner   */4 * * * *   False     0        40s             2m33s
+cronjob.batch/image-pruner   */4 * * * *   False     1        4s              23m
 
 NAME                              COMPLETIONS   DURATION   AGE
-job.batch/image-pruner-27972632   0/1           40s        40s
-
-NAME                              READY   STATUS   RESTARTS   AGE
-pod/image-pruner-27972632-5p7fq   0/1     Error    0          10s
-pod/image-pruner-27972632-d6ttt   0/1     Error    0          30s
-pod/image-pruner-27972632-dmxg6   0/1     Error    0          18s
-pod/image-pruner-27972632-frrpx   0/1     Error    0          22s
-pod/image-pruner-27972632-n29cv   0/1     Error    0          14s
-pod/image-pruner-27972632-spw87   0/1     Error    0          40s
-pod/image-pruner-27972632-ttt48   0/1     Error    0          26s
-[student@workstation appsec-prune]$ oc logs pod/image-pruner-27972632-5p7fq
-Error from server (Forbidden): nodes is forbidden: User "system:serviceaccount:appsec-prune:default" cannot list resource "nodes" in API group "" at the cluster scope
-[student@workstation appsec-prune]$ oc delete cronjob.batch/image-pruner
-cronjob.batch "image-pruner" deleted
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc adm policy add-scc-to-user -z default privileged
-clusterrole.rbac.authorization.k8s.io/system:openshift:scc:privileged added: "default"
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc adm policy add-cluster-role-to-user cluster-admin -z default
-clusterrole.rbac.authorization.k8s.io/cluster-admin added: "default"
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc get cronjibs,jobs,pods
-error: the server doesn't have a resource type "cronjibs"
-[student@workstation appsec-prune]$ oc get cronjobs,jobs,pods
-No resources found in appsec-prune namespace.
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc apply -f cronjob-prune.yaml 
-cronjob.batch/image-pruner created
-[student@workstation appsec-prune]$ oc get cronjobs,jobs,pods
-NAME                         SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-cronjob.batch/image-pruner   */4 * * * *   False     0        <none>          4s
-[student@workstation appsec-prune]$ watch oc get cronjobs,jobs,pods
-[student@workstation appsec-prune]$ oc get cronjobs,jobs,pods
-NAME                         SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-cronjob.batch/image-pruner   */4 * * * *   False     0        31s             2m26s
-
-NAME                              COMPLETIONS   DURATION   AGE
-job.batch/image-pruner-27972636   1/1           8s         31s
+job.batch/image-pruner-27971416   1/1           11m        12m
+job.batch/image-pruner-27971420   1/1           6m55s      8m4s
+job.batch/image-pruner-27971424   1/1           2m46s      4m4s
+job.batch/image-pruner-27971428   0/1           4s         4s
 
 NAME                              READY   STATUS      RESTARTS   AGE
-pod/image-pruner-27972636-pkjc8   0/1     Completed   0          31s
+pod/image-pruner-27971416-dtdkm   0/1     Completed   0          12m
+pod/image-pruner-27971420-l7f92   0/1     Completed   0          8m4s
+pod/image-pruner-27971424-dbmhr   0/1     Completed   0          4m4s
+pod/image-pruner-27971428-76b2f   1/1     Running     0          4s
 [student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ 
-[student@workstation appsec-prune]$ oc logs pod/image-pruner-27972636-pkjc8
+[student@workstation appsec-prune]$ oc logs pod/image-pruner-27971428-76b2f | tail
+registry.redhat.io/openshift4/ose-csi-livenessprobe                             <none>              e00c8045676e7       349MB
+registry.redhat.io/openshift4/ose-csi-node-driver-registrar                     <none>              96126ea68fc98       351MB
+registry.redhat.io/openshift4/ose-kube-rbac-proxy                               <none>              e3b3b2a0d627c       406MB
+registry.redhat.io/openshift4/ose-kube-rbac-proxy                               <none>              5fedf22b30a57       376MB
++ crictl rmi --prune
+E0308 14:28:05.083172 3583573 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = Unknown desc = image used by 4db9c837f514b9dff995a6bc0621364f327f84f86f17d5f54db71a08f552f58a: image is in use by a container" image="6ef837352bb5161bb55b4fd8eff4b3de72f5600f43f2d3adbfa8f1d9786379ce"
+E0308 14:28:07.084729 3583573 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = DeadlineExceeded desc = context deadline exceeded" image="b755d285423eca80a4e5d07a96c36925bab169e0cab6315c8145f22bb743f16a"
+
+Removing debug pod ...
+Temporary namespace openshift-debug-zn29f was removed.
+[student@workstation appsec-prune]$ oc logs pod/image-pruner-27971428-76b2f | grep nginx
+[student@workstation appsec-prune]$ oc logs pod/image-pruner-27971428-76b2f
 node/master01
-Temporary namespace openshift-debug-2h8sh is created for debugging node...
+Temporary namespace openshift-debug-zn29f is created for debugging node...
 Starting pod/master01-debug ...
 To use host binaries, run `chroot /host`
 + crictl images
@@ -1266,6 +1005,7 @@ quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  
 quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              85d9d84865e9d       385MB
 quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              95dc6178fa4da       406MB
 quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              d06e849538aa7       479MB
+quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              4fce04d936c1c       766MB
 quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              2d029a3688e13       497MB
 quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              ee75bd49aa00e       397MB
 quay.io/openshift-release-dev/ocp-v4.0-art-dev                                  <none>              646be36ce5bc2       430MB
@@ -1323,9 +1063,9 @@ registry.ocp4.example.com:8443/openshift/origin-cli                             
 registry.ocp4.example.com:8443/redhat/community-operator-index                  v4.12               a85523f68a2f3       1.02GB
 registry.ocp4.example.com:8443/redhat/redhat-operator-index                     v4.12               c300aafc658e0       1.24GB
 registry.ocp4.example.com:8443/redhattraining/nfs-subdir-external-provisioner   v4.0.2              932b0bface75b       45.1MB
-registry.ocp4.example.com:8443/ubi7/nginx-118                                   latest              b13520efdb0d5       342MB
-registry.ocp4.example.com:8443/ubi8/nginx-118                                   latest              2f7ec0facc7fa       443MB
-registry.ocp4.example.com:8443/ubi9/nginx-120                                   latest              5dc81e84b6d0a       369MB
+registry.redhat.io/compliance/openshift-compliance-operator-bundle              <none>              dd4cae1e952c0       195kB
+registry.redhat.io/compliance/openshift-file-integrity-operator-bundle          <none>              51d3ada654b27       61.9kB
+registry.redhat.io/compliance/openshift-file-integrity-rhel8-operator           <none>              b755d285423ec       331MB
 registry.redhat.io/lvms4/lvms-rhel8-operator                                    <none>              89e006aadab63       249MB
 registry.redhat.io/lvms4/topolvm-rhel8                                          <none>              2fb98da907141       196MB
 registry.redhat.io/openshift4/frr-rhel8                                         <none>              9474c35171825       412MB
@@ -1339,37 +1079,72 @@ registry.redhat.io/openshift4/ose-csi-node-driver-registrar                     
 registry.redhat.io/openshift4/ose-kube-rbac-proxy                               <none>              e3b3b2a0d627c       406MB
 registry.redhat.io/openshift4/ose-kube-rbac-proxy                               <none>              5fedf22b30a57       376MB
 + crictl rmi --prune
-E0309 10:36:02.693913   69276 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = Unknown desc = image used by e643f6d02bf4c67766b7ddfeac96a5fa4c6095db40fae1a4ecb6f756f36994d8: image is in use by a container" image="6ef837352bb5161bb55b4fd8eff4b3de72f5600f43f2d3adbfa8f1d9786379ce"
-Deleted: registry.ocp4.example.com:8443/ubi7/nginx-118:latest
-Deleted: registry.ocp4.example.com:8443/ubi8/nginx-118:latest
-Deleted: registry.ocp4.example.com:8443/ubi9/nginx-120:latest
+E0308 14:28:05.083172 3583573 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = Unknown desc = image used by 4db9c837f514b9dff995a6bc0621364f327f84f86f17d5f54db71a08f552f58a: image is in use by a container" image="6ef837352bb5161bb55b4fd8eff4b3de72f5600f43f2d3adbfa8f1d9786379ce"
+E0308 14:28:07.084729 3583573 remote_image.go:270] "RemoveImage from image service failed" err="rpc error: code = DeadlineExceeded desc = context deadline exceeded" image="b755d285423eca80a4e5d07a96c36925bab169e0cab6315c8145f22bb743f16a"
 
 Removing debug pod ...
-Temporary namespace openshift-debug-2h8sh was removed.
+Temporary namespace openshift-debug-zn29f was removed.
+[student@workstation appsec-prune]$ oc get cronjobs,job,pods
+NAME                         SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/image-pruner   */4 * * * *   False     0        85s             24m
+
+NAME                              COMPLETIONS   DURATION   AGE
+job.batch/image-pruner-27971420   1/1           6m55s      9m25s
+job.batch/image-pruner-27971424   1/1           2m46s      5m25s
+job.batch/image-pruner-27971428   1/1           13s        85s
+
+NAME                              READY   STATUS      RESTARTS   AGE
+pod/image-pruner-27971420-l7f92   0/1     Completed   0          9m25s
+pod/image-pruner-27971424-dbmhr   0/1     Completed   0          5m25s
+pod/image-pruner-27971428-76b2f   0/1     Completed   0          85s
+[student@workstation appsec-prune]$ 
+[student@workstation appsec-prune]$ 
 [student@workstation appsec-prune]$ cd
 [student@workstation ~]$ oc project 
 Using project "appsec-prune" on server "https://api.ocp4.example.com:6443".
-[student@workstation ~]$ 
-[student@workstation ~]$ 
-[student@workstation ~]$ oc delete cronjob/image-pruner configmap/maintenance
+[student@workstation ~]$ oc delete cronjob.batch/image-pruner configmap/maintenance
 cronjob.batch "image-pruner" deleted
 configmap "maintenance" deleted
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc adm policy remove-scc-from-user -z default privileged
+clusterrole.rbac.authorization.k8s.io/system:openshift:scc:privileged removed: "default"
 [student@workstation ~]$ 
 [student@workstation ~]$ 
 [student@workstation ~]$ oc adm policy remove-cluster-role-from-user cluster-admin -z default
 clusterrole.rbac.authorization.k8s.io/cluster-admin removed: "default"
 [student@workstation ~]$ 
 [student@workstation ~]$ 
-[student@workstation ~]$ oc delete project appsec-prune prune-apps 
+[student@workstation ~]$ oc delete project appsec-prune prune-apps
 project.project.openshift.io "appsec-prune" deleted
 project.project.openshift.io "prune-apps" deleted
+
+
+
+
+
+
+
+
+
+
+
+
 [student@workstation ~]$ 
 [student@workstation ~]$ 
-[student@workstation ~]$ lab finish appsec-prune 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab finish  appsec-prune
 SUCCESS Waiting for cluster
 SUCCESS Remove prune-apps project
 SUCCESS Remove appsec-prune project
-[student@workstation ~]$ 
-[student@workstation ~]$ 
 [student@workstation ~]$ 
 
